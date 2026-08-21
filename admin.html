@@ -1925,6 +1925,25 @@ function accessStatus(
 
 
   if(
+    String(
+      order.access_status ||
+      ""
+    ).toUpperCase() ===
+    "UNUSED"
+  ){
+
+    return `
+
+      <span class="status unused">
+        UNUSED
+      </span>
+
+    `;
+
+  }
+
+
+  if(
     cycle ===
     0
   ){
@@ -2325,26 +2344,25 @@ function renderOrders(){
 
                 ${
                   usedCycle > 0
-
                     ? `
-
                       <br>
-
                       <span
                         style="color:#667085"
                       >
                         Siklus ${usedCycle}
                         /
-                        ${Number(
-                          order.duration_months ||
-                          1
-                        )}
+                        ${
+                          String(
+                            order.access_status ||
+                            ""
+                          ).toUpperCase() ===
+                          "UNUSED"
+                            ? 0
+                            : usedCycle
+                        }
                       </span>
-
                     `
-
                     : ""
-
                 }
 
               </td>
@@ -2379,14 +2397,17 @@ function renderOrders(){
 
 
               <td>
-
                 ${usedCycle}
                 /
-                ${Number(
-                  order.duration_months ||
-                  1
-                )}
-
+                ${
+                  String(
+                    order.access_status ||
+                    ""
+                  ).toUpperCase() ===
+                  "UNUSED"
+                    ? 0
+                    : usedCycle
+                }
               </td>
 
 
