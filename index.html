@@ -190,7 +190,17 @@
       color: white;
       border-color: #FF6B9D;
     }
-  </style>
+  
+.reset-access-button{
+  background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);
+  transition:all .3s ease;
+  box-shadow:0 6px 18px rgba(220,38,38,.20);
+}
+.reset-access-button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(220,38,38,.35);
+}
+</style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
@@ -461,7 +471,7 @@
        <div id="single-email-section">
         <div id="canva-name-wrap" class="mb-3">
          <label class="block text-gray-600 text-sm font-medium mb-2">Nama</label>
-         <input id="canva-customer-name" type="text" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Nama Anda">
+         <input id="canva-customer-name" type="text" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Nama Anda" oninput="persistCanvaCustomerFields()">
         </div>
         <label class="block text-gray-600 text-sm font-medium mb-2">Alamat Email</label>
         <div id="single-emails-container" class="space-y-2">
@@ -553,7 +563,7 @@
       </div>
       <div id="db-access-warning" class="bg-blue-50 rounded-xl p-4 mt-4 text-sm text-blue-800 leading-6"></div>
       <button id="db-continue-canva" class="w-full btn-checkout text-white font-bold py-3 rounded-xl mt-4">Lanjut ke Canva</button>
-      <a id="db-reset-request" class="hidden mt-3 w-full text-center bg-white border-2 border-pink-200 text-pink-500 font-bold py-3 rounded-xl hover:bg-pink-50" target="_blank" rel="noopener">↻ Ajukan Reset Akses ke Admin</a>
+      <a id="db-reset-request" class="hidden mt-3 w-full text-center text-white font-bold py-3 rounded-xl reset-access-button" target="_blank" rel="noopener">↻ Ajukan Reset Akses ke Admin</a>
       <div id="db-access-message" class="message mt-3"></div>
      </div>
     </div>
@@ -665,7 +675,7 @@ function closeModal(){document.getElementById('email-modal').classList.add('hidd
 function initializeCanvaEmail(){
  const container=document.getElementById('single-emails-container');container.innerHTML='';
  const wrap=document.createElement('div');wrap.className='flex gap-2 items-center';
- wrap.innerHTML=`<input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" value="${esc(lastCanvaEmail)}" oninput="validateSingleEmails()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>`;
+ wrap.innerHTML=`<input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" value="${esc(lastCanvaEmail)}" oninput="validateSingleEmails(); persistCanvaCustomerFields()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>`;
  container.appendChild(wrap);validateSingleEmails();
 }
 
@@ -803,7 +813,12 @@ async function loadAccessPage(){
   if(status==='USED'){
    badge.textContent='AKSES DIGUNAKAN';
    title.textContent='Akses sudah digunakan';
-   warning.innerHTML=`Akses ini sudah digunakan.${row.next_access_at?'<br><br>Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong>':''}`;
+   warning.innerHTML=`Akses ini sudah digunakan.
+${row.next_access_at?'<br><br>':'<br>'}
+<span style="display:block;margin:14px 0;padding:12px 14px;background:#fff7ed;color:#b45309;border:1px solid #fed7aa;border-radius:12px;line-height:1.65;">
+<strong>PENTING!</strong> Jika anda <strong>salah akun Canva</strong>, segeralah reset akses Canva melalui tombol merah dibawah! (Via WhatsApp)
+</span>
+${row.next_access_at?'<div style="margin-top:12px;">Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong></div>':''}`;
    btn.style.display='none';
    const resetBtn=document.getElementById('db-reset-request');
    const waNumber='85707486749';
