@@ -16,944 +16,227 @@ Canva Premium Store
 
 <style>
 
-/* =====================================================
-   GLOBAL
-   ===================================================== */
-
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
-body{
-  margin:0;
-  background:#f6f7fb;
-  color:#172033;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-body.modal-open{
-  overflow:hidden;
-}
-
-.container{
-  width:min(1050px,92%);
-  margin:0 auto;
-}
-
-
-/* =====================================================
-   HEADER
-   ===================================================== */
-
-header{
-  padding:28px 0 18px;
-}
-
-.brand{
-  font-size:24px;
-  font-weight:800;
-}
-
-
-/* =====================================================
-   HERO
-   ===================================================== */
-
-.hero{
-  padding:28px 0 16px;
-}
-
-.hero h1{
-  margin:0 0 12px;
-  font-size:42px;
-  line-height:1.1;
-}
-
-.hero p{
-  color:#667085;
-  line-height:1.6;
-}
-
-
-/* =====================================================
-   PRODUCT
-   ===================================================== */
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-  margin:28px 0;
-}
-
-.card{
-  background:#fff;
-  border:1px solid #eceef3;
-  border-radius:20px;
-  padding:24px;
-  box-shadow:0 12px 40px rgba(0,0,0,.05);
-}
-
-.card h2{
-  margin:0 0 8px;
-}
-
-.price{
-  font-size:32px;
-  font-weight:800;
-  margin:16px 0;
-}
-
-
-/* =====================================================
-   BUTTON GLOBAL
-   ===================================================== */
-
-button{
-  width:100%;
-  border:0;
-  border-radius:12px;
-  background:#7c3aed;
-  color:#fff;
-  padding:14px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-button:hover{
-  background:#6d28d9;
-}
-
-button:disabled{
-  background:#c7cad3;
-  cursor:not-allowed;
-}
-
-
-/* =====================================================
-   INPUT
-   ===================================================== */
-
-input{
-  width:100%;
-  padding:13px;
-  border:1px solid #d6dae3;
-  border-radius:11px;
-  font-size:14px;
-  outline:none;
-  background:#fff;
-}
-
-input:focus{
-  border-color:#7c3aed;
-  box-shadow:0 0 0 3px rgba(124,58,237,.08);
-}
-
-label{
-  display:block;
-  font-weight:700;
-  margin:13px 0 7px;
-}
-
-.muted{
-  color:#667085;
-}
-
-
-/* =====================================================
-   CHECKOUT MODAL OVERLAY
-   ===================================================== */
-
-.checkout-overlay{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-
-  display:none;
-
-  align-items:center;
-  justify-content:center;
-
-  padding:20px;
-
-  background:rgba(15,23,42,.52);
-
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
-
-.checkout-overlay.show{
-  display:flex;
-}
-
-
-/* =====================================================
-   CHECKOUT MODAL
-   ===================================================== */
-
-.checkout-modal{
-  width:min(560px,100%);
-  max-height:calc(100vh - 40px);
-
-  overflow:auto;
-
-  background:#fff;
-
-  border-radius:22px;
-
-  box-shadow:
-    0 30px 90px
-    rgba(0,0,0,.25);
-
-  animation:
-    modalIn .18s ease-out;
-}
-
-@keyframes modalIn{
-
-  from{
-    opacity:0;
-    transform:translateY(12px) scale(.98);
-  }
-
-  to{
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
-
-}
-
-
-/* =====================================================
-   CHECKOUT HEADER
-   ===================================================== */
-
-.checkout-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  padding:20px 22px;
-
-  border-bottom:
-    1px solid #edf0f4;
-}
-
-.checkout-title{
-  font-size:20px;
-  font-weight:800;
-}
-
-.close-modal{
-  width:38px !important;
-  min-width:38px;
-  max-width:38px;
-  height:38px;
-
-  padding:0 !important;
-
-  border-radius:10px;
-
-  background:#f1f3f7;
-  color:#344054;
-
-  font-size:20px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.close-modal:hover{
-  background:#e4e7ec;
-}
-
-
-/* =====================================================
-   CHECKOUT BODY
-   ===================================================== */
-
-.checkout-body{
-  padding:22px;
-}
-
-
-/* =====================================================
-   SUMMARY
-   ===================================================== */
-
-.summary{
-  background:#f6f5ff;
-  padding:15px;
-  border-radius:13px;
-  line-height:1.7;
-  margin-bottom:16px;
-}
-
-
-/* =====================================================
-   PAYMENT NOTE
-   ===================================================== */
-
-.payment-note{
-  background:#fff7ed;
-  color:#9a3412;
-  padding:14px;
-  border-radius:12px;
-  line-height:1.6;
-  margin-top:15px;
-  font-size:13px;
-}
-
-
-/* =====================================================
-   RECEIPT
-   ===================================================== */
-
-.orderbox{
-  display:none;
-
-  background:#fff;
-
-  border:1px solid #e5e7eb;
-
-  padding:16px;
-
-  border-radius:14px;
-
-  margin-top:14px;
-
-  line-height:1.7;
-}
-
-
-/* =====================================================
-   PEMBAYARAN BERHASIL
-   ===================================================== */
-
-.payment-success-icon{
-  width:48px;
-  height:48px;
-
-  margin:0 auto 10px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border-radius:50%;
-
-  background:#dcfce7;
-  color:#15803d;
-
-  font-size:25px;
-  font-weight:800;
-}
-
-.payment-success-title{
-  text-align:center;
-
-  font-size:20px;
-
-  font-weight:800;
-
-  color:#166534;
-
-  margin-bottom:16px;
-}
-
-
-/* =====================================================
-   NOTA TRANSAKSI
-   ===================================================== */
-
-.payment-receipt{
-  background:#f8fafc;
-
-  border:1px solid #e5e7eb;
-
-  border-radius:14px;
-
-  padding:16px;
-}
-
-.payment-receipt-title{
-  font-size:13px;
-
-  font-weight:800;
-
-  color:#344054;
-
-  margin-bottom:12px;
-}
-
-.payment-receipt-row{
-  display:flex;
-
-  justify-content:space-between;
-
-  gap:15px;
-
-  padding:8px 0;
-
-  font-size:13px;
-
-  border-bottom:
-    1px solid #edf0f4;
-}
-
-.payment-receipt-row:last-child{
-  border-bottom:0;
-}
-
-.payment-receipt-label{
-  color:#667085;
-}
-
-.payment-receipt-value{
-  font-weight:700;
-  text-align:right;
-}
-
-.payment-receipt-total{
-  margin-top:8px;
-
-  padding-top:12px;
-
-  border-top:
-    1px solid #dfe3ea;
-
-  display:flex;
-
-  justify-content:space-between;
-
-  gap:15px;
-
-  font-size:15px;
-
-  font-weight:800;
-}
-
-.payment-order-code{
-  margin-top:13px;
-
-  padding:10px 12px;
-
-  background:#f6f5ff;
-
-  color:#5b21b6;
-
-  border-radius:10px;
-
-  font-size:12px;
-
-  font-weight:700;
-
-  word-break:break-all;
-}
-
-
-/* =====================================================
-   BUTTON BUKA AKSES
-   ===================================================== */
-
-.payment-access-button{
-  display:block;
-
-  width:100%;
-
-  margin-top:14px;
-
-  background:#7c3aed;
-
-  color:#fff;
-
-  text-decoration:none;
-
-  text-align:center;
-
-  padding:13px;
-
-  border-radius:10px;
-
-  font-weight:700;
-}
-
-.payment-access-button:hover{
-  background:#6d28d9;
-}
-
-
-/* =====================================================
-   MESSAGE
-   ===================================================== */
-
-.message{
-  display:none;
-
-  padding:13px;
-
-  margin-top:13px;
-
-  border-radius:11px;
-
-  line-height:1.5;
-
-  font-size:13px;
-}
-
-.message.ok{
-  display:block;
-
-  background:#ecfdf5;
-
-  color:#065f46;
-}
-
-.message.err{
-  display:block;
-
-  background:#fff1f2;
-
-  color:#9f1239;
-}
-
-
-/* =====================================================
-   HISTORY
-   ===================================================== */
-
-.history-panel{
-  background:#fff;
-
-  border:1px solid #eceef3;
-
-  border-radius:20px;
-
-  padding:24px;
-
-  margin:22px 0 40px;
-}
-
-.history-form{
-  display:grid;
-
-  grid-template-columns:
-    1fr
-    auto
-    1fr
-    auto;
-
-  gap:9px;
-
-  align-items:center;
-}
-
-.history-or{
-  font-size:11px;
-
-  font-weight:800;
-
-  color:#667085;
-
-  text-align:center;
-}
-
-.history-table-wrap{
-  overflow:auto;
-
-  margin-top:18px;
-}
-
-.history-table{
-  width:100%;
-
-  min-width:1150px;
-
-  border-collapse:collapse;
-}
-
-.history-table th,
-.history-table td{
-  padding:11px;
-
-  border-bottom:
-    1px solid #edf0f4;
-
-  text-align:left;
-
-  vertical-align:top;
-
-  font-size:12px;
-}
-
-.history-table th{
-  background:#fafafa;
-
-  color:#667085;
-
-  font-size:10px;
-
-  text-transform:uppercase;
-}
-
-
-/* =====================================================
-   STATUS
-   ===================================================== */
-
-.status-badge{
-  display:inline-block;
-
-  padding:5px 8px;
-
-  border-radius:999px;
-
-  font-size:10px;
-
-  font-weight:800;
-}
-
-.status-paid{
-  background:#dcfce7;
-  color:#166534;
-}
-
-.status-pending{
-  background:#fef3c7;
-  color:#92400e;
-}
-
-.status-expired{
-  background:#f3f4f6;
-  color:#374151;
-}
-
-.access-used{
-  background:#ede9fe;
-  color:#6d28d9;
-}
-
-.access-unused{
-  background:#e0f2fe;
-  color:#075985;
-}
-
-.access-ready{
-  background:#dcfce7;
-  color:#166534;
-}
-
-
-/* =====================================================
-   HISTORY ACTION
-   ===================================================== */
-
-.history-action{
-  display:inline-block;
-
-  background:#7c3aed;
-
-  color:#fff;
-
-  text-decoration:none;
-
-  padding:8px 10px;
-
-  border-radius:9px;
-
-  font-size:11px;
-
-  font-weight:700;
-
-  white-space:nowrap;
-}
-
-.history-action-green{
-  display:inline-block;
-
-  background:#16a34a;
-
-  color:#fff;
-
-  text-decoration:none;
-
-  padding:8px 10px;
-
-  border-radius:9px;
-
-  font-size:11px;
-
-  font-weight:700;
-
-  white-space:nowrap;
-}
-
-.history-action-disabled{
-  display:inline-block;
-
-  background:#eef0f4;
-
-  color:#667085;
-
-  padding:8px 10px;
-
-  border-radius:9px;
-
-  font-size:11px;
-
-  white-space:nowrap;
-}
-
-
-/* =====================================================
-   ACCESS PANEL
-   ===================================================== */
-
-.panel{
-  display:none;
-
-  background:#fff;
-
-  border:1px solid #eceef3;
-
-  border-radius:20px;
-
-  padding:25px;
-
-  margin:22px 0 40px;
-}
-
-.access-badge{
-  display:inline-block;
-
-  background:#ede9fe;
-
-  color:#6d28d9;
-
-  padding:9px 15px;
-
-  border-radius:999px;
-
-  font-weight:800;
-
-  margin-bottom:17px;
-}
-
-.access-info{
-  background:#eff6ff;
-
-  color:#1e40af;
-
-  padding:15px;
-
-  border-radius:14px;
-
-  margin:15px 0;
-
-  line-height:1.7;
-}
-
-.access-warning{
-  background:#fff7ed;
-
-  color:#9a3412;
-
-  padding:17px;
-
-  border-radius:15px;
-
-  margin:17px 0;
-
-  line-height:1.6;
-}
-
-
-/* =====================================================
-   KODE ORDER
-   ===================================================== */
-
-.order-code-box{
-  background:#f8fafc;
-
-  border:1px solid #e2e8f0;
-
-  border-radius:14px;
-
-  padding:15px;
-
-  margin:15px 0;
-}
-
-.order-code-label{
-  color:#667085;
-
-  font-size:10px;
-
-  font-weight:800;
-
-  letter-spacing:.06em;
-
-  margin-bottom:7px;
-}
-
-.order-code-row{
-  display:flex;
-
-  align-items:center;
-
-  gap:8px;
-}
-
-.order-code-value{
-  flex:1;
-
-  min-width:0;
-
-  background:#fff;
-
-  border:1px solid #e5e7eb;
-
-  border-radius:10px;
-
-  padding:10px 12px;
-
-  font-size:16px;
-
-  font-weight:800;
-
-  word-break:break-all;
-}
-
-.copy-icon-button{
-  width:42px !important;
-
-  min-width:42px !important;
-
-  max-width:42px !important;
-
-  height:42px;
-
-  flex:0 0 42px;
-
-  padding:0 !important;
-
-  margin:0;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  border-radius:10px;
-
-  background:#111827;
-
-  color:#fff;
-
-  font-size:16px;
-}
-
-.copy-icon-button:hover{
-  background:#374151;
-}
-
-.copy-icon-button.copied{
-  background:#059669;
-}
-
-
-/* =====================================================
-   WHATSAPP
-   ===================================================== */
-
-.whatsapp-btn{
-  display:block;
-
-  width:100%;
-
-  padding:13px;
-
-  border-radius:11px;
-
-  background:#16a34a;
-
-  color:#fff;
-
-  text-align:center;
-
-  text-decoration:none;
-
-  font-weight:700;
-
-  margin-top:11px;
-}
-
-.whatsapp-btn:hover{
-  background:#15803d;
-}
-
-
-/* =====================================================
-   RESPONSIVE
-   ===================================================== */
-
-@media(max-width:760px){
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .hero h1{
-    font-size:34px;
-  }
-
-  .history-form{
-    grid-template-columns:1fr;
-  }
-
-  .history-or{
-    padding:3px 0;
-  }
-
-  .checkout-overlay{
-    padding:10px;
-  }
-
-  .checkout-modal{
-    max-height:
-      calc(100vh - 20px);
-
-    border-radius:18px;
-  }
-
-  .checkout-body{
-    padding:17px;
-  }
-
-  .payment-receipt-row{
-    flex-direction:column;
-    gap:2px;
-  }
-
-  .payment-receipt-value{
-    text-align:left;
-  }
-
-}
+    * { font-family: 'Poppins', sans-serif; }
+    
+    .texture-bg {
+      background-color: #FFF0F5;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(255, 182, 193, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 192, 203, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 40% 80%, rgba(255, 174, 185, 0.25) 0%, transparent 45%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+    
+    .card-texture {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,245,250,0.9) 100%);
+      backdrop-filter: blur(10px);
+    }
+    
+    .price-tag {
+      background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
+    }
+    
+    .btn-checkout {
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-checkout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    }
+    
+    .product-card {
+      transition: all 0.3s ease;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .package-option {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .package-option:hover {
+      border-color: #FF6B9D;
+      background: rgba(255, 107, 157, 0.05);
+    }
+    
+    .package-option.selected {
+      border-color: #FF6B9D;
+      background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(255, 143, 171, 0.1) 100%);
+    }
+    
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+    
+    .strikethrough {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    
+    .discount-badge {
+      background: linear-gradient(135deg, #FF4757 0%, #FF6B81 100%);
+    }
+    
+    .floating-hearts {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.1;
+      animation: float 15s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    .toast {
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .tab-button {
+      transition: all 0.3s ease;
+    }
+
+    .tab-button.active {
+      background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
+      color: white;
+    }
+
+    .tab-button:not(.active) {
+      background: transparent;
+      color: #999;
+    }
+
+    .order-item {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #F57C00;
+    }
+
+    .status-completed {
+      background: rgba(76, 175, 80, 0.2);
+      color: #2E7D32;
+    }
+
+    .info-tooltip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-tooltip:hover .tooltip-text {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tooltip-text {
+      position: absolute;
+      bottom: auto;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 50;
+    }
+
+    .tooltip-text::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .sort-btn.active {
+      background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
+      color: white;
+      border-color: #FF6B9D;
+    }
+  
+
+/* --- MYCLIPS PINK DESIGN OVERRIDES --- */
+body{background:#FFF0F5!important;color:#374151}
+.container{position:relative;z-index:2}
+.brand{font-size:inherit;font-weight:inherit}
+.canva-card{border:1px solid #f9cbd9!important}
+.canva-card .price-tag{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)}
+.package-option{transition:all .2s ease;cursor:pointer}
+.package-option:hover{border-color:#FF6B9D!important;background:rgba(255,107,157,.05)!important;transform:translateY(-1px)}
+.package-option.selected{border-color:#FF6B9D!important;background:linear-gradient(135deg,rgba(255,107,157,.1) 0%,rgba(255,143,171,.1) 100%)!important}
+#historyPanel{background:rgba(255,255,255,.92);border:1px solid #f9d8e3;border-radius:24px;box-shadow:0 18px 45px rgba(255,107,157,.12)}
+.history-form input{border:2px solid #f3c6d5!important;border-radius:14px!important}.history-form button{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)!important}
+.history-table{width:100%;min-width:1100px;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #f7d7e1;border-radius:18px;overflow:hidden}.history-table th{background:#fff6f9;color:#9b6b7c}.history-table td{border-top:1px solid #f7e5ea}
+.history-action,.history-action-green{border-radius:10px!important}.history-action{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)!important}.history-action-green{background:linear-gradient(135deg,#25D366 0%,#128C7E 100%)!important}
+.checkout-overlay{background:rgba(0,0,0,.50)!important;backdrop-filter:blur(5px)!important}.checkout-modal{background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(255,245,250,.95))!important;border:1px solid #f8d7e2!important;border-radius:28px!important}.close-modal{background:#fff1f5!important;color:#9f6278!important}.checkout-body input{border:2px solid #f3c6d5!important;border-radius:14px!important}.summary{background:#fff5f8!important;border:1px solid #f6d4df!important}.payment-note{background:#eff6ff!important}.payment-access-button{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)!important;border-radius:12px!important}
+#accessPanel{background:rgba(255,255,255,.94)!important;border:1px solid #f7d7e1!important;border-radius:24px!important;box-shadow:0 18px 45px rgba(255,107,157,.12)!important}.access-badge{background:linear-gradient(135deg,rgba(255,107,157,.15),rgba(255,143,171,.15))!important;color:#c43f6b!important}.access-info{background:#fff5f8!important;color:#8f4d67!important;border:1px solid #f5d9e2!important}.order-code-box{background:#fff!important;border:1px solid #f3d8e2!important}.order-code-value{background:#fff8fa!important}.copy-icon-button{background:#111827!important}.whatsapp-btn{background:linear-gradient(135deg,#25D366 0%,#128C7E 100%)!important}.payment-success-title{color:#374151!important}
+@media(max-width:800px){.history-form{grid-template-columns:1fr!important}.history-or{display:none!important}.grid{grid-template-columns:1fr!important}}
 
 </style>
 
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
 </head>
 
 
 <body>
+<div class="h-full overflow-auto texture-bg relative">
+<div class="floating-hearts">
+  <span class="heart" style="left:5%;top:10%;animation-delay:0s;">💕</span>
+  <span class="heart" style="left:15%;top:60%;animation-delay:2s;">💗</span>
+  <span class="heart" style="left:25%;top:30%;animation-delay:4s;">💖</span>
+  <span class="heart" style="left:45%;top:70%;animation-delay:1s;">💕</span>
+  <span class="heart" style="left:65%;top:20%;animation-delay:3s;">💗</span>
+  <span class="heart" style="left:75%;top:50%;animation-delay:5s;">💖</span>
+  <span class="heart" style="left:85%;top:80%;animation-delay:2.5s;">💕</span>
+  <span class="heart" style="left:95%;top:40%;animation-delay:4.5s;">💗</span>
+</div>
 
 
 <div class="container">
@@ -963,18 +246,27 @@ label{
      HEADER
      ===================================================== -->
 
-<header>
-
-  <div class="brand">
-    Canva Premium Store
+<header class="relative z-10 py-6 px-4 border-b border-pink-200">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-6">
+      <div class="inline-block">
+        <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-pink-400 to-rose-400 bg-clip-text text-transparent drop-shadow-sm">MYCLIPS</h1>
+        <p class="text-pink-400 font-medium mt-1 tracking-wide">✨ Canva Premium Store ✨</p>
+      </div>
+    </div>
+    <div class="flex gap-4 justify-center border-b border-pink-100">
+      <button type="button" class="tab-button active px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="products">🛍️ Canva Premium</button>
+      <button type="button" class="tab-button px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="history">📋 Riwayat Pembelian</button>
+    </div>
   </div>
-
 </header>
 
 
 <!-- =====================================================
      HERO
      ===================================================== -->
+
+<div id="products-tab" class="tab-content">
 
 <section
   class="hero"
@@ -1004,86 +296,46 @@ label{
      PRODUK
      ===================================================== -->
 
-<section
-  class="grid"
-  id="productGrid"
->
-
-  <article class="card">
-
-    <h2>
-      1 Bulan
-    </h2>
-
-    <p>
-      Akses 1 bulan
-    </p>
-
-    <div class="price">
-      Rp3.000
-    </div>
-
-    <button
-      data-package="1"
-    >
-      Beli Sekarang
-    </button>
-
-  </article>
-
-
-  <article class="card">
-
-    <h2>
-      2 Bulan
-    </h2>
-
-    <p>
-      Akses 2 bulan
-    </p>
-
-    <div class="price">
-      Rp6.000
-    </div>
-
-    <button
-      data-package="2"
-    >
-      Beli Sekarang
-    </button>
-
-  </article>
-
-
-  <article class="card">
-
-    <h2>
-      3 Bulan
-    </h2>
-
-    <p>
-      Akses 3 bulan
-    </p>
-
-    <div class="price">
-      Rp8.500
-    </div>
-
-    <button
-      data-package="3"
-    >
-      Beli Sekarang
-    </button>
-
-  </article>
-
+<section class="text-center mt-6 mb-8" id="storeHero">
+  <p class="text-gray-500 text-sm">Dapatkan akses Canva Premium dengan harga terjangkau! 💕</p>
 </section>
 
+<section class="grid md:grid-cols-1 gap-6" id="productGrid">
+  <div class="canva-card product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100 max-w-2xl mx-auto w-full">
+    <div class="relative">
+      <div class="absolute top-3 right-3 z-20 info-tooltip">
+        <button type="button" class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white">i</button>
+        <span class="tooltip-text">Edit desain unlimited, template premium, kolaborasi tim</span>
+      </div>
+      <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
+        <span class="text-2xl">🎨</span><h2 class="font-bold text-lg">Canva Premium</h2>
+      </div>
+    </div>
+    <div class="p-5 space-y-3">
+      <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-package="1">
+        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-700">1 Bulan</p><p class="text-xs text-gray-500 mt-1">👤 1 akun · 1x akses</p></div><div class="text-right"><p class="font-bold text-pink-500 text-lg">Rp 3K</p></div></div>
+      </div>
+      <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-package="2">
+        <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">2X AKSES</div>
+        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-700">2 Bulan</p><p class="text-xs text-gray-500 mt-1">👤 1 akun · 2x akses</p></div><div class="text-right"><p class="font-bold text-pink-500 text-lg">Rp 6K</p></div></div>
+      </div>
+      <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-package="3">
+        <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">3X AKSES</div>
+        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-700">3 Bulan</p><p class="text-xs text-gray-500 mt-1">👤 1 akun · 3x akses</p></div><div class="text-right"><p class="font-bold text-pink-500 text-lg">Rp 8.5K</p></div></div>
+      </div>
+      <p class="text-xs text-center text-gray-400 mt-4">Pembayaran aman melalui Midtrans • biaya QRIS ditampilkan saat checkout</p>
+    </div>
+  </div>
+</section>
+
+
+</div>
 
 <!-- =====================================================
      RIWAYAT PEMBELIAN
      ===================================================== -->
 
+<div id="history-tab" class="tab-content hidden">
 <section
   class="history-panel"
   id="historyPanel"
@@ -1208,6 +460,7 @@ label{
   </div>
 
 </section>
+</div>
 
 
 <!-- =====================================================
@@ -4239,6 +3492,6 @@ loadAccessPage();
 
 </script>
 
-</body>
-
-</html>
+<script>
+document.querySelectorAll('.tab-button').forEach(function(btn){btn.addEventListener('click',function(){var tab=this.dataset.tab;document.querySelectorAll('.tab-button').forEach(function(b){b.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.add('hidden')});this.classList.add('active');var el=document.getElementById(tab+'-tab');if(el)el.classList.remove('hidden');});});
+</script>
