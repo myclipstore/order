@@ -478,12 +478,12 @@
        <div id="single-email-section">
         <div id="canva-name-wrap" class="mb-3">
          <label class="block text-gray-600 text-sm font-medium mb-2">Nama</label>
-         <input id="canva-customer-name" type="text" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Nama Anda" oninput="persistCanvaCustomerFields()">
+         <input id="canva-customer-name" type="text" autocomplete="off" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Nama Anda" oninput="persistCanvaCustomerFields()">
         </div>
         <label class="block text-gray-600 text-sm font-medium mb-2">Alamat Email</label>
         <div id="single-emails-container" class="space-y-2">
          <div class="flex gap-2 items-center">
-          <input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()">
+          <input type="email" autocomplete="off" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()">
           <button type="button" onclick="removeSingleEmailInput(this)" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>
          </div>
         </div>
@@ -659,14 +659,12 @@ function openModal(){
  const single=document.getElementById('single-email-section');
  const group=document.getElementById('group-email-section');
  const cap=document.getElementById('capcut-quantity-section');
- const savedName=localStorage.getItem('myclips_canva_name')||'';
 
  if(selectedProduct==='Canva Premium'){
   icon.textContent='🎨';title.textContent='Canva Premium';
   packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
   cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');
   initializeCanvaEmail();
-  document.getElementById('canva-customer-name').value=savedName;
   document.getElementById('canva-name-wrap').classList.remove('hidden');
   document.getElementById('canva-voucher-wrap').classList.remove('hidden');
   document.getElementById('price-total').classList.add('hidden');
@@ -682,12 +680,26 @@ function openModal(){
  document.getElementById('checkout-btn').textContent=selectedProduct==='Canva Premium'?'Bayar Sekarang':'Checkout via WhatsApp';
  modal.classList.remove('hidden');
 }
-function closeModal(){document.getElementById('email-modal').classList.add('hidden');}
+function closeModal(){
+ document.getElementById('email-modal').classList.add('hidden');
+ const nameEl=document.getElementById('canva-customer-name');
+ const emailEl=document.querySelector('#single-emails-container .single-email-input');
+ const voucherEl=document.getElementById('canva-voucher');
+ if(nameEl) nameEl.value='';
+ if(emailEl) emailEl.value='';
+ if(voucherEl) voucherEl.value='';
+ const err=document.getElementById('single-email-error');
+ const ok=document.getElementById('single-email-success');
+ if(err) err.classList.add('hidden');
+ if(ok) ok.classList.add('hidden');
+ const price=document.getElementById('price-total');
+ if(price) price.classList.add('hidden');
+}
 
 function initializeCanvaEmail(){
  const container=document.getElementById('single-emails-container');container.innerHTML='';
  const wrap=document.createElement('div');wrap.className='flex gap-2 items-center';
- wrap.innerHTML=`<input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" value="${esc(lastCanvaEmail)}" oninput="validateSingleEmails(); persistCanvaCustomerFields()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>`;
+ wrap.innerHTML=`<input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" autocomplete="off" oninput="validateSingleEmails()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>`;
  container.appendChild(wrap);validateSingleEmails();
 }
 
