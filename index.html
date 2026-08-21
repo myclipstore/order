@@ -255,7 +255,21 @@
            </div>
           </div>
          </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="3 Bulan" data-price="8000" data-needs-email="true">
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="2 Bulan" data-price="6000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           2X AKSES
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">2 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <p class="font-bold text-pink-500 text-lg">Rp 6K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="3 Bulan" data-price="8500" data-needs-email="true">
           <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
            PROMO
           </div>
@@ -266,7 +280,7 @@
            </div>
            <div class="text-right">
             <span class="text-gray-400 text-sm strikethrough">Rp 9K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 8K</p>
+            <p class="font-bold text-pink-500 text-lg">Rp 8,5K</p>
            </div>
           </div>
          </div>
@@ -539,6 +553,7 @@
       </div>
       <div id="db-access-warning" class="bg-blue-50 rounded-xl p-4 mt-4 text-sm text-blue-800 leading-6"></div>
       <button id="db-continue-canva" class="w-full btn-checkout text-white font-bold py-3 rounded-xl mt-4">Lanjut ke Canva</button>
+      <a id="db-reset-request" class="hidden mt-3 w-full text-center bg-white border-2 border-pink-200 text-pink-500 font-bold py-3 rounded-xl hover:bg-pink-50" target="_blank" rel="noopener">↻ Ajukan Reset Akses ke Admin</a>
       <div id="db-access-message" class="message mt-3"></div>
      </div>
     </div>
@@ -785,7 +800,28 @@ async function loadAccessPage(){
   const status=String(row.access_status||'').toUpperCase();
   const badge=document.getElementById('db-access-badge');const title=document.getElementById('db-access-title');const warning=document.getElementById('db-access-warning');const btn=document.getElementById('db-continue-canva');
   if(status==='EXPIRED'){badge.textContent='MASA AKSES BERAKHIR';title.textContent='Masa akses sudah berakhir';warning.textContent='Billing order ini sudah berakhir.';btn.style.display='none';return;}
-  if(status==='USED'){badge.textContent='AKSES DIGUNAKAN';title.textContent='Akses sudah digunakan';warning.innerHTML=`Akses ini sudah digunakan.${row.next_access_at?'<br><br>Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong>':''}`;btn.style.display='none';return;}
+  if(status==='USED'){
+   badge.textContent='AKSES DIGUNAKAN';
+   title.textContent='Akses sudah digunakan';
+   warning.innerHTML=`Akses ini sudah digunakan.${row.next_access_at?'<br><br>Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong>':''}`;
+   btn.style.display='none';
+   const resetBtn=document.getElementById('db-reset-request');
+   const waNumber='85707486749';
+   const message=[
+    'Halo Admin MYCLIPS, saya ingin mengajukan reset akses Canva.',
+    '',
+    'Kode Order: '+(row.order_code||'-'),
+    'Email pembelian: '+(row.customer_email||'-'),
+    'Siklus akses: '+(Number(row.access_cycle||0))+' / '+(Number(row.duration_months||1)),
+    '',
+    'Saya salah memasukkan email / mengalami kendala saat menggunakan akses. Mohon akses pada siklus ini di-reset agar saya dapat mencoba kembali.',
+    '',
+    'Terima kasih.'
+   ].join('\n');
+   resetBtn.href='https://wa.me/'+waNumber+'?text='+encodeURIComponent(message);
+   resetBtn.classList.remove('hidden');
+   return;
+  }
   badge.textContent='AKSES SIAP';warning.innerHTML='Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
  }catch(e){document.getElementById('db-access-title').textContent='Akses tidak dapat digunakan';document.getElementById('db-access-warning').textContent=e.message;document.getElementById('db-continue-canva').style.display='none';}
 }
