@@ -1,21 +1,13 @@
 <!doctype html>
-<html lang="id">
-
-<head>
-
-<meta charset="utf-8">
-
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1"
->
-
-<title>
-Canva Premium Store
-</title>
-
-<style>
-
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MYCLIPS - Premium Apps Store</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
     * { font-family: 'Poppins', sans-serif; }
     
     .texture-bg {
@@ -198,3300 +190,616 @@ Canva Premium Store
       color: white;
       border-color: #FF6B9D;
     }
-  
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+ </head>
+ <body class="h-full">
+  <div class="h-full overflow-auto texture-bg relative">
+   <div class="floating-hearts">
+    <span class="heart" style="left: 5%; top: 10%; animation-delay: 0s;">💕</span>
+    <span class="heart" style="left: 15%; top: 60%; animation-delay: 2s;">💗</span>
+    <span class="heart" style="left: 25%; top: 30%; animation-delay: 4s;">💖</span>
+    <span class="heart" style="left: 45%; top: 70%; animation-delay: 1s;">💕</span>
+    <span class="heart" style="left: 65%; top: 20%; animation-delay: 3s;">💗</span>
+    <span class="heart" style="left: 75%; top: 50%; animation-delay: 5s;">💖</span>
+    <span class="heart" style="left: 85%; top: 80%; animation-delay: 2.5s;">💕</span>
+    <span class="heart" style="left: 95%; top: 40%; animation-delay: 4.5s;">💗</span>
+   </div>
 
-/* --- MYCLIPS PINK DESIGN OVERRIDES --- */
-body{background:#FFF0F5!important;color:#374151}
-.container{position:relative;z-index:2}
-.brand{font-size:inherit;font-weight:inherit}
-.canva-card{border:1px solid #f9cbd9!important}
-.canva-card .price-tag{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)}
-.package-option{transition:all .2s ease;cursor:pointer}
-.package-option:hover{border-color:#FF6B9D!important;background:rgba(255,107,157,.05)!important;transform:translateY(-1px)}
-.package-option.selected{border-color:#FF6B9D!important;background:linear-gradient(135deg,rgba(255,107,157,.1) 0%,rgba(255,143,171,.1) 100%)!important}
-#historyPanel{background:rgba(255,255,255,.92);border:1px solid #f9d8e3;border-radius:24px;box-shadow:0 18px 45px rgba(255,107,157,.12)}
-.history-form input{border:2px solid #f3c6d5!important;border-radius:14px!important}.history-form button{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)!important}
-.history-table{width:100%;min-width:1100px;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #f7d7e1;border-radius:18px;overflow:hidden}.history-table th{background:#fff6f9;color:#9b6b7c}.history-table td{border-top:1px solid #f7e5ea}
-.history-action,.history-action-green{border-radius:10px!important}.history-action{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)!important}.history-action-green{background:linear-gradient(135deg,#25D366 0%,#128C7E 100%)!important}
-.checkout-overlay{background:rgba(0,0,0,.50)!important;backdrop-filter:blur(5px)!important}.checkout-modal{background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(255,245,250,.95))!important;border:1px solid #f8d7e2!important;border-radius:28px!important}.close-modal{background:#fff1f5!important;color:#9f6278!important}.checkout-body input{border:2px solid #f3c6d5!important;border-radius:14px!important}.summary{background:#fff5f8!important;border:1px solid #f6d4df!important}.payment-note{background:#eff6ff!important}.payment-access-button{background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%)!important;border-radius:12px!important}
-#accessPanel{background:rgba(255,255,255,.94)!important;border:1px solid #f7d7e1!important;border-radius:24px!important;box-shadow:0 18px 45px rgba(255,107,157,.12)!important}.access-badge{background:linear-gradient(135deg,rgba(255,107,157,.15),rgba(255,143,171,.15))!important;color:#c43f6b!important}.access-info{background:#fff5f8!important;color:#8f4d67!important;border:1px solid #f5d9e2!important}.order-code-box{background:#fff!important;border:1px solid #f3d8e2!important}.order-code-value{background:#fff8fa!important}.copy-icon-button{background:#111827!important}.whatsapp-btn{background:linear-gradient(135deg,#25D366 0%,#128C7E 100%)!important}.payment-success-title{color:#374151!important}
-@media(max-width:800px){.history-form{grid-template-columns:1fr!important}.history-or{display:none!important}.grid{grid-template-columns:1fr!important}}
+   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
-</style>
-
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-</head>
-
-
-<body>
-<div class="h-full overflow-auto texture-bg relative">
-<div class="floating-hearts">
-  <span class="heart" style="left:5%;top:10%;animation-delay:0s;">💕</span>
-  <span class="heart" style="left:15%;top:60%;animation-delay:2s;">💗</span>
-  <span class="heart" style="left:25%;top:30%;animation-delay:4s;">💖</span>
-  <span class="heart" style="left:45%;top:70%;animation-delay:1s;">💕</span>
-  <span class="heart" style="left:65%;top:20%;animation-delay:3s;">💗</span>
-  <span class="heart" style="left:75%;top:50%;animation-delay:5s;">💖</span>
-  <span class="heart" style="left:85%;top:80%;animation-delay:2.5s;">💕</span>
-  <span class="heart" style="left:95%;top:40%;animation-delay:4.5s;">💗</span>
-</div>
-
-
-<div class="container">
-
-
-<!-- =====================================================
-     HEADER
-     ===================================================== -->
-
-<header class="relative z-10 py-6 px-4 border-b border-pink-200">
-  <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-6">
+   <header class="relative z-10 py-6 px-4 border-b border-pink-200">
+    <div class="max-w-4xl mx-auto">
+     <div class="text-center mb-6">
       <div class="inline-block">
-        <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-pink-400 to-rose-400 bg-clip-text text-transparent drop-shadow-sm">MYCLIPS</h1>
-        <p class="text-pink-400 font-medium mt-1 tracking-wide">✨ Canva Premium Store ✨</p>
+       <h1 id="store-title" class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-pink-400 to-rose-400 bg-clip-text text-transparent drop-shadow-sm">MYCLIPS</h1>
+       <p id="store-tagline" class="text-pink-400 font-medium mt-1 tracking-wide">✨ Premium Apps Store ✨</p>
       </div>
+     </div>
+     <div class="flex gap-4 justify-center border-b border-pink-100">
+      <button class="tab-button active px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="products"> 🛍️ Products </button>
+      <button class="tab-button px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="history"> 📋 Order History </button>
+     </div>
     </div>
-    <div class="flex gap-4 justify-center border-b border-pink-100">
-      <button type="button" class="tab-button active px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="products">🛍️ Canva Premium</button>
-      <button type="button" class="tab-button px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="history">📋 Riwayat Pembelian</button>
-    </div>
-  </div>
-</header>
+   </header>
 
+   <main class="relative z-10 px-4 pb-8">
+    <div class="max-w-4xl mx-auto">
+     <div id="products-tab" class="tab-content">
+      <p class="text-gray-500 text-sm mt-3 mb-6 text-center">Dapatkan akses premium dengan harga terjangkau! DIJAMIN GARANSI 100%!</p>
+      <div class="grid md:grid-cols-3 gap-6">
+       <div class="product-card card-texture rounded-3xl shadow-lg shadow-pink-200/40 overflow-hidden border border-pink-100">
+        <div class="relative">
+         <div class="absolute top-3 right-3 z-20">
+          <div class="info-tooltip">
+           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
+           <span class="tooltip-text">Edit desain unlimited, template premium, kolaborasi tim</span>
+          </div>
+         </div>
+         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
+          <span class="text-2xl">🎨</span>
+          <h2 class="font-bold text-lg">Canva Premium</h2>
+         </div>
+        </div>
+        <div class="p-5 space-y-3">
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-product="Canva Premium" data-package="1 Bulan" data-price="3000" data-needs-email="true">
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">1 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <p class="font-bold text-pink-500 text-lg">Rp 3K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="3 Bulan" data-price="8000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           PROMO
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">3 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 9K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 8K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="Paket Grup (15 akun)/Bulan" data-price="10000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           HEMAT
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">Paket Grup</p>
+            <p class="text-xs text-gray-500">(15 akun) /bulan</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 10K</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
 
-<!-- =====================================================
-     HERO
-     ===================================================== -->
+       <div class="product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100">
+        <div class="relative">
+         <div class="absolute top-3 right-3 z-20">
+          <div class="info-tooltip">
+           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
+           <span class="tooltip-text">Edit video tanpa watermark, effect premium, export 4K</span>
+          </div>
+         </div>
+         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
+          <span class="text-2xl">🎬</span>
+          <h2 class="font-bold text-lg">CapCut Premium</h2>
+         </div>
+        </div>
+        <div class="p-5 space-y-3">
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-product="CapCut Premium" data-package="7 Hari" data-price="6000" data-is-capcut="true">
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">7 Hari</p>
+            <p class="text-xs text-gray-500 mt-1">🔒 Privat (Bukan Sharing)</p>
+           </div>
+           <div class="text-right">
+            <p class="font-bold text-pink-500 text-lg">Rp 6K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="CapCut Premium" data-package="14 Hari" data-price="11000" data-is-capcut="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           PROMO
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">14 Hari</p>
+            <p class="text-xs text-gray-500 mt-1">🔒 Privat (Bukan Sharing)</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 12K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 11K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="CapCut Premium" data-package="1 Bulan" data-price="20000" data-is-capcut="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           BEST
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">1 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">🔒 Privat (Bukan Sharing)</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 20K</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
 
-<div id="products-tab" class="tab-content">
-
-<section
-  class="hero"
-  id="storeHero"
->
-
-  <h1>
-    Pilih paket Canva Premium
-  </h1>
-
-  <p>
-
-    Pembayaran menggunakan
-    <strong>
-      Midtrans
-    </strong>.
-
-    Biaya pembayaran QRIS
-    akan ditambahkan pada proses checkout.
-
-  </p>
-
-</section>
-
-
-<!-- =====================================================
-     PRODUK
-     ===================================================== -->
-
-<section class="text-center mt-6 mb-8" id="storeHero">
-  <p class="text-gray-500 text-sm">Dapatkan akses Canva Premium dengan harga terjangkau! 💕</p>
-</section>
-
-<section class="grid md:grid-cols-1 gap-6" id="productGrid">
-  <div class="canva-card product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100 max-w-2xl mx-auto w-full">
-    <div class="relative">
-      <div class="absolute top-3 right-3 z-20 info-tooltip">
-        <button type="button" class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white">i</button>
-        <span class="tooltip-text">Edit desain unlimited, template premium, kolaborasi tim</span>
+       <div class="product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100">
+        <div class="relative">
+         <div class="absolute top-3 right-3 z-20">
+          <div class="info-tooltip">
+           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
+           <span class="tooltip-text">GPT-5 Turbo, Thinking mode, priority support</span>
+          </div>
+         </div>
+         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
+          <span class="text-2xl">🤖</span>
+          <h2 class="font-bold text-lg">ChatGPT Pro</h2>
+         </div>
+        </div>
+        <div class="px-5 pt-3 pb-1">
+          <p class="text-xs text-center text-gray-500 bg-pink-50 rounded-lg py-1">Include: GPT Pro, Thinking, Instan</p>
+        </div>
+        <div class="p-5 pt-3 space-y-3">
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="ChatGPT Pro" data-package="15 Hari" data-price="10000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           PROMO
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">15 Hari</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 15K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 10K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="ChatGPT Pro" data-package="30 Hari" data-price="15000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           BEST
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">30 Hari</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 15K</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
       </div>
-      <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
-        <span class="text-2xl">🎨</span><h2 class="font-bold text-lg">Canva Premium</h2>
-      </div>
-    </div>
-    <div class="p-5 space-y-3">
-      <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-package="1">
-        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-700">1 Bulan</p><p class="text-xs text-gray-500 mt-1">👤 1 akun · 1x akses</p></div><div class="text-right"><p class="font-bold text-pink-500 text-lg">Rp 3K</p></div></div>
-      </div>
-      <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-package="2">
-        <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">2X AKSES</div>
-        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-700">2 Bulan</p><p class="text-xs text-gray-500 mt-1">👤 1 akun · 2x akses</p></div><div class="text-right"><p class="font-bold text-pink-500 text-lg">Rp 6K</p></div></div>
-      </div>
-      <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-package="3">
-        <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">3X AKSES</div>
-        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-700">3 Bulan</p><p class="text-xs text-gray-500 mt-1">👤 1 akun · 3x akses</p></div><div class="text-right"><p class="font-bold text-pink-500 text-lg">Rp 8.5K</p></div></div>
-      </div>
-      <p class="text-xs text-center text-gray-400 mt-4">Pembayaran aman melalui Midtrans • biaya QRIS ditampilkan saat checkout</p>
-    </div>
-  </div>
-</section>
-
-
-</div>
-
-<!-- =====================================================
-     RIWAYAT PEMBELIAN
-     ===================================================== -->
-
-<div id="history-tab" class="tab-content hidden">
-<section
-  class="history-panel"
-  id="historyPanel"
->
-
-  <h2>
-    Riwayat Pembelian
-  </h2>
-
-  <p
-    class="muted"
-  >
-    Masukkan email pembelian ATAU kode pembelian.
-  </p>
-
-
-  <div class="history-form">
-
-    <input
-      id="historyEmail"
-      type="email"
-      placeholder="Email pembelian"
-    >
-
-
-    <div
-      class="history-or"
-    >
-      ATAU
-    </div>
-
-
-    <input
-      id="historyOrderCode"
-      placeholder="Contoh: MYC-20260821000123-ABC123"
-    >
-
-
-    <button
-      id="historyBtn"
-    >
-      Cek Riwayat
-    </button>
-
-  </div>
-
-
-  <div
-    id="historyMessage"
-    class="message"
-  ></div>
-
-
-  <div
-    class="history-table-wrap"
-  >
-
-    <table
-      class="history-table"
-    >
-
-      <thead>
-
-        <tr>
-
-          <th>
-            Order
-          </th>
-
-          <th>
-            Paket
-          </th>
-
-          <th>
-            Nominal
-          </th>
-
-          <th>
-            Pembayaran
-          </th>
-
-          <th>
-            Akses
-          </th>
-
-          <th>
-            Tim Canva
-          </th>
-
-          <th>
-            Billing
-          </th>
-
-          <th>
-            Aksi
-          </th>
-
-        </tr>
-
-      </thead>
-
-
-      <tbody
-        id="historyBody"
-      >
-
-        <tr>
-
-          <td
-            colspan="8"
-            class="muted"
-          >
-            Masukkan email atau kode pembelian.
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</section>
-</div>
-
-
-<!-- =====================================================
-     ACCESS PAGE
-     ===================================================== -->
-
-<section
-  class="panel"
-  id="accessPanel"
->
-
-  <div
-    id="accessBadge"
-    class="access-badge"
-  >
-    AKSES SIAP
-  </div>
-
-
-  <h1
-    id="accessTitle"
-  >
-    Akses Canva
-  </h1>
-
-
-  <div
-    id="accessInfo"
-    class="access-info"
-  >
-    Memeriksa akses...
-  </div>
-
-
-  <div
-    id="orderCodeBox"
-    class="order-code-box"
-  >
-
-    <div
-      class="order-code-label"
-    >
-      KODE ORDER
-    </div>
-
-
-    <div
-      class="order-code-row"
-    >
-
-      <div
-        id="accessOrderCode"
-        class="order-code-value"
-      >
-        -
-      </div>
-
-
-      <button
-        id="copyOrderButton"
-        type="button"
-        class="copy-icon-button"
-        title="Salin kode order"
-      >
-        📋
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <div
-    class="access-info"
-  >
-
-    <strong>
-      Penting:
-    </strong>
-
-    <br>
-
-    Simpan kode order dan email pembelian
-    Anda untuk mengecek pesanan melalui
-    menu <strong>Riwayat Pembelian</strong>.
-
-  </div>
-
-
-  <div
-    id="accessWarning"
-    class="access-warning"
-  >
-
-    <strong>
-      AKSES SIAP
-    </strong>
-
-    <br>
-
-    Pastikan Anda login Canva menggunakan
-    akun yang sesuai dengan email pembelian.
-
-  </div>
-
-
-  <button
-    id="continueCanvaBtn"
-  >
-    Lanjut ke Canva
-  </button>
-
-
-  <a
-    id="changeEmailBtn"
-    class="whatsapp-btn"
-    href="#"
-    target="_blank"
-    rel="noopener"
-  >
-    💬 Ajukan Penggantian Email ke Admin
-  </a>
-
-
-  <div
-    id="accessMessage"
-    class="message"
-  ></div>
-
-</section>
-
-
-</div>
-
-
-<!-- =====================================================
-     CHECKOUT MODAL
-     ===================================================== -->
-
-<div
-  id="checkoutOverlay"
-  class="checkout-overlay"
->
-
-  <div
-    id="checkoutModal"
-    class="checkout-modal"
-  >
-
-
-    <div
-      class="checkout-header"
-    >
-
-      <div
-        class="checkout-title"
-      >
-        Checkout
-      </div>
-
-
-      <button
-        id="closeCheckout"
-        class="close-modal"
-        type="button"
-      >
-        ×
-      </button>
-
-    </div>
-
-
-    <div
-      class="checkout-body"
-    >
-
-
-      <!-- SUMMARY -->
-
-      <div
-        id="summary"
-        class="summary"
-      ></div>
-
-
-      <!-- FORM CHECKOUT -->
-
-      <div
-        id="checkoutForm"
-      >
-
-        <label>
-          Nama
-        </label>
-
-        <input
-          id="name"
-          placeholder="Nama Anda"
-        >
-
-
-        <label>
-          Email Canva
-        </label>
-
-        <input
-          id="email"
-          type="email"
-          placeholder="Email Canva"
-        >
-
-
-        <label>
-
-          Kode Voucher
-
-          <span
-            class="muted"
-            style="font-weight:400"
-          >
-            (opsional)
-          </span>
-
-        </label>
-
-
-        <input
-          id="voucherCode"
-          placeholder="Contoh: MYC1000"
-          style="text-transform:uppercase"
-        >
-
-
-        <button
-          id="payBtn"
-          style="margin-top:16px"
-        >
-          Bayar Sekarang
+     </div>
+
+     <div id="history-tab" class="tab-content hidden">
+      <div class="mt-6">
+       <div class="flex flex-col sm:flex-row gap-2 mb-4">
+        <input id="canva-history-email" type="email" value="" placeholder="Email Canva untuk melihat riwayat" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none">
+        <button id="canva-history-search" class="px-5 py-3 rounded-xl font-semibold text-white" style="background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%);">Cek Riwayat</button>
+       </div>
+       <div class="flex justify-end mb-4 gap-2">
+        <button id="sort-newest-btn" class="sort-btn active px-4 py-2 rounded-xl border border-pink-200 bg-white text-pink-500 font-semibold text-sm hover:bg-pink-50 transition">
+          ⬇️ Terbaru
         </button>
-
+        <button id="sort-oldest-btn" class="sort-btn px-4 py-2 rounded-xl border border-pink-200 bg-white text-pink-500 font-semibold text-sm hover:bg-pink-50 transition">
+          ⬆️ Terlama
+        </button>
+       </div>
+       <div id="history-container" class="space-y-4">
+        <div class="text-center py-12">
+         <p class="text-gray-400 text-lg">📭 Belum ada pesanan</p>
+         <p class="text-gray-300 text-sm mt-2">Mulai pesan sekarang untuk melihat history!</p>
+        </div>
+       </div>
       </div>
+     </div>
 
-
-      <!-- NOTA -->
-
-      <div
-        id="orderbox"
-        class="orderbox"
-      ></div>
-
-
-      <!-- MESSAGE -->
-
-      <div
-        id="message"
-        class="message"
-      ></div>
-
-
-      <!-- NOTE -->
-
-      <div
-        id="paymentNote"
-        class="payment-note"
-      >
-
-        <strong>
-          Info pembayaran
-        </strong>
-
-        <br>
-
-        Harga paket merupakan harga dasar produk.
-
-        <br>
-
-        Jika menggunakan voucher,
-        potongan diterapkan terlebih dahulu.
-
-        <br>
-
-        Biaya pembayaran QRIS
-        kemudian ditambahkan pada total pembayaran.
-
-      </div>
-
-
+     <footer class="mt-10 text-center">
+      <p class="text-gray-400 text-sm">💕 Terima kasih telah berbelanja di MYCLIPS 💕</p>
+      <p class="text-gray-400 text-xs mt-1">Fast response via WhatsApp</p>
+     </footer>
     </div>
+   </main>
 
+   <div id="email-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div class="text-center mb-5">
+       <span class="text-4xl" id="modal-icon">🎨</span>
+       <h3 class="font-bold text-xl text-gray-700 mt-2" id="modal-title">Canva Premium</h3>
+       <p class="text-pink-500 font-semibold" id="modal-package">1 Bulan - Rp 3K</p>
+      </div>
+      <div class="space-y-4">
+       <div id="capcut-quantity-section" class="hidden space-y-3">
+        <div id="capcut-qty-container"></div>
+        <p id="capcut-total" class="text-pink-500 font-bold text-sm text-center">Total: <span id="capcut-total-price">Rp 0</span></p>
+       </div>
+
+       <div id="single-email-section">
+        <div id="canva-name-wrap" class="mb-3">
+         <label class="block text-gray-600 text-sm font-medium mb-2">Nama</label>
+         <input id="canva-customer-name" type="text" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Nama Anda">
+        </div>
+        <label class="block text-gray-600 text-sm font-medium mb-2">Alamat Email</label>
+        <div id="single-emails-container" class="space-y-2">
+         <div class="flex gap-2 items-center">
+          <input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()">
+          <button type="button" onclick="removeSingleEmailInput(this)" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>
+         </div>
+        </div>
+        <button type="button" onclick="addSingleEmailInput()" class="text-xs text-pink-500 hover:text-pink-600 font-medium mt-2">+ Tambah Email</button>
+        <p id="single-email-error" class="text-red-500 text-xs mt-2 hidden"></p>
+        <p id="single-email-success" class="text-green-500 text-xs mt-2 hidden"></p>
+        <p id="price-total" class="text-pink-500 font-bold text-sm mt-3 text-center hidden">Total: <span id="total-price">Rp 3K</span></p>
+        <div id="canva-voucher-wrap" class="mt-4">
+         <label class="block text-gray-600 text-sm font-medium mb-2">Kode Voucher <span class="text-gray-400">(opsional)</span></label>
+         <input id="canva-voucher" type="text" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors uppercase" placeholder="Masukkan kode voucher">
+        </div>
+       </div>
+
+       <div id="group-email-section" class="hidden">
+        <label class="block text-gray-600 text-sm font-medium mb-3">Email Akun (Masukkan hingga 15 email)</label>
+        <div id="group-emails-container" class="space-y-2 max-h-48 overflow-y-auto pb-2"></div>
+        <button type="button" onclick="addGroupEmailInput()" class="text-xs text-pink-500 hover:text-pink-600 font-medium mt-2">+ Tambah Email</button>
+        <p id="group-email-error" class="text-red-500 text-xs mt-2 hidden"></p>
+        <p id="group-email-success" class="text-green-500 text-xs mt-2 hidden"></p>
+       </div>
+
+       <button id="checkout-btn" onclick="processCheckout()" class="w-full btn-checkout text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none" disabled>
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+        Checkout via WhatsApp
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <div id="info-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeInfoModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100">
+      <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div class="text-center mb-5">
+       <span class="text-4xl" id="info-modal-icon">🎨</span>
+       <h3 class="font-bold text-xl text-gray-700 mt-3" id="info-modal-title">Canva Premium</h3>
+      </div>
+      <div id="info-modal-content" class="space-y-3 text-gray-600 text-sm">
+       <div class="bg-pink-50 rounded-xl p-4 space-y-2">
+        <h4 class="font-bold text-gray-700">✨ Fitur Utama:</h4>
+        <ul id="features-list" class="space-y-1 ml-2">
+         <li>✓ Fitur 1</li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
   </div>
 
-</div>
 
 
-<!-- =====================================================
-     MIDTRANS
-     ===================================================== -->
+   <!-- Canva database checkout result -->
+   <div id="db-checkout-result" class="fixed inset-0 z-[60] hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeDbResult()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeDbResult()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div id="db-result-body"></div>
+     </div>
+    </div>
+   </div>
 
-<script
-  src="https://app.sandbox.midtrans.com/snap/snap.js"
-  data-client-key="Mid-client-9AnqX738rqykt-dN" 
-></script>
-
-
-<!-- =====================================================
-     SUPABASE
-     ===================================================== -->
-
-<script
-  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-></script>
-
-
+   <!-- Canva access page -->
+   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-auto bg-[#FFF0F5]">
+    <div class="min-h-full flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100">
+      <div class="text-center mb-5">
+       <div class="text-4xl">🎨</div>
+       <div id="db-access-badge" class="status-badge status-completed mt-3">AKSES SIAP</div>
+       <h2 id="db-access-title" class="font-bold text-2xl text-gray-700 mt-3">Akses Canva</h2>
+      </div>
+      <div id="db-access-info" class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 leading-6"></div>
+      <div class="bg-white rounded-xl border border-pink-100 p-4 mt-4">
+       <div class="text-xs text-gray-400 font-semibold mb-2">KODE ORDER</div>
+       <div class="flex items-center gap-2">
+        <div id="db-access-order" class="flex-1 bg-pink-50 rounded-lg px-3 py-2 font-bold text-gray-700 break-all"></div>
+        <button id="db-copy-order" type="button" class="text-pink-500 hover:text-pink-700 border-2 border-pink-200 rounded-lg w-10 h-10 bg-white">📋</button>
+       </div>
+      </div>
+      <div id="db-access-warning" class="bg-blue-50 rounded-xl p-4 mt-4 text-sm text-blue-800 leading-6"></div>
+      <button id="db-continue-canva" class="w-full btn-checkout text-white font-bold py-3 rounded-xl mt-4">Lanjut ke Canva</button>
+      <div id="db-access-message" class="message mt-3"></div>
+     </div>
+    </div>
+   </div>
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-9AnqX738rqykt-dN"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL="https://yxybbsbjvtkpwcazairg.supabase.co";
+const SUPABASE_KEY="sb_publishable_CqIJY0Dpwuvb6eF_wO-Axw_LjHi7jEz";
+const CREATE_ORDER_URL=SUPABASE_URL+"/functions/v1/create-order";
+const PURCHASE_HISTORY_URL=SUPABASE_URL+"/functions/v1/purchase-history";
+const GET_ACCESS_URL=SUPABASE_URL+"/functions/v1/get-access";
+const CONSUME_ACCESS_URL=SUPABASE_URL+"/functions/v1/consume-access";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-/* =====================================================
-   CONFIG
-   ===================================================== */
+const canvaPackages={
+  "1 Bulan":{code:"1",name:"Canva 1 Bulan",months:1,price:3000},
+  "2 Bulan":{code:"2",name:"Canva 2 Bulan",months:2,price:6000},
+  "3 Bulan":{code:"3",name:"Canva 3 Bulan",months:3,price:8500}
+};
+let selectedProduct=null,selectedPackage=null,selectedPrice=null,selectedCode=null;
+let historySortOrder='newest';
+let lastCanvaEmail=localStorage.getItem('myclips_canva_email')||'';
+let accessToken=new URLSearchParams(window.location.search).get('access');
 
-const SUPABASE_URL =
-  "https://yxybbsbjvtkpwcazairg.supabase.co";
+const fmt=n=>new Intl.NumberFormat('id-ID').format(Number(n||0));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function showToast(message,type='info'){
+ const c=document.getElementById('toast-container');
+ if(!c)return;
+ const el=document.createElement('div');
+ el.className='toast rounded-xl px-4 py-3 shadow-lg text-sm font-semibold bg-white border border-pink-100 text-gray-700';
+ el.textContent=message;c.appendChild(el);setTimeout(()=>el.remove(),3200);
+}
+function setMessage(text,ok=false){
+ const el=document.getElementById('message'); if(!el)return;
+ el.className='message '+(ok?'ok':'err');el.textContent=text;el.style.display='block';
+}
+function dateTime(v){const d=new Date(v);return Number.isNaN(d.getTime())?'-':d.toLocaleString('id-ID')}
+function dateOnly(v){const d=new Date(v);return Number.isNaN(d.getTime())?'-':d.toLocaleDateString('id-ID')}
 
+// ===== TABS =====
+document.querySelectorAll('.tab-button').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
+ document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+ btn.classList.add('active');
+ document.getElementById(btn.dataset.tab+'-tab').classList.remove('hidden');
+ if(btn.dataset.tab==='history'){ loadCanvaHistory(lastCanvaEmail); }
+}));
 
-const SUPABASE_KEY =
-  "sb_publishable_CqIJY0Dpwuvb6eF_wO-Axw_LjHi7jEz";
+// ===== PACKAGE SELECTION: only Canva is connected to DB =====
+document.querySelectorAll('.package-option').forEach(option=>option.addEventListener('click',function(){
+ selectedProduct=this.dataset.product;selectedPackage=this.dataset.package;selectedPrice=this.dataset.price;
+ document.querySelectorAll('.package-option').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');
+ openModal();
+}));
 
+// Existing info tooltip behavior
+document.querySelectorAll('.info-tooltip button').forEach(button=>button.addEventListener('click',function(e){
+ e.stopPropagation();e.preventDefault();
+ const card=this.closest('.product-card');
+ const title=card?.querySelector('.price-tag h2')?.textContent?.trim();
+ const info={
+  'Canva Premium':['🎨',['Edit desain unlimited','Template premium','Kolaborasi tim','Brand kit management','Resize designs dengan mudah']],
+  'CapCut Premium':['🎬',['Edit video tanpa watermark','Effect dan filter premium','Export video 4K','Template video profesional','Music library lengkap']],
+  'ChatGPT Pro':['🤖',['Fitur AI premium','Mode berpikir lanjutan','Prioritas dukungan','Upload file','Workspace'] ]
+ }[title];
+ if(!info)return;
+ document.getElementById('info-modal-icon').textContent=info[0];
+ document.getElementById('info-modal-title').textContent=title;
+ document.getElementById('info-modal-content').innerHTML='<div class="bg-pink-50 rounded-xl p-4 space-y-2"><h4 class="font-bold text-gray-700">✨ Fitur Utama:</h4><ul class="space-y-1 ml-2 text-sm">'+info[1].map(x=>'<li>✓ '+esc(x)+'</li>').join('')+'</ul></div>';
+ document.getElementById('info-modal').classList.remove('hidden');
+}));
+function closeInfoModal(){document.getElementById('info-modal').classList.add('hidden')}
 
-const CREATE_ORDER_URL =
-  SUPABASE_URL +
-  "/functions/v1/create-order";
+function openModal(){
+ const modal=document.getElementById('email-modal');
+ const icon=document.getElementById('modal-icon');
+ const title=document.getElementById('modal-title');
+ const packageInfo=document.getElementById('modal-package');
+ const single=document.getElementById('single-email-section');
+ const group=document.getElementById('group-email-section');
+ const cap=document.getElementById('capcut-quantity-section');
+ const savedName=localStorage.getItem('myclips_canva_name')||'';
 
+ if(selectedProduct==='Canva Premium'){
+  icon.textContent='🎨';title.textContent='Canva Premium';
+  packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
+  cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');
+  initializeCanvaEmail();
+  document.getElementById('canva-customer-name').value=savedName;
+  document.getElementById('canva-name-wrap').classList.remove('hidden');
+  document.getElementById('canva-voucher-wrap').classList.remove('hidden');
+  document.getElementById('price-total').classList.add('hidden');
+ } else if(selectedProduct==='CapCut Premium'){
+  icon.textContent='🎬';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
+  cap.classList.remove('hidden');single.classList.add('hidden');group.classList.add('hidden');document.getElementById('canva-name-wrap').classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');
+  initializeCapCutQuantity();
+ } else {
+  icon.textContent='🤖';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
+  cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');document.getElementById('canva-name-wrap').classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');initializeSingleEmails();
+ }
+ document.getElementById('checkout-btn').disabled=true;
+ document.getElementById('checkout-btn').textContent=selectedProduct==='Canva Premium'?'Bayar Sekarang':'Checkout via WhatsApp';
+ modal.classList.remove('hidden');
+}
+function closeModal(){document.getElementById('email-modal').classList.add('hidden');}
 
-const PURCHASE_HISTORY_URL =
-  SUPABASE_URL +
-  "/functions/v1/purchase-history";
+function initializeCanvaEmail(){
+ const container=document.getElementById('single-emails-container');container.innerHTML='';
+ const wrap=document.createElement('div');wrap.className='flex gap-2 items-center';
+ wrap.innerHTML=`<input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" value="${esc(lastCanvaEmail)}" oninput="validateSingleEmails()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>`;
+ container.appendChild(wrap);validateSingleEmails();
+}
 
+// Preserve non-Canva behaviors locally/WhatsApp
+function initializeSingleEmails(){
+ const c=document.getElementById('single-emails-container');c.innerHTML='';
+ c.innerHTML=`<div class="flex gap-2 items-center"><input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button></div>`;
+ validateSingleEmails();
+}
+function addSingleEmailInput(){return;}
+function removeSingleEmailInput(){return;}
+function validateSingleEmails(){
+ const inputs=document.querySelectorAll('.single-email-input');const emails=Array.from(inputs).map(i=>i.value.trim()).filter(Boolean);
+ const valid=emails.length>0 && emails.every(e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+ document.getElementById('single-email-error').classList.toggle('hidden',emails.length===0||valid);
+ document.getElementById('single-email-success').classList.toggle('hidden',!valid);
+ if(valid)document.getElementById('single-email-success').textContent='✅ Email valid!';
+ document.getElementById('checkout-btn').disabled=!valid;
+}
+function initializeGroupEmails(){}
+function addGroupEmailInput(){}
+function removeGroupEmailInput(){}
+function validateGroupEmails(){}
 
-const GET_ACCESS_URL =
-  SUPABASE_URL +
-  "/functions/v1/get-access";
+// ===== Canva database checkout =====
+async function checkoutCanva(){
+ const name=document.getElementById('canva-customer-name')?.value.trim()||'';
+ const emailEl=document.querySelector('.single-email-input');
+ const email=emailEl?.value.trim()||'';
+ const voucher=document.getElementById('canva-voucher')?.value.trim().toUpperCase()||'';
+ if(name.length<2){showToast('Nama belum diisi.','error');return;}
+ if(!email){showToast('Masukkan email Canva terlebih dahulu.','error');return;}
+ if(!selectedPackage){showToast('Pilih paket Canva terlebih dahulu.','error');return;}
+ const pkg={'1 Bulan':'1','2 Bulan':'2','3 Bulan':'3'}[selectedPackage];
+ if(!pkg){showToast('Paket Canva tidak valid.','error');return;}
+ lastCanvaEmail=email;localStorage.setItem('myclips_canva_email',email);localStorage.setItem('myclips_canva_name',name);
+ const btn=document.getElementById('checkout-btn');btn.disabled=true;btn.textContent='Membuat pembayaran...';
+ try{
+  const response=await fetch(CREATE_ORDER_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({package_code:pkg,customer_name:name,customer_email:email,voucher_code:voucher||undefined})});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||!data.ok)throw new Error(data.error||'Gagal membuat pembayaran.');
+  window.snap.pay(data.snap_token,{
+   onSuccess:async()=>{
+    closeModal();showDbResult(data,'Pembayaran berhasil. Menyiapkan akses Canva...');await waitForAccess(data.order_code,email,data);
+   },
+   onPending:()=>{setMessage('Pembayaran belum selesai. Silakan selesaikan QRIS.',false);},
+   onError:()=>{setMessage('Pembayaran gagal. Silakan coba lagi.',false);},
+   onClose:()=>{setMessage('Jendela pembayaran ditutup.',false);}
+  });
+ }catch(e){showToast(e.message,'error');}
+ finally{btn.disabled=false;btn.textContent='Bayar Sekarang';}
+}
 
-
-const CONSUME_ACCESS_URL =
-  SUPABASE_URL +
-  "/functions/v1/consume-access";
-
-
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-
-let selectedCode =
-  null;
-
-
-/* =====================================================
-   PRODUCTS
-   ===================================================== */
-
-const products = {
-
-  "1":{
-
-    name:
-      "Canva 1 Bulan",
-
-    months:
-      1,
-
-    price:
-      3000
-
-  },
-
-  "2":{
-
-    name:
-      "Canva 2 Bulan",
-
-    months:
-      2,
-
-    price:
-      6000
-
-  },
-
-  "3":{
-
-    name:
-      "Canva 3 Bulan",
-
-    months:
-      3,
-
-    price:
-      8500
-
-  }
-
+// Hook checkout button while preserving design for other products.
+document.getElementById('checkout-btn').onclick=async()=>{
+ if(selectedProduct==='Canva Premium')return checkoutCanva();
+ // Original WhatsApp-style behavior for CapCut / ChatGPT remains.
+ const config=window.elementSdk?.config||{whatsapp_number:'85707486749'};
+ const waNumber=config.whatsapp_number||'85707486749';
+ const email=Array.from(document.querySelectorAll('.single-email-input')).map(i=>i.value.trim()).filter(Boolean).join(', ');
+ const message=`*Halo MYCLIPS!*\nSaya ingin memesan:\n━━━━━━━━━━━━━━━━━━\n*Produk:* ${selectedProduct}\n*Paket:* ${selectedPackage}\n*Email:* ${email}\n━━━━━━━━━━━━━━━━━━\n*Harga:* Rp ${parseInt(selectedPrice||0).toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━\nMohon diproses ya, terima kasih!`;
+ window.open(`https://wa.me/62${waNumber}?text=${encodeURIComponent(message)}`,'_blank');
+ closeModal();showToast('Mengarahkan ke WhatsApp... 📱','success');
 };
 
-
-/* =====================================================
-   HELPERS
-   ===================================================== */
-
-function fmt(
-  value
-){
-
-  return new Intl
-    .NumberFormat(
-      "id-ID"
-    )
-    .format(
-      Number(
-        value ||
-        0
-      )
-    );
-
+function showDbResult(data,msg){
+ const modal=document.getElementById('db-checkout-result');
+ const body=document.getElementById('db-result-body');
+ body.innerHTML=`<div class="text-center mb-5"><span class="text-4xl">✅</span><h3 class="font-bold text-xl text-gray-700 mt-2">Pembayaran Berhasil</h3><p class="text-pink-500 font-semibold">${esc(data.product_name||'Canva Premium')}</p></div><div class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 space-y-2"><div class="flex justify-between"><span>Harga Paket</span><b>Rp ${fmt(data.amount)}</b></div><div class="flex justify-between"><span>Biaya QRIS</span><b>Rp ${fmt(data.qris_fee)}</b></div><div class="flex justify-between border-t border-pink-200 pt-2"><span>Total Pembayaran</span><b>Rp ${fmt(data.customer_payment||data.final_amount)}</b></div></div><div class="mt-4 text-xs text-gray-500">${esc(msg||'Akses sedang diproses...')}</div><div id="db-result-access" class="mt-4"></div><div class="mt-4 bg-white rounded-xl border border-pink-100 p-3 text-sm"><b>Kode Order:</b><br><span class="break-all">${esc(data.order_code||'-')}</span></div>`;
+ modal.classList.remove('hidden');
 }
-
-
-function esc(
-  value
-){
-
-  return String(
-    value ??
-    ""
-  ).replace(
-    /[&<>"']/g,
-    char => ({
-
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-
-    }[char])
-  );
-
-}
-
-
-function dateOnly(
-  value
-){
-
-  if(
-    !value
-  ){
-
-    return "-";
-
-  }
-
-  const d =
-    new Date(
-      value
-    );
-
-
-  if(
-    Number.isNaN(
-      d.getTime()
-    )
-  ){
-
-    return "-";
-
-  }
-
-
-  return d.toLocaleDateString(
-    "id-ID"
-  );
-
-}
-
-
-function dateTime(
-  value
-){
-
-  if(
-    !value
-  ){
-
-    return "-";
-
-  }
-
-  const d =
-    new Date(
-      value
-    );
-
-
-  if(
-    Number.isNaN(
-      d.getTime()
-    )
-  ){
-
-    return "-";
-
-  }
-
-
-  return d.toLocaleString(
-    "id-ID"
-  );
-
-}
-
-
-function show(
-  text,
-  ok
-){
-
-  const el =
-    document.getElementById(
-      "message"
-    );
-
-
-  el.className =
-    "message " +
-    (
-      ok
-        ? "ok"
-        : "err"
-    );
-
-
-  el.innerHTML =
-    text;
-
-
-  el.style.display =
-    "block";
-
-}
-
-
-function showMessage(
-  el,
-  text,
-  ok=false
-){
-
-  el.className =
-    "message " +
-    (
-      ok
-        ? "ok"
-        : "err"
-    );
-
-
-  el.textContent =
-    text;
-
-
-  el.style.display =
-    "block";
-
-}
-
-
-/* =====================================================
-   CHECKOUT MODAL
-   ===================================================== */
-
-const checkoutOverlay =
-  document.getElementById(
-    "checkoutOverlay"
-  );
-
-
-const closeCheckoutButton =
-  document.getElementById(
-    "closeCheckout"
-  );
-
-
-function resetCheckoutForm(){
-
-  document
-    .getElementById(
-      "checkoutForm"
-    )
-    .style.display =
-    "block";
-
-
-  document
-    .getElementById(
-      "summary"
-    )
-    .style.display =
-    "block";
-
-
-  document
-    .getElementById(
-      "payBtn"
-    )
-    .style.display =
-    "block";
-
-
-  document
-    .getElementById(
-      "paymentNote"
-    )
-    .style.display =
-    "block";
-
-
-  document
-    .getElementById(
-      "orderbox"
-    )
-    .style.display =
-    "none";
-
-
-  document
-    .getElementById(
-      "message"
-    )
-    .style.display =
-    "none";
-
-}
-
-
-function openCheckout(
-  packageCode
-){
-
-  selectedCode =
-    packageCode;
-
-
-  const product =
-    products[
-      packageCode
-    ];
-
-
-  resetCheckoutForm();
-
-
-  document
-    .getElementById(
-      "summary"
-    )
-    .innerHTML = `
-
-      <strong>
-        ${product.name}
-      </strong>
-
-      <br>
-
-      Harga:
-      <strong>
-        Rp${fmt(
-          product.price
-        )}
-      </strong>
-
-      <br>
-
-      Durasi:
-      ${product.months}
-      bulan
-
-      <br>
-
-      Voucher:
-      opsional
-
-    `;
-
-
-  checkoutOverlay
-    .classList
-    .add(
-      "show"
-    );
-
-
-  document
-    .body
-    .classList
-    .add(
-      "modal-open"
-    );
-
-
-  setTimeout(
-    () => {
-
-      document
-        .getElementById(
-          "name"
-        )
-        .focus();
-
-    },
-    100
-  );
-
-}
-
-
-function closeCheckout(){
-
-  checkoutOverlay
-    .classList
-    .remove(
-      "show"
-    );
-
-
-  document
-    .body
-    .classList
-    .remove(
-      "modal-open"
-    );
-
-}
-
-
-closeCheckoutButton
-  .addEventListener(
-    "click",
-    closeCheckout
-  );
-
-
-checkoutOverlay
-  .addEventListener(
-    "click",
-    event => {
-
-      if(
-        event.target ===
-        checkoutOverlay
-      ){
-
-        closeCheckout();
-
-      }
-
-    }
-  );
-
-
-document
-  .addEventListener(
-    "keydown",
-    event => {
-
-      if(
-        event.key ===
-          "Escape" &&
-
-        checkoutOverlay
-          .classList
-          .contains(
-            "show"
-          )
-      ){
-
-        closeCheckout();
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   PRODUCT BUTTON
-   ===================================================== */
-
-document
-  .querySelectorAll(
-    "[data-package]"
-  )
-  .forEach(
-    button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          openCheckout(
-            button.dataset.package
-          );
-
-        }
-      );
-
-    }
-  );
-
-
-/* =====================================================
-   PAYMENT BADGE
-   ===================================================== */
-
-function paymentBadge(
-  value
-){
-
-  const status =
-    String(
-      value ||
-      ""
-    ).toUpperCase();
-
-
-  if(
-    status ===
-    "PAID"
-  ){
-
-    return `
-
-      <span
-        class="status-badge status-paid"
-      >
-        PAID
-      </span>
-
-    `;
-
-  }
-
-
-  if(
-    status ===
-    "PENDING"
-  ){
-
-    return `
-
-      <span
-        class="status-badge status-pending"
-      >
-        PENDING
-      </span>
-
-    `;
-
-  }
-
-
-  return `
-
-    <span
-      class="status-badge status-expired"
-    >
-      ${esc(
-        status ||
-        "-"
-      )}
-    </span>
-
-  `;
-
-}
-
-
-/* =====================================================
-   ACCESS BADGE
-   ===================================================== */
-
-function accessBadge(
-  value
-){
-
-  const status =
-    String(
-      value ||
-      ""
-    ).toUpperCase();
-
-
-  if(
-    status ===
-    "READY_AGAIN"
-  ){
-
-    return `
-
-      <span
-        class="status-badge access-ready"
-      >
-        SIAP LAGI
-      </span>
-
-    `;
-
-  }
-
-
-  if(
-    status ===
-    "EXPIRED"
-  ){
-
-    return `
-
-      <span
-        class="status-badge status-expired"
-      >
-        BERAKHIR
-      </span>
-
-    `;
-
-  }
-
-
-  if(
-    status ===
-    "USED"
-  ){
-
-    return `
-
-      <span
-        class="status-badge access-used"
-      >
-        USED
-      </span>
-
-    `;
-
-  }
-
-
-  return `
-
-    <span
-      class="status-badge access-unused"
-    >
-      UNUSED
-    </span>
-
-  `;
-
-}
-
-
-/* =====================================================
-   PURCHASE HISTORY
-   ===================================================== */
-
-async function loadPurchaseHistory(){
-
-  const email =
-    document
-      .getElementById(
-        "historyEmail"
-      )
-      .value
-      .trim()
-      .toLowerCase();
-
-
-  const orderCode =
-    document
-      .getElementById(
-        "historyOrderCode"
-      )
-      .value
-      .trim()
-      .toUpperCase();
-
-
-  const button =
-    document.getElementById(
-      "historyBtn"
-    );
-
-
-  const message =
-    document.getElementById(
-      "historyMessage"
-    );
-
-
-  const body =
-    document.getElementById(
-      "historyBody"
-    );
-
-
-  if(
-    !email &&
-    !orderCode
-  ){
-
-    showMessage(
-      message,
-      "Masukkan email atau kode pembelian.",
-      false
-    );
-
-    return;
-
-  }
-
-
-  if(
-    email &&
-    orderCode
-  ){
-
-    showMessage(
-      message,
-      "Gunakan email ATAU kode pembelian.",
-      false
-    );
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  button.textContent =
-    "Mencari...";
-
-
+function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
+
+async function waitForAccess(orderCode,email,paymentData){
+ const c=()=>document.getElementById('db-result-access');
+ for(let attempt=1;attempt<=12;attempt++){
   try{
-
-    const response =
-      await fetch(
-        PURCHASE_HISTORY_URL,
-        {
-
-          method:
-            "POST",
-
-          headers:{
-
-            "Content-Type":
-              "application/json",
-
-            "apikey":
-              SUPABASE_KEY,
-
-            "Authorization":
-              "Bearer " +
-              SUPABASE_KEY
-
-          },
-
-          body:
-            JSON.stringify({
-
-              email:
-                email ||
-                undefined,
-
-              order_code:
-                orderCode ||
-                undefined
-
-            })
-
-        }
-      );
-
-
-    const data =
-      await response
-        .json()
-        .catch(
-          () => ({})
-        );
-
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-        data.error ||
-        "Gagal mengambil riwayat."
-      );
-
-    }
-
-
-    const rows =
-      Array.isArray(
-        data.orders
-      )
-        ? data.orders
-        : [];
-
-
-    if(
-      !rows.length
-    ){
-
-      body.innerHTML = `
-
-        <tr>
-
-          <td
-            colspan="8"
-            class="muted"
-          >
-            Pesanan tidak ditemukan.
-          </td>
-
-        </tr>
-
-      `;
-
-      return;
-
-    }
-
-
-    body.innerHTML =
-      rows
-        .map(
-          order => {
-
-            const accessUrl =
-              order.access_url ||
-              null;
-
-
-            let action =
-              `<span class="history-action-disabled">
-                -
-              </span>`;
-
-
-            const paid =
-              String(
-                order.payment_status ||
-                ""
-              ).toUpperCase() ===
-              "PAID";
-
-
-            if(
-              paid
-            ){
-
-              if(
-                order.access_status_display ===
-                "EXPIRED"
-              ){
-
-                action = `
-
-                  <span
-                    class="history-action-disabled"
-                  >
-                    Masa akses berakhir
-                  </span>
-
-                `;
-
-              }
-
-              else if(
-                order.can_join &&
-                accessUrl
-              ){
-
-                action = `
-
-                  <a
-                    href="${esc(
-                      accessUrl
-                    )}"
-                    class="${
-                      order.can_join_again
-                        ? "history-action-green"
-                        : "history-action"
-                    }"
-                  >
-                    ${
-                      order.can_join_again
-                        ? "Gabung ke Canva Lagi"
-                        : "Gabung ke Canva"
-                    }
-                  </a>
-
-                `;
-
-              }
-
-              else if(
-                order.next_access_display
-              ){
-
-                action = `
-
-                  <span
-                    class="history-action-disabled"
-                  >
-                    Lagi:
-                    ${dateTime(
-                      order.next_access_display
-                    )}
-                  </span>
-
-                `;
-
-              }
-
-              else{
-
-                action = `
-
-                  <span
-                    class="history-action-disabled"
-                  >
-                    Sudah digunakan
-                  </span>
-
-                `;
-
-              }
-
-            }
-
-            else if(
-              String(
-                order.payment_status ||
-                ""
-              ).toUpperCase() ===
-              "PENDING"
-            ){
-
-              action = `
-
-                <span
-                  class="history-action-disabled"
-                >
-                  Menunggu pembayaran
-                </span>
-
-              `;
-
-            }
-
-
-            const billing =
-              order.billing_start_at &&
-              order.billing_end_at
-
-                ? `
-                    ${dateOnly(
-                      order.billing_start_at
-                    )}
-                    –
-                    ${dateOnly(
-                      order.billing_end_at
-                    )}
-                  `
-
-                : "-";
-
-
-            return `
-
-              <tr>
-
-                <td>
-
-                  <strong>
-                    ${esc(
-                      order.order_code
-                    )}
-                  </strong>
-
-                  <br>
-
-                  <span
-                    class="muted"
-                  >
-                    ${esc(
-                      order.customer_email ||
-                      ""
-                    )}
-                  </span>
-
-                </td>
-
-
-                <td>
-
-                  ${esc(
-                    order.product_name ||
-                    "-"
-                  )}
-
-                </td>
-
-
-                <td>
-
-                  Rp${fmt(
-                    order.amount
-                  )}
-
-                  ${
-                    order.discount_amount
-
-                      ? `
-
-                        <br>
-
-                        <span
-                          class="muted"
-                        >
-                          Voucher:
-                          -Rp${fmt(
-                            order.discount_amount
-                          )}
-                        </span>
-
-                      `
-
-                      : ""
-                  }
-
-                </td>
-
-
-                <td>
-
-                  ${paymentBadge(
-                    order.payment_status
-                  )}
-
-                  ${
-                    order.payment_method
-
-                      ? `
-
-                        <br>
-
-                        <span
-                          class="muted"
-                        >
-                          ${esc(
-                            order.payment_method
-                          )}
-                        </span>
-
-                      `
-
-                      : ""
-                  }
-
-                </td>
-
-
-                <td>
-
-                  ${accessBadge(
-                    order.access_status_display
-                  )}
-
-                  ${
-                    Number(
-                      order.access_cycle ||
-                      0
-                    ) > 0
-
-                      ? `
-
-                        <br>
-
-                        <span
-                          class="muted"
-                        >
-                          Siklus
-                          ${order.access_cycle}
-                          /
-                          ${order.duration_months}
-                        </span>
-
-                      `
-
-                      : ""
-                  }
-
-                </td>
-
-
-                <td>
-
-                  ${esc(
-                    order.canva_team_name ||
-                    "-"
-                  )}
-
-                </td>
-
-
-                <td>
-
-                  ${billing}
-
-                </td>
-
-
-                <td>
-
-                  ${action}
-
-                </td>
-
-              </tr>
-
-            `;
-
-          }
-        )
-        .join("");
-
-
-    showMessage(
-      message,
-      `${rows.length} riwayat pembelian ditemukan.`,
-      true
-    );
-
-  }
-
-  catch(error){
-
-    showMessage(
-      message,
-      error.message,
-      false
-    );
-
-  }
-
-  finally{
-
-    button.disabled =
-      false;
-
-    button.textContent =
-      "Cek Riwayat";
-
-  }
-
+   const response=await fetch(GET_ACCESS_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({order_code:orderCode,customer_email:email})});
+   const data=await response.json().catch(()=>({}));
+   if(data.status==='READY'&&data.access_url){
+    c().innerHTML=`<a href="${esc(data.access_url)}" class="block w-full text-center bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold py-3 rounded-xl">🔗 Buka Akses Canva</a>`;return;
+   }
+  }catch(e){}
+  await new Promise(r=>setTimeout(r,2500));
+ }
+ c().innerHTML='<div class="bg-orange-50 text-orange-700 rounded-xl p-3 text-sm">Pembayaran sudah berhasil. Akses sedang diproses. Silakan cek Riwayat Pembelian.</div>';
+ loadCanvaHistory(lastCanvaEmail);
 }
 
-
-document
-  .getElementById(
-    "historyBtn"
-  )
-  .addEventListener(
-    "click",
-    loadPurchaseHistory
-  );
-
-
-[
-  "historyEmail",
-  "historyOrderCode"
-]
-.forEach(
-  id => {
-
-    document
-      .getElementById(
-        id
-      )
-      .addEventListener(
-        "keydown",
-        event => {
-
-          if(
-            event.key ===
-            "Enter"
-          ){
-
-            loadPurchaseHistory();
-
-          }
-
-        }
-      );
-
-  }
-);
-
-
-/* =====================================================
-   PAYMENT
-   ===================================================== */
-
-document
-  .getElementById(
-    "payBtn"
-  )
-  .addEventListener(
-    "click",
-    async () => {
-
-      const name =
-        document
-          .getElementById(
-            "name"
-          )
-          .value
-          .trim();
-
-
-      const email =
-        document
-          .getElementById(
-            "email"
-          )
-          .value
-          .trim();
-
-
-      const voucherCode =
-        document
-          .getElementById(
-            "voucherCode"
-          )
-          .value
-          .trim()
-          .toUpperCase();
-
-
-      const button =
-        document.getElementById(
-          "payBtn"
-        );
-
-
-      if(
-        !selectedCode
-      ){
-
-        show(
-          "Pilih paket terlebih dahulu.",
-          false
-        );
-
-        return;
-
-      }
-
-
-      if(
-        name.length <
-        2
-      ){
-
-        show(
-          "Nama tidak valid.",
-          false
-        );
-
-        return;
-
-      }
-
-
-      if(
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-          .test(
-            email
-          )
-      ){
-
-        show(
-          "Email tidak valid.",
-          false
-        );
-
-        return;
-
-      }
-
-
-      button.disabled =
-        true;
-
-
-      button.textContent =
-        "Membuat pembayaran...";
-
-
-      try{
-
-        const response =
-          await fetch(
-            CREATE_ORDER_URL,
-            {
-
-              method:
-                "POST",
-
-              headers:{
-
-                "Content-Type":
-                  "application/json",
-
-                "apikey":
-                  SUPABASE_KEY,
-
-                "Authorization":
-                  "Bearer " +
-                  SUPABASE_KEY
-
-              },
-
-              body:
-                JSON.stringify({
-
-                  package_code:
-                    selectedCode,
-
-                  customer_name:
-                    name,
-
-                  customer_email:
-                    email,
-
-                  voucher_code:
-                    voucherCode ||
-                    undefined
-
-                })
-
-            }
-          );
-
-
-        const data =
-          await response
-            .json()
-            .catch(
-              () => ({})
-            );
-
-
-        if(
-          !response.ok ||
-          !data.ok
-        ){
-
-          throw new Error(
-            data.error ||
-            "Gagal membuat pembayaran."
-          );
-
-        }
-
-
-        /*
-         * Informasi transaksi sementara.
-         * Akan diganti menjadi nota setelah success.
-         */
-
-        const orderBox =
-          document.getElementById(
-            "orderbox"
-          );
-
-
-        orderBox.style.display =
-          "block";
-
-
-        orderBox.innerHTML = `
-
-          Memproses pembayaran...
-
-        `;
-
-
-        document
-          .getElementById(
-            "message"
-          )
-          .style.display =
-          "none";
-
-
-        if(
-          !data.snap_token
-        ){
-
-          throw new Error(
-            "Snap token tidak diterima dari server."
-          );
-
-        }
-
-
-        window.snap.pay(
-          data.snap_token,
-          {
-
-
-            /* ==========================================
-               SUCCESS
-               ========================================== */
-
-            onSuccess:
-              async () => {
-
-
-                /*
-                 * HILANGKAN FORM
-                 */
-
-                document
-                  .getElementById(
-                    "checkoutForm"
-                  )
-                  .style.display =
-                  "none";
-
-
-                document
-                  .getElementById(
-                    "summary"
-                  )
-                  .style.display =
-                  "none";
-
-
-                document
-                  .getElementById(
-                    "paymentNote"
-                  )
-                  .style.display =
-                  "none";
-
-
-                document
-                  .getElementById(
-                    "message"
-                  )
-                  .style.display =
-                  "none";
-
-
-                /*
-                 * TAMPILKAN NOTA
-                 */
-
-                showPaymentReceipt(
-                  data
-                );
-
-
-                /*
-                 * TUNGGU AKSES
-                 */
-
-                await waitForAccess(
-                  data.order_code,
-                  email,
-                  data
-                );
-
-              },
-
-
-            /* ==========================================
-               PENDING
-               ========================================== */
-
-            onPending:
-              () => {
-
-                show(
-                  "Pembayaran belum selesai. Silakan selesaikan pembayaran QRIS.",
-                  false
-                );
-
-              },
-
-
-            /* ==========================================
-               ERROR
-               ========================================== */
-
-            onError:
-              () => {
-
-                show(
-                  "Pembayaran gagal. Silakan coba lagi.",
-                  false
-                );
-
-              },
-
-
-            /* ==========================================
-               CLOSE
-               ========================================== */
-
-            onClose:
-              () => {
-
-                show(
-                  "Jendela pembayaran ditutup.",
-                  false
-                );
-
-              }
-
-          }
-        );
-
-      }
-
-      catch(error){
-
-        show(
-          esc(
-            error.message
-          ),
-          false
-        );
-
-      }
-
-      finally{
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "Bayar Sekarang";
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   NOTA PEMBAYARAN
-   ===================================================== */
-
-function showPaymentReceipt(
-  data
-){
-
-  const orderBox =
-    document.getElementById(
-      "orderbox"
-    );
-
-
-  const packageName =
-    data.product_name ||
-    products[
-      selectedCode
-    ]?.name ||
-    "-";
-
-
-  const basePrice =
-    Number(
-      data.amount ||
-      0
-    );
-
-
-  const discount =
-    Number(
-      data.discount_amount ||
-      0
-    );
-
-
-  const finalAmount =
-    Number(
-      data.final_amount ||
-      (
-        basePrice -
-        discount
-      )
-    );
-
-
-  const qrisFee =
-    Number(
-      data.qris_fee ||
-      0
-    );
-
-
-  const total =
-    Number(
-      data.customer_payment ||
-      (
-        finalAmount +
-        qrisFee
-      )
-    );
-
-
-  orderBox.style.display =
-    "block";
-
-
-  orderBox.innerHTML = `
-
-    <div
-      class="payment-success-icon"
-    >
-      ✓
-    </div>
-
-
-    <div
-      class="payment-success-title"
-    >
-      Pembayaran Berhasil
-    </div>
-
-
-    <div
-      class="payment-receipt"
-    >
-
-      <div
-        class="payment-receipt-title"
-      >
-        Detail Transaksi
-      </div>
-
-
-      <div
-        class="payment-receipt-row"
-      >
-
-        <span
-          class="payment-receipt-label"
-        >
-          Paket
-        </span>
-
-        <span
-          class="payment-receipt-value"
-        >
-          ${esc(
-            packageName
-          )}
-        </span>
-
-      </div>
-
-
-      <div
-        class="payment-receipt-row"
-      >
-
-        <span
-          class="payment-receipt-label"
-        >
-          Harga Paket
-        </span>
-
-        <span
-          class="payment-receipt-value"
-        >
-          Rp${fmt(
-            basePrice
-          )}
-        </span>
-
-      </div>
-
-
-      ${
-        discount > 0
-
-          ? `
-
-            <div
-              class="payment-receipt-row"
-            >
-
-              <span
-                class="payment-receipt-label"
-              >
-                Diskon Voucher
-              </span>
-
-              <span
-                class="payment-receipt-value"
-              >
-                -Rp${fmt(
-                  discount
-                )}
-              </span>
-
-            </div>
-
-
-            <div
-              class="payment-receipt-row"
-            >
-
-              <span
-                class="payment-receipt-label"
-              >
-                Harga Setelah Voucher
-              </span>
-
-              <span
-                class="payment-receipt-value"
-              >
-                Rp${fmt(
-                  finalAmount
-                )}
-              </span>
-
-            </div>
-
-          `
-
-          : ""
-      }
-
-
-      <div
-        class="payment-receipt-row"
-      >
-
-        <span
-          class="payment-receipt-label"
-        >
-          Biaya QRIS
-        </span>
-
-        <span
-          class="payment-receipt-value"
-        >
-          Rp${fmt(
-            qrisFee
-          )}
-        </span>
-
-      </div>
-
-
-      <div
-        class="payment-receipt-total"
-      >
-
-        <span>
-          Total Pembayaran
-        </span>
-
-        <span>
-          Rp${fmt(
-            total
-          )}
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="payment-order-code"
-    >
-
-      Kode Order:
-      ${esc(
-        data.order_code
-      )}
-
-    </div>
-
-
-    <div
-      id="accessButtonContainer"
-    ></div>
-
-  `;
-
+// ===== Canva history via Supabase; visual cards remain the supplied design =====
+async function loadCanvaHistory(email){
+ const container=document.getElementById('history-container');
+ if(!container)return;
+ if(!email){container.innerHTML='<div class="text-center py-12"><p class="text-gray-400 text-lg">📭 Belum ada riwayat Canva</p><p class="text-gray-300 text-sm mt-2">Selesaikan pembelian Canva terlebih dahulu.</p></div>';return;}
+ container.innerHTML='<div class="text-center py-8 text-gray-400">Memuat riwayat...</div>';
+ try{
+  const response=await fetch(PURCHASE_HISTORY_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({email})});
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(data.error||'Gagal mengambil riwayat.');
+  const orders=data.orders||[];
+  if(!orders.length){container.innerHTML='<div class="text-center py-12"><p class="text-gray-400 text-lg">📭 Belum ada riwayat Canva</p><p class="text-gray-300 text-sm mt-2">Belum ada pembelian untuk email ini.</p></div>';return;}
+  orders.sort((a,b)=>historySortOrder==='oldest'?new Date(a.created_at)-new Date(b.created_at):new Date(b.created_at)-new Date(a.created_at));
+  container.innerHTML=orders.map(order=>{
+   const pay=String(order.payment_status||'').toUpperCase();
+   const access=String(order.access_status_display||order.access_status||'').toUpperCase();
+   const payCls=pay==='PAID'?'status-completed':'status-pending';
+   const payTxt=pay==='PAID'?'✓ PAID':pay||'PENDING';
+   const accessCls=access.includes('READY')||access==='UNUSED'?'status-completed':(access==='USED'?'status-pending':'status-expired');
+   const accessTxt=access==='UNUSED'?'SIAP':access==='READY_AGAIN'?'SIAP LAGI':access==='USED'?'DIGUNAKAN':access||'-';
+   const canJoin=Boolean(order.can_join)&&Boolean(order.access_url);
+   return `<div class="order-item card-texture rounded-xl p-5 border border-pink-100 shadow-md hover:shadow-lg transition-shadow"><div class="flex justify-between items-start gap-4"><div class="flex-1"><div class="flex items-center gap-3 mb-2"><h3 class="font-bold text-lg text-gray-800">Canva Premium</h3><span class="status-badge ${payCls}">${payTxt}</span></div><div class="space-y-1 text-sm text-gray-600"><p><span class="font-semibold">Paket:</span> ${esc(order.product_name||'-')}</p><p><span class="font-semibold">Kode:</span> ${esc(order.order_code||'-')}</p><p><span class="font-semibold">Akses:</span> <span class="status-badge ${accessCls}">${accessTxt}</span></p><p><span class="font-semibold">Siklus:</span> ${Number(order.access_cycle||0)} / ${Number(order.duration_months||1)}</p><p class="text-xs text-gray-400">📅 ${dateTime(order.created_at)}</p></div></div><div class="text-right"><p class="text-2xl font-bold text-pink-500">Rp ${fmt(order.final_amount||order.amount||0)}</p>${canJoin?`<a href="${esc(order.access_url)}" class="inline-block mt-3 btn-checkout text-white font-bold py-2 px-4 rounded-xl">🔗 Buka Akses Canva</a>`:''}</div></div></div>`;
+  }).join('');
+ }catch(e){container.innerHTML=`<div class="text-center py-8 text-red-500">${esc(e.message)}</div>`;}
 }
 
-
-/* =====================================================
-   WAIT ACCESS
-   ===================================================== */
-
-async function waitForAccess(
-  orderCode,
-  email,
-  paymentData
-){
-
-  const maxAttempts =
-    12;
-
-
-  const delay =
-    2500;
-
-
-  const orderBox =
-    document.getElementById(
-      "orderbox"
-    );
-
-
-  for(
-    let attempt = 1;
-
-    attempt <=
-    maxAttempts;
-
-    attempt++
-  ){
-
-    try{
-
-      const response =
-        await fetch(
-          GET_ACCESS_URL,
-          {
-
-            method:
-              "POST",
-
-            headers:{
-
-              "Content-Type":
-                "application/json",
-
-              "apikey":
-                SUPABASE_KEY,
-
-              "Authorization":
-                "Bearer " +
-                SUPABASE_KEY
-
-            },
-
-            body:
-              JSON.stringify({
-
-                order_code:
-                  orderCode,
-
-                customer_email:
-                  email
-
-              })
-
-          }
-        );
-
-
-      const data =
-        await response
-          .json()
-          .catch(
-            () => ({})
-          );
-
-
-      console.log(
-        "GET ACCESS:",
-        data
-      );
-
-
-      if(
-        data.status ===
-        "READY"
-      ){
-
-        const accessUrl =
-          data.access_url ||
-          data.url ||
-          data.invite_url;
-
-
-        const container =
-          document.getElementById(
-            "accessButtonContainer"
-          );
-
-
-        if(
-          container &&
-          accessUrl
-        ){
-
-          container.innerHTML = `
-
-            <a
-              href="${esc(
-                accessUrl
-              )}"
-              class="payment-access-button"
-            >
-              🔗 Buka Akses Canva
-            </a>
-
-          `;
-
-        }
-
-
-        return;
-
-      }
-
-
-      if(
-        data.status ===
-        "PROCESSING"
-      ){
-
-        continue;
-
-      }
-
-    }
-
-    catch(error){
-
-      console.error(
-        "GET ACCESS ERROR:",
-        error
-      );
-
-    }
-
-
-    await new Promise(
-      resolve =>
-        setTimeout(
-          resolve,
-          delay
-        )
-    );
-
-  }
-
-
-  const container =
-    document.getElementById(
-      "accessButtonContainer"
-    );
-
-
-  if(
-    container
-  ){
-
-    container.innerHTML = `
-
-      <div
-        style="
-          margin-top:14px;
-          padding:12px;
-          background:#fff7ed;
-          color:#9a3412;
-          border-radius:10px;
-          font-size:13px;
-          line-height:1.5;
-        "
-      >
-
-        Pembayaran sudah berhasil.
-        Akses sedang diproses.
-
-        <br>
-        <br>
-
-        Silakan cek
-        <strong>
-          Riwayat Pembelian
-        </strong>
-        menggunakan email atau kode order.
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-/* =====================================================
-   SALIN KODE ORDER
-   ===================================================== */
-
-async function salinKodeOrder(){
-
-  const element =
-    document.getElementById(
-      "accessOrderCode"
-    );
-
-
-  const button =
-    document.getElementById(
-      "copyOrderButton"
-    );
-
-
-  if(
-    !element ||
-    !button
-  ){
-
-    return;
-
-  }
-
-
-  const code =
-    element
-      .textContent
-      .trim();
-
-
-  if(
-    !code ||
-    code === "-"
-  ){
-
-    return;
-
-  }
-
-
-  try{
-
-    if(
-      navigator.clipboard &&
-      window.isSecureContext
-    ){
-
-      await navigator.clipboard.writeText(
-        code
-      );
-
-    }
-
-    else{
-
-      const textarea =
-        document.createElement(
-          "textarea"
-        );
-
-
-      textarea.value =
-        code;
-
-
-      textarea.style.position =
-        "fixed";
-
-
-      textarea.style.left =
-        "-9999px";
-
-
-      document
-        .body
-        .appendChild(
-          textarea
-        );
-
-
-      textarea.focus();
-
-      textarea.select();
-
-
-      document.execCommand(
-        "copy"
-      );
-
-
-      document
-        .body
-        .removeChild(
-          textarea
-        );
-
-    }
-
-
-    button.textContent =
-      "✓";
-
-
-    button.classList.add(
-      "copied"
-    );
-
-
-    setTimeout(
-      () => {
-
-        button.textContent =
-          "📋";
-
-        button.classList.remove(
-          "copied"
-        );
-
-      },
-      1500
-    );
-
-  }
-
-  catch(error){
-
-    alert(
-      "Kode order tidak dapat disalin."
-    );
-
-  }
-
-}
-
-
-document
-  .getElementById(
-    "copyOrderButton"
-  )
-  .addEventListener(
-    "click",
-    salinKodeOrder
-  );
-
-
-/* =====================================================
-   WHATSAPP
-   ===================================================== */
-
-function ajukanPenggantianEmail(
-  orderCode
-){
-
-  const nomor =
-    "6285707486749";
-
-
-  const pesan =
-`Halo min. Ingin *mereset akses canva*, karena salah menggunakan email canva.
-━━━━━━━━━━━━━━━━━━━━━━━━━
-CODE : ${orderCode}
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Terimakasih :b`;
-
-
-  window.open(
-    "https://wa.me/" +
-    nomor +
-    "?text=" +
-    encodeURIComponent(
-      pesan
-    ),
-    "_blank"
-  );
-
-}
-
-
-/* =====================================================
-   ACCESS PAGE
-   ===================================================== */
-
-const accessToken =
-  new URLSearchParams(
-    window.location.search
-  ).get(
-    "access"
-  );
-
-
+// Sort buttons retained from original design.
+const newestBtn=document.getElementById('sort-newest-btn');const oldestBtn=document.getElementById('sort-oldest-btn');
+if(newestBtn)newestBtn.addEventListener('click',()=>{historySortOrder='newest';newestBtn.classList.add('active');oldestBtn?.classList.remove('active');loadCanvaHistory(lastCanvaEmail);});
+if(oldestBtn)oldestBtn.addEventListener('click',()=>{historySortOrder='oldest';oldestBtn.classList.add('active');newestBtn?.classList.remove('active');loadCanvaHistory(lastCanvaEmail);});
+
+// ===== ACCESS PAGE =====
 async function loadAccessPage(){
-
-  if(
-    !accessToken
-  ){
-
-    document
-      .getElementById(
-        "accessPanel"
-      )
-      .style.display =
-      "none";
-
-    return;
-
-  }
-
-
-  document
-    .getElementById(
-      "storeHero"
-    )
-    .style.display =
-    "none";
-
-
-  document
-    .getElementById(
-      "productGrid"
-    )
-    .style.display =
-    "none";
-
-
-  document
-    .getElementById(
-      "historyPanel"
-    )
-    .style.display =
-    "none";
-
-
-  document
-    .getElementById(
-      "accessPanel"
-    )
-    .style.display =
-    "block";
-
-
-  try{
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .rpc(
-          "open_access",
-          {
-            p_access_token:
-              accessToken
-          }
-        );
-
-
-    if(
-      error
-    ){
-
-      throw error;
-
-    }
-
-
-    const row =
-      Array.isArray(
-        data
-      )
-        ? data[0]
-        : data;
-
-
-    if(
-      !row
-    ){
-
-      throw new Error(
-        "Akses tidak ditemukan."
-      );
-
-    }
-
-
-    const status =
-      String(
-        row.access_status ||
-        ""
-      ).toUpperCase();
-
-
-    const orderCode =
-      row.order_code ||
-      "-";
-
-
-    const email =
-      row.customer_email ||
-      "-";
-
-
-    document
-      .getElementById(
-        "accessOrderCode"
-      )
-      .textContent =
-      orderCode;
-
-
-    document
-      .getElementById(
-        "changeEmailBtn"
-      )
-      .onclick =
-      event => {
-
-        event.preventDefault();
-
-
-        ajukanPenggantianEmail(
-          orderCode
-        );
-
-      };
-
-
-    document
-      .getElementById(
-        "accessInfo"
-      )
-      .innerHTML = `
-
-        <strong>
-          Order:
-        </strong>
-
-        ${esc(
-          orderCode
-        )}
-
-        <br>
-
-        <strong>
-          Email pembelian:
-        </strong>
-
-        ${esc(
-          email
-        )}
-
-        <br>
-
-        <strong>
-          Billing:
-        </strong>
-
-        ${
-          row.billing_start_at &&
-          row.billing_end_at
-
-            ? dateOnly(
-                row.billing_start_at
-              )
-              +
-              " – "
-              +
-              dateOnly(
-                row.billing_end_at
-              )
-
-            : "-"
-        }
-
-      `;
-
-
-    /* ==============================================
-       EXPIRED
-       ============================================== */
-
-    if(
-      status ===
-      "EXPIRED"
-    ){
-
-      document
-        .getElementById(
-          "accessBadge"
-        )
-        .textContent =
-        "MASA AKSES BERAKHIR";
-
-
-      document
-        .getElementById(
-          "accessTitle"
-        )
-        .textContent =
-        "Masa akses sudah berakhir";
-
-
-      document
-        .getElementById(
-          "accessWarning"
-        )
-        .innerHTML = `
-
-          Masa billing order ini
-          sudah berakhir.
-
-        `;
-
-
-      document
-        .getElementById(
-          "continueCanvaBtn"
-        )
-        .style.display =
-        "none";
-
-
-      return;
-
-    }
-
-
-    /* ==============================================
-       UNUSED
-       ============================================== */
-
-    if(
-      status ===
-      "UNUSED"
-    ){
-
-      document
-        .getElementById(
-          "accessBadge"
-        )
-        .textContent =
-        "AKSES SIAP";
-
-
-      document
-        .getElementById(
-          "continueCanvaBtn"
-        )
-        .style.display =
-        "block";
-
-
-      return;
-
-    }
-
-
-    /* ==============================================
-       USED
-       ============================================== */
-
-    if(
-      status ===
-      "USED"
-    ){
-
-      document
-        .getElementById(
-          "accessBadge"
-        )
-        .textContent =
-        "AKSES DIGUNAKAN";
-
-
-      document
-        .getElementById(
-          "accessTitle"
-        )
-        .textContent =
-        "Akses sudah digunakan";
-
-
-      document
-        .getElementById(
-          "accessWarning"
-        )
-        .innerHTML = `
-
-          Akses ini sudah digunakan.
-
-          ${
-            row.next_access_at
-
-              ? `
-
-                <br>
-                <br>
-
-                Akses berikutnya tersedia:
-
-                <strong>
-                  ${dateTime(
-                    row.next_access_at
-                  )}
-                </strong>
-
-              `
-
-              : ""
-          }
-
-        `;
-
-
-      document
-        .getElementById(
-          "continueCanvaBtn"
-        )
-        .style.display =
-        "none";
-
-
-      return;
-
-    }
-
-  }
-
-  catch(error){
-
-    console.error(
-      "ACCESS ERROR:",
-      error
-    );
-
-
-    document
-      .getElementById(
-        "accessTitle"
-      )
-      .textContent =
-      "Akses tidak dapat digunakan";
-
-
-    document
-      .getElementById(
-        "continueCanvaBtn"
-      )
-      .style.display =
-      "none";
-
-  }
-
+ if(!accessToken)return;
+ document.getElementById('db-access-page').classList.remove('hidden');
+ try{
+  const {data,error}=await supabaseClient.rpc('open_access',{p_access_token:accessToken});
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row)throw new Error('Akses tidak ditemukan.');
+  document.getElementById('db-access-order').textContent=row.order_code||'-';
+  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
+  const status=String(row.access_status||'').toUpperCase();
+  const badge=document.getElementById('db-access-badge');const title=document.getElementById('db-access-title');const warning=document.getElementById('db-access-warning');const btn=document.getElementById('db-continue-canva');
+  if(status==='EXPIRED'){badge.textContent='MASA AKSES BERAKHIR';title.textContent='Masa akses sudah berakhir';warning.textContent='Billing order ini sudah berakhir.';btn.style.display='none';return;}
+  if(status==='USED'){badge.textContent='AKSES DIGUNAKAN';title.textContent='Akses sudah digunakan';warning.innerHTML=`Akses ini sudah digunakan.${row.next_access_at?'<br><br>Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong>':''}`;btn.style.display='none';return;}
+  badge.textContent='AKSES SIAP';warning.innerHTML='Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
+ }catch(e){document.getElementById('db-access-title').textContent='Akses tidak dapat digunakan';document.getElementById('db-access-warning').textContent=e.message;document.getElementById('db-continue-canva').style.display='none';}
 }
 
+document.getElementById('db-continue-canva').addEventListener('click',async()=>{
+ const btn=document.getElementById('db-continue-canva');const msg=document.getElementById('db-access-message');btn.disabled=true;btn.textContent='Memproses akses...';
+ try{const r=await fetch(CONSUME_ACCESS_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({access_token:accessToken})});const d=await r.json().catch(()=>({}));if(!r.ok||!d.access_url)throw new Error(d.error||'Akses tidak dapat digunakan.');window.location.href=d.access_url;}catch(e){btn.disabled=false;btn.textContent='Lanjut ke Canva';msg.className='message err';msg.style.display='block';msg.textContent=e.message;}
+});
+document.getElementById('db-copy-order').addEventListener('click',async()=>{const t=document.getElementById('db-access-order').textContent;try{await navigator.clipboard.writeText(t);showToast('Kode order disalin ✅','success')}catch{showToast('Gagal menyalin kode','error')}});
 
-/* =====================================================
-   CONSUME ACCESS
-   ===================================================== */
-
-document
-  .getElementById(
-    "continueCanvaBtn"
-  )
-  .addEventListener(
-    "click",
-    async () => {
-
-      const button =
-        document.getElementById(
-          "continueCanvaBtn"
-        );
-
-
-      const message =
-        document.getElementById(
-          "accessMessage"
-        );
-
-
-      button.disabled =
-        true;
-
-
-      button.textContent =
-        "Memproses akses...";
-
-
-      try{
-
-        const response =
-          await fetch(
-            CONSUME_ACCESS_URL,
-            {
-
-              method:
-                "POST",
-
-              headers:{
-
-                "Content-Type":
-                  "application/json",
-
-                "apikey":
-                  SUPABASE_KEY,
-
-                "Authorization":
-                  "Bearer " +
-                  SUPABASE_KEY
-
-              },
-
-              body:
-                JSON.stringify({
-
-                  access_token:
-                    accessToken
-
-                })
-
-            }
-          );
-
-
-        const data =
-          await response
-            .json()
-            .catch(
-              () => ({})
-            );
-
-
-        if(
-          !response.ok
-        ){
-
-          throw new Error(
-            data.error ||
-            "Akses tidak dapat digunakan."
-          );
-
-        }
-
-
-        if(
-          !data.access_url
-        ){
-
-          throw new Error(
-            "Link Canva tidak tersedia."
-          );
-
-        }
-
-
-        window.location.href =
-          data.access_url;
-
-      }
-
-      catch(error){
-
-        button.disabled =
-          false;
-
-
-        button.textContent =
-          "Lanjut ke Canva";
-
-
-        message.className =
-          "message err";
-
-
-        message.style.display =
-          "block";
-
-
-        message.textContent =
-          error.message;
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   START
-   ===================================================== */
-
+// Initialize with supplied design; only hide/show database access page when token exists.
 loadAccessPage();
 
+const histEmail=document.getElementById('canva-history-email'); if(histEmail)histEmail.value=lastCanvaEmail; const histBtn=document.getElementById('canva-history-search'); if(histBtn)histBtn.addEventListener('click',()=>{lastCanvaEmail=histEmail.value.trim().toLowerCase();localStorage.setItem('myclips_canva_email',lastCanvaEmail);loadCanvaHistory(lastCanvaEmail);}); if(lastCanvaEmail)loadCanvaHistory(lastCanvaEmail);
 </script>
-
-<script>
-document.querySelectorAll('.tab-button').forEach(function(btn){btn.addEventListener('click',function(){var tab=this.dataset.tab;document.querySelectorAll('.tab-button').forEach(function(b){b.classList.remove('active')});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.add('hidden')});this.classList.add('active');var el=document.getElementById(tab+'-tab');if(el)el.classList.remove('hidden');});});
-</script>
+</body>
+</html>
