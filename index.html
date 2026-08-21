@@ -682,18 +682,34 @@ function openModal(){
 }
 function closeModal(){
  document.getElementById('email-modal').classList.add('hidden');
+
+ document.querySelectorAll('.package-option').forEach(function(p){
+   p.classList.remove('selected');
+ });
+
  const nameEl=document.getElementById('canva-customer-name');
  const emailEl=document.querySelector('#single-emails-container .single-email-input');
  const voucherEl=document.getElementById('canva-voucher');
+
  if(nameEl) nameEl.value='';
  if(emailEl) emailEl.value='';
  if(voucherEl) voucherEl.value='';
+
  const err=document.getElementById('single-email-error');
  const ok=document.getElementById('single-email-success');
+
  if(err) err.classList.add('hidden');
  if(ok) ok.classList.add('hidden');
+
  const price=document.getElementById('price-total');
+
  if(price) price.classList.add('hidden');
+
+ selectedProduct=null;
+ selectedPackage=null;
+ selectedPrice=null;
+ needsEmail=false;
+ isCapCut=false;
 }
 
 function initializeCanvaEmail(){
