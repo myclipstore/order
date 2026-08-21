@@ -826,11 +826,11 @@ async function loadAccessPage(){
    badge.textContent='AKSES DIGUNAKAN';
    title.textContent='Akses sudah digunakan';
    warning.innerHTML=`Akses ini sudah digunakan.
-${row.next_access_at?'<br><br>':'<br>'}
-<span style="display:block;margin:14px 0;padding:12px 14px;background:#fff7ed;color:#b45309;border:1px solid #fed7aa;border-radius:12px;line-height:1.65;">
+<div style="margin-top:7px"></div>
+<span style="display:block;margin:6px 0;padding:10px 12px;background:#fff7ed;color:#b45309;border:1px solid #fed7aa;border-radius:12px;line-height:1.55;">
 <strong>PENTING!</strong> Jika anda <strong>salah akun Canva</strong>, segeralah reset akses Canva melalui tombol merah dibawah! (Via WhatsApp)
 </span>
-${row.next_access_at?'<div style="margin-top:12px;">Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong></div>':''}`;
+${row.next_access_at?'<div style="margin-top:8px;">Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong></div>':''}`;
    btn.style.display='none';
    const resetBtn=document.getElementById('db-reset-request');
    const waNumber='85707486749';
