@@ -1610,11 +1610,17 @@ function openPaymentBatch(
 
 async function checkoutCanva(){
 
-  const name =
-    document.getElementById('canva-customer-name')?.value.trim() || '';
+  /*
+   * NAMA PEMBELI SUDAH DIHAPUS DARI FORM.
+   * Tidak ada lagi validasi nama.
+   * Backend akan memakai email pertama sebagai identitas internal.
+   */
+  const name = '';
 
   const emailInputs = Array.from(
-    document.querySelectorAll('#single-emails-container .single-email-input')
+    document.querySelectorAll(
+      '#single-emails-container .single-email-input'
+    )
   );
 
   const emails = emailInputs
@@ -1623,11 +1629,6 @@ async function checkoutCanva(){
 
   const voucher =
     document.getElementById('canva-voucher')?.value.trim().toUpperCase() || '';
-
-  if(name.length < 2){
-    showToast('Nama belum diisi.','error');
-    return;
-  }
 
   if(!emails.length){
     showToast('Masukkan minimal satu email Canva.','error');
@@ -1640,6 +1641,7 @@ async function checkoutCanva(){
   }
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   if(!emails.every(email => emailPattern.test(email))){
     showToast('Pastikan semua email valid.','error');
     return;
@@ -1655,16 +1657,25 @@ async function checkoutCanva(){
     return;
   }
 
+  const isGroup =
+    selectedPackage === 'Paket Grup (10 akun)/Bulan';
+
   const stockKnown =
     Object.prototype.hasOwnProperty.call(productStock,'Canva Premium') &&
-    Object.prototype.hasOwnProperty.call(productStock['Canva Premium'] || {},selectedPackage);
+    Object.prototype.hasOwnProperty.call(
+      productStock['Canva Premium'] || {},
+      selectedPackage
+    );
 
-  const stock = getStockValue('Canva Premium', selectedPackage);
-  const isGroup = selectedPackage === 'Paket Grup (10 akun)/Bulan';
   const requiredStock = isGroup ? 1 : emails.length;
 
-  if(stockKnown && stock < requiredStock){
-    showToast('Stok paket ini tidak mencukupi.','error');
+  if(stockKnown && getStockValue('Canva Premium', selectedPackage) < requiredStock){
+    showToast(
+      isGroup
+        ? 'Stok Paket Grup sedang habis.'
+        : 'Stok paket ini tidak mencukupi.',
+      'error'
+    );
     closeModal();
     return;
   }
@@ -1677,21 +1688,37 @@ async function checkoutCanva(){
   };
 
   const pkg = packageMap[selectedPackage];
+
   if(!pkg){
     showToast('Paket Canva tidak valid.','error');
     return;
   }
 
   const btn = document.getElementById('checkout-btn');
+
+  if(!btn) return;
+
   btn.disabled = true;
-  btn.textContent = isGroup ? 'Menyiapkan Paket Grup...' : 'Menyiapkan pembayaran...';
+  btn.textContent = isGroup
+    ? 'Menyiapkan Paket Grup...'
+    : 'Menyiapkan pembayaran...';
 
   try{
+
     lastCanvaEmail = emails[0];
 
-    localStorage.setItem('myclips_canva_email',emails[0]);
-    localStorage.setItem('myclips_canva_name',name);
+    localStorage.setItem(
+      'myclips_canva_email',
+      emails[0]
+    );
 
+    localStorage.removeItem('myclips_canva_name');
+
+    /*
+     * Satu request = satu payment batch.
+     * Paket biasa: backend membuat satu order per email.
+     * Paket Grup: backend membuat satu order untuk seluruh email.
+     */
     const data = await createPaymentBatch(
       emails,
       pkg,
@@ -1703,18 +1730,24 @@ async function checkoutCanva(){
 
     closeModal();
 
-    const totalOrders = Number(paidData.orders?.length || 0);
     const orderMessage = isGroup
       ? `Pembayaran berhasil untuk Paket Grup dengan ${emails.length} email. 1 kode order digunakan untuk seluruh email.`
       : `Pembayaran berhasil untuk ${emails.length} email. Akses sedang diproses.`;
 
-    showDbResult(paidData, orderMessage);
+    showDbResult(
+      paidData,
+      orderMessage
+    );
 
+    /*
+     * Tunggu akses masing-masing email.
+     * Paket Grup tetap memakai satu order_code.
+     */
     for(const item of (paidData.orders || [])){
-      const targetEmails =
-        isGroup
-          ? emails
-          : [item.customer_email];
+
+      const targetEmails = isGroup
+        ? emails
+        : [item.customer_email];
 
       for(const email of targetEmails){
         try{
@@ -1724,7 +1757,10 @@ async function checkoutCanva(){
             paidData
           );
         }catch(accessError){
-          console.warn('Akses belum siap:',accessError);
+          console.warn(
+            'Akses belum siap:',
+            accessError
+          );
         }
       }
     }
@@ -1732,11 +1768,20 @@ async function checkoutCanva(){
     loadCanvaHistory(lastCanvaEmail);
 
   }catch(error){
-    showToast(error?.message || 'Pembayaran dihentikan.','error');
+
+    showToast(
+      error?.message ||
+      'Pembayaran dihentikan.',
+      'error'
+    );
+
   }finally{
+
     btn.disabled = false;
     btn.textContent = 'Bayar Sekarang';
+
   }
+
 }
 
 /* =====================================================
