@@ -1023,8 +1023,30 @@ document.querySelectorAll('.tab-button').forEach(btn=>btn.addEventListener('clic
 
 // ===== PACKAGE SELECTION: only Canva is connected to DB =====
 document.querySelectorAll('.package-option').forEach(option=>option.addEventListener('click',function(){
- if(isPackageOutOfStock(this.dataset.product||'',this.dataset.package||'')){
-   showToast('Stok produk ini sedang habis.','error');
+ const productName=this.dataset.product||'';
+ const packageName=this.dataset.package||'';
+
+ const stockKnown =
+   Object.prototype.hasOwnProperty.call(
+     productStock,
+     productName
+   ) &&
+   Object.prototype.hasOwnProperty.call(
+     productStock[productName] || {},
+     packageName
+   );
+
+ if(
+   stockKnown &&
+   isPackageOutOfStock(
+     productName,
+     packageName
+   )
+ ){
+   showToast(
+     'Stok paket ini sedang habis.',
+     'error'
+   );
    return;
  }
 
@@ -1070,16 +1092,15 @@ function openModal(){
   packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
   cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');
   initializeCanvaEmail();
-  document.getElementById('canva-name-wrap').classList.remove('hidden');
   document.getElementById('canva-voucher-wrap').classList.remove('hidden');
   document.getElementById('price-total').classList.add('hidden');
  } else if(selectedProduct==='CapCut Premium'){
   icon.textContent='🎬';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
-  cap.classList.remove('hidden');single.classList.add('hidden');group.classList.add('hidden');document.getElementById('canva-name-wrap').classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');
+  cap.classList.remove('hidden');single.classList.add('hidden');group.classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');
   initializeCapCutQuantity();
  } else {
   icon.textContent='🤖';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
-  cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');document.getElementById('canva-name-wrap').classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');initializeSingleEmails();
+  cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');initializeSingleEmails();
  }
  document.getElementById('checkout-btn').disabled=true;
  document.getElementById('checkout-btn').textContent=selectedProduct==='Canva Premium'?'Bayar Sekarang':'Checkout via WhatsApp';
@@ -1684,7 +1705,18 @@ async function checkoutCanva(){
  }
 
 
+ const stockKnown =
+   Object.prototype.hasOwnProperty.call(
+     productStock,
+     'Canva Premium'
+   ) &&
+   Object.prototype.hasOwnProperty.call(
+     productStock['Canva Premium'] || {},
+     selectedPackage
+   );
+
  if(
+   stockKnown &&
    isPackageOutOfStock(
      'Canva Premium',
      selectedPackage
@@ -1695,8 +1727,6 @@ async function checkoutCanva(){
      'Stok paket ini sedang habis.',
      'error'
    );
-
-   closeModal();
 
    return;
 
