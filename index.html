@@ -277,6 +277,36 @@
   pointer-events:none !important;
   transform:none !important;
 }
+
+    .package-option.out-of-stock{
+      opacity:.58;
+      cursor:not-allowed !important;
+      filter:grayscale(.12);
+      position:relative;
+      pointer-events:auto;
+    }
+
+    .package-option.out-of-stock::after{
+      content:'STOK HABIS';
+      position:absolute;
+      top:8px;
+      right:8px;
+      background:#9ca3af;
+      color:#fff;
+      font-size:10px;
+      font-weight:800;
+      padding:4px 8px;
+      border-radius:999px;
+      letter-spacing:.02em;
+      z-index:5;
+    }
+
+    .package-option.out-of-stock:hover{
+      transform:none !important;
+      box-shadow:none !important;
+      border-color:#e5e7eb !important;
+    }
+
 </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -666,9 +696,185 @@ const canvaPackages={
   "2 Bulan":{code:"2",name:"Canva 2 Bulan",months:2,price:6000},
   "3 Bulan":{code:"3",name:"Canva 3 Bulan",months:3,price:8500}
 };
+
+/*
+ * PRODUCT STOCK
+ * Dibaca dari tabel public.product_stock.
+ *
+ * Stok > 0  = bisa dibeli
+ * Stok = 0  = STOK HABIS + tidak bisa diklik
+ */
+const productStock = {};
+
+function getStockValue(product, packageName){
+  return Number(
+    productStock?.[product]?.[packageName] ?? 0
+  );
+}
+
+function isPackageOutOfStock(product, packageName){
+  return getStockValue(product, packageName) <= 0;
+}
+
+async function loadProductStock(){
+  try{
+
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/product_stock" +
+        "?select=product_name,package_name,stock,active"
+      ,
+        {
+          headers:{
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_KEY,
+
+            "Accept":
+              "application/json"
+          }
+        }
+      );
+
+    if(!response.ok){
+      throw new Error(
+        "Gagal membaca stok produk."
+      );
+    }
+
+    const rows =
+      await response.json();
+
+    Object.keys(
+      productStock
+    ).forEach(
+      key => delete productStock[key]
+    );
+
+    (rows || []).forEach(
+      row => {
+
+        const product =
+          String(
+            row.product_name ||
+            ""
+          ).trim();
+
+        const packageName =
+          String(
+            row.package_name ||
+            ""
+          ).trim();
+
+        if(!product || !packageName){
+          return;
+        }
+
+        if(!productStock[product]){
+          productStock[product] = {};
+        }
+
+        productStock[product][packageName] =
+          row.active === false
+            ? 0
+            : Number(
+                row.stock ||
+                0
+              );
+
+      }
+    );
+
+    applyProductStockState();
+
+  }catch(error){
+
+    console.error(
+      "PRODUCT STOCK ERROR:",
+      error
+    );
+
+    // Fail-safe: if stock cannot be read,
+    // do not leave packages purchasable.
+    document
+      .querySelectorAll(
+        ".package-option"
+      )
+      .forEach(
+        option => {
+
+          option.classList.add(
+            "out-of-stock"
+          );
+
+          option.setAttribute(
+            "aria-disabled",
+            "true"
+          );
+
+        }
+      );
+
+  }
+}
+
+function applyProductStockState(){
+
+  document
+    .querySelectorAll(
+      ".package-option"
+    )
+    .forEach(
+      option => {
+
+        const product =
+          option.dataset.product ||
+          "";
+
+        const packageName =
+          option.dataset.package ||
+          "";
+
+        const out =
+          isPackageOutOfStock(
+            product,
+            packageName
+          );
+
+        option.classList.toggle(
+          "out-of-stock",
+          out
+        );
+
+        option.setAttribute(
+          "aria-disabled",
+          out
+            ? "true"
+            : "false"
+        );
+
+        if(out){
+          option.setAttribute(
+            "title",
+            "Stok produk sedang habis"
+          );
+        }else{
+          option.removeAttribute(
+            "title"
+          );
+        }
+
+      }
+    );
+
+}
 let selectedProduct=null,selectedPackage=null,selectedPrice=null,selectedCode=null;
 let historySortOrder='newest';
-let lastCanvaEmail=localStorage.getItem('myclips_canva_email')||'';
+let lastCanvaEmail='';
 let accessToken=new URLSearchParams(window.location.search).get('access');
 
 const fmt=n=>new Intl.NumberFormat('id-ID').format(Number(n||0));
@@ -698,10 +904,22 @@ document.querySelectorAll('.tab-button').forEach(btn=>btn.addEventListener('clic
 
 // ===== PACKAGE SELECTION: only Canva is connected to DB =====
 document.querySelectorAll('.package-option').forEach(option=>option.addEventListener('click',function(){
- selectedProduct=this.dataset.product;selectedPackage=this.dataset.package;selectedPrice=this.dataset.price;
- document.querySelectorAll('.package-option').forEach(p=>p.classList.remove('selected'));this.classList.add('selected');
+ if(isPackageOutOfStock(this.dataset.product||'',this.dataset.package||'')){
+   showToast('Stok produk ini sedang habis.','error');
+   return;
+ }
+
+ selectedProduct=this.dataset.product;
+ selectedPackage=this.dataset.package;
+ selectedPrice=this.dataset.price;
+
+ document.querySelectorAll('.package-option').forEach(p=>p.classList.remove('selected'));
+ this.classList.add('selected');
+
  openModal();
 }));
+
+applyProductStockState();
 
 // Existing info tooltip behavior
 document.querySelectorAll('.info-tooltip button').forEach(button=>button.addEventListener('click',function(e){
@@ -819,6 +1037,11 @@ async function checkoutCanva(){
  if(name.length<2){showToast('Nama belum diisi.','error');return;}
  if(!email){showToast('Masukkan email Canva terlebih dahulu.','error');return;}
  if(!selectedPackage){showToast('Pilih paket Canva terlebih dahulu.','error');return;}
+ if(isPackageOutOfStock('Canva Premium',selectedPackage)){
+   showToast('Stok paket ini sedang habis.','error');
+   closeModal();
+   return;
+ }
  const pkg={'1 Bulan':'1','2 Bulan':'2','3 Bulan':'3'}[selectedPackage];
  if(!pkg){showToast('Paket Canva tidak valid.','error');return;}
  lastCanvaEmail=email;localStorage.setItem('myclips_canva_email',email);localStorage.setItem('myclips_canva_name',name);
@@ -1141,7 +1364,64 @@ document.getElementById('db-copy-order').addEventListener('click',async()=>{cons
 // Initialize with supplied design; only hide/show database access page when token exists.
 loadAccessPage();
 
-const histEmail=document.getElementById('canva-history-email'); if(histEmail)histEmail.value=lastCanvaEmail; const histBtn=document.getElementById('canva-history-search'); if(histBtn)histBtn.addEventListener('click',()=>{lastCanvaEmail=histEmail.value.trim().toLowerCase();localStorage.setItem('myclips_canva_email',lastCanvaEmail);loadCanvaHistory(lastCanvaEmail);}); if(lastCanvaEmail)loadCanvaHistory(lastCanvaEmail);
+const histEmail=document.getElementById('canva-history-email');
+const histBtn=document.getElementById('canva-history-search');
+
+if(histEmail){
+  histEmail.value='';
+}
+
+if(histBtn){
+  histBtn.addEventListener('click',()=>{
+    lastCanvaEmail=histEmail.value.trim().toLowerCase();
+
+    if(!lastCanvaEmail){
+      loadCanvaHistory('');
+      return;
+    }
+
+    localStorage.setItem('myclips_canva_email',lastCanvaEmail);
+    loadCanvaHistory(lastCanvaEmail);
+  });
+}
+
+// History input sengaja TIDAK dipulihkan dari localStorage
+// dan tidak otomatis mencari riwayat saat refresh.
+
+
+loadProductStock();
+
+window.addEventListener(
+  "pageshow",
+  () => {
+
+    const selectors = [
+      "#historyEmail",
+      "#historyOrderCode",
+      "#canva-history-email",
+      "#canva-history-order-code"
+    ];
+
+    selectors.forEach(
+      selector => {
+
+        const el =
+          document.querySelector(
+            selector
+          );
+
+        if(el){
+          el.value = "";
+        }
+
+      }
+    );
+
+    lastCanvaEmail = "";
+
+  }
+);
+
 </script>
 </body>
 </html>
