@@ -409,6 +409,47 @@ button.small{
     grid-template-columns:1fr;
   }
 }
+
+.price-product-group{
+  margin-top:18px;
+}
+.price-product-title{
+  font-weight:900;
+  font-size:15px;
+  color:#344054;
+  margin-bottom:9px;
+}
+.price-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.price-item{
+  border:1px solid #e7e9ef;
+  border-radius:14px;
+  padding:15px;
+  background:#fafbff;
+}
+.price-item-title{
+  font-weight:800;
+  font-size:14px;
+  margin-bottom:9px;
+}
+.price-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.price-row input{
+  flex:1;
+  min-width:0;
+}
+@media(max-width:1100px){
+  .price-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .price-grid{grid-template-columns:1fr}
+}
 </style>
 
 </head>
@@ -605,6 +646,52 @@ button.small{
       class="green"
     >
       Simpan Semua Stok
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     PENGATURAN HARGA
+     ===================================================== -->
+
+<section class="card">
+
+  <div class="section-title">
+    Pengaturan Harga Produk
+  </div>
+
+  <div class="section-subtitle">
+    Atur harga Canva, CapCut, dan ChatGPT pada setiap paket.
+  </div>
+
+  <div
+    id="priceMessage"
+    class="message"
+  ></div>
+
+  <div id="priceGrid">
+    <div style="color:#667085">
+      Memuat harga...
+    </div>
+  </div>
+
+  <div class="actions stock-save-all">
+
+    <button
+      id="refreshPriceBtn"
+      class="dark"
+    >
+      Refresh Harga
+    </button>
+
+    <button
+      id="savePriceBtn"
+      class="green"
+    >
+      Simpan Semua Harga
     </button>
 
   </div>
@@ -977,6 +1064,9 @@ let vouchers =
 let productStock =
   [];
 
+let productPrices =
+  [];
+
 const stockPackages = {
   "Canva Premium": [
     "1 Bulan",
@@ -1346,6 +1436,178 @@ async function saveTeam(){
 /* =====================================================
    PRODUCT STOCK
    ===================================================== */
+
+const pricePackages = {
+  "Canva Premium": [
+    "1 Bulan",
+    "2 Bulan",
+    "3 Bulan",
+    "Paket Grup (15 akun)/Bulan"
+  ],
+  "CapCut Premium": [
+    "7 Hari",
+    "14 Hari",
+    "1 Bulan"
+  ],
+  "ChatGPT Pro": [
+    "15 Hari",
+    "30 Hari"
+  ]
+};
+
+async function loadPrices(){
+
+  const data =
+    await api("list_prices");
+
+  productPrices =
+    data.prices ||
+    [];
+
+  renderPrices();
+
+}
+
+function renderPrices(){
+
+  const container =
+    $("priceGrid");
+
+  const map =
+    new Map(
+      productPrices.map(
+        item => [
+          `${item.product_name}||${item.package_name}`,
+          item
+        ]
+      )
+    );
+
+  container.innerHTML =
+    Object.entries(
+      pricePackages
+    ).map(
+      ([productName, packages]) => {
+
+        const cards =
+          packages.map(
+            packageName => {
+
+              const item =
+                map.get(
+                  `${productName}||${packageName}`
+                );
+
+              const price =
+                Number(
+                  item?.price ??
+                  0
+                );
+
+              return `
+                <div class="price-item">
+                  <div class="price-item-title">
+                    ${esc(packageName)}
+                  </div>
+                  <div class="price-row">
+                    <input
+                      type="number"
+                      min="0"
+                      step="500"
+                      data-price-product="${esc(productName)}"
+                      data-price-package="${esc(packageName)}"
+                      value="${price}"
+                    >
+                  </div>
+                </div>
+              `;
+            }
+          ).join("");
+
+        return `
+          <div class="price-product-group">
+            <div class="price-product-title">
+              ${esc(productName)}
+            </div>
+            <div class="price-grid">
+              ${cards}
+            </div>
+          </div>
+        `;
+      }
+    ).join("");
+
+}
+
+async function savePrices(){
+
+  const inputs =
+    Array.from(
+      document.querySelectorAll(
+        "[data-price-product][data-price-package]"
+      )
+    );
+
+  try{
+
+    $("savePriceBtn").disabled = true;
+
+    for(
+      const input
+      of inputs
+    ){
+
+      const price =
+        Number(input.value);
+
+      if(
+        !Number.isInteger(price) ||
+        price < 0
+      ){
+        throw new Error(
+          "Harga harus berupa angka bulat minimal 0."
+        );
+      }
+
+      await api(
+        "update_price",
+        {
+          product_name:
+            input.dataset.priceProduct,
+
+          package_name:
+            input.dataset.pricePackage,
+
+          price:price,
+
+          active:true
+        }
+      );
+    }
+
+    message(
+      $("priceMessage"),
+      "Semua harga berhasil disimpan.",
+      true
+    );
+
+    await loadPrices();
+
+  }catch(error){
+
+    message(
+      $("priceMessage"),
+      error.message,
+      false
+    );
+
+  }finally{
+
+    $("savePriceBtn").disabled = false;
+
+  }
+
+}
 
 async function loadStock(){
 
@@ -3127,6 +3389,8 @@ $("loginBtn")
 
         await loadStock();
 
+        await loadPrices();
+
         await loadVouchers();
 
         await loadOrders();
@@ -3284,6 +3548,8 @@ $("refreshBtn")
       await loadTeam();
 
       await loadStock();
+
+      await loadPrices();
 
       await loadVouchers();
 
