@@ -1743,6 +1743,8 @@ async function checkoutCanva(){
      * Tunggu akses masing-masing email.
      * Paket Grup tetap memakai satu order_code.
      */
+    const accessTasks = [];
+
     for(const item of (paidData.orders || [])){
 
       const targetEmails = isGroup
@@ -1750,20 +1752,22 @@ async function checkoutCanva(){
         : [item.customer_email];
 
       for(const email of targetEmails){
-        try{
-          await waitForAccess(
+        accessTasks.push(
+          waitForAccess(
             item.order_code,
             email,
             paidData
-          );
-        }catch(accessError){
-          console.warn(
-            'Akses belum siap:',
-            accessError
-          );
-        }
+          ).catch(accessError => {
+            console.warn(
+              'Akses belum siap:',
+              accessError
+            );
+          })
+        );
       }
     }
+
+    await Promise.all(accessTasks);
 
     loadCanvaHistory(lastCanvaEmail);
 
@@ -1844,20 +1848,95 @@ function showDbResult(data,msg){
 function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
 
 async function waitForAccess(orderCode,email,paymentData){
- const c=()=>document.getElementById('db-result-access');
- for(let attempt=1;attempt<=12;attempt++){
-  try{
-   const response=await fetch(GET_ACCESS_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({order_code:orderCode,customer_email:email})});
-   const data=await response.json().catch(()=>({}));
-   if(data.status==='READY'&&(data.access_url||data.url||data.invite_url)){
-    const accessUrl=data.access_url||data.url||data.invite_url;
-     c().innerHTML=`<a href="${esc(accessUrl)}" class="block w-full text-center bg-gradient-to-r from-pink-500 to-rose-400 text-white font-bold py-3 rounded-xl">🔗 Buka Akses Canva</a>`;return;
-   }
-  }catch(e){}
-  await new Promise(r=>setTimeout(r,2500));
- }
- c().innerHTML='<div class="bg-orange-50 text-orange-700 rounded-xl p-3 text-sm">Pembayaran sudah berhasil. Akses sedang diproses. Silakan cek Riwayat Pembelian.</div>';
- loadCanvaHistory(lastCanvaEmail);
+
+  const container =
+    document.getElementById('db-result-access');
+
+  if(!container) return;
+
+  const safeEmail = String(email || '').trim().toLowerCase();
+  const emailKey = safeEmail.replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const buttonId = 'access-button-' + (emailKey || 'default');
+
+  for(let attempt=1; attempt<=12; attempt++){
+    try{
+
+      /*
+       * GET_ACCESS memang mengembalikan READY tetapi pada sistem
+       * sekarang access_url sengaja null. Jadi sumber link yang
+       * benar untuk tombol di popup adalah purchase-history,
+       * karena endpoint tersebut sudah menyediakan access_url
+       * seperti yang dipakai tombol Gabung Canva di History.
+       */
+      const response = await fetch(
+        PURCHASE_HISTORY_URL,
+        {
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'apikey':SUPABASE_KEY,
+            'Authorization':'Bearer ' + SUPABASE_KEY
+          },
+          body:JSON.stringify({ email: safeEmail })
+        }
+      );
+
+      const data = await response.json().catch(()=>({}));
+
+      if(!response.ok){
+        throw new Error(
+          data.error || 'Gagal mengecek akses.'
+        );
+      }
+
+      const orders = Array.isArray(data.orders) ? data.orders : [];
+      const order = orders.find(
+        item => String(item?.order_code || '').trim() === String(orderCode || '').trim()
+      );
+
+      if(order && order.access_url && order.can_join !== false){
+
+        /*
+         * Jangan menghapus tombol email lain pada Paket Grup.
+         */
+        let button = document.getElementById(buttonId);
+
+        if(!button){
+          button = document.createElement('a');
+          button.id = buttonId;
+          button.href = order.access_url;
+          button.target = '_blank';
+          button.rel = 'noopener noreferrer';
+          button.className = 'block w-full text-center bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 rounded-xl mb-2 transition-all shadow-md';
+          button.textContent = '🔗 Akses Canva' + (safeEmail ? ' — ' + safeEmail : '');
+          container.appendChild(button);
+        }
+
+        return true;
+      }
+
+    }catch(error){
+      console.warn('CHECK ACCESS:', error);
+    }
+
+    container.innerHTML =
+      '<div class="bg-yellow-50 text-yellow-700 rounded-xl p-3 text-sm mb-2">Pembayaran berhasil. Akses Canva sedang disiapkan...</div>' +
+      Array.from(container.querySelectorAll('a')).map(a => a.outerHTML).join('');
+
+    await new Promise(r => setTimeout(r, 5000));
+  }
+
+  if(!container.querySelector('a')){
+    container.innerHTML = `
+      <div class="bg-orange-50 text-orange-700 rounded-xl p-3 text-sm">
+        Pembayaran sudah berhasil. Akses Canva masih diproses.
+        <br>Silakan cek Riwayat Pembelian beberapa saat lagi.
+      </div>
+    `;
+  }
+
+  loadCanvaHistory(lastCanvaEmail);
+  return false;
 }
 
 // ===== Canva history via Supabase; visual cards remain the supplied design =====
