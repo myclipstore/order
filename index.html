@@ -307,6 +307,8 @@
       border-color:#e5e7eb !important;
     }
 
+
+.package-option.stock-loading{opacity:.7;cursor:wait !important;}
 </style>
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -598,7 +600,7 @@
        </div>
 
        <div id="group-email-section" class="hidden">
-        <label class="block text-gray-600 text-sm font-medium mb-3">Email Akun (Masukkan hingga 15 email)</label>
+        <label class="block text-gray-600 text-sm font-medium mb-3">Email Akun (Maksimal 10 email)</label>
         <div id="group-emails-container" class="space-y-2 max-h-48 overflow-y-auto pb-2"></div>
         <button type="button" onclick="addGroupEmailInput()" class="text-xs text-pink-500 hover:text-pink-600 font-medium mt-2">+ Tambah Email</button>
         <p id="group-email-error" class="text-red-500 text-xs mt-2 hidden"></p>
@@ -689,6 +691,7 @@ const CREATE_ORDER_URL=SUPABASE_URL+"/functions/v1/create-order";
 const PURCHASE_HISTORY_URL=SUPABASE_URL+"/functions/v1/purchase-history";
 const GET_ACCESS_URL=SUPABASE_URL+"/functions/v1/get-access";
 const CONSUME_ACCESS_URL=SUPABASE_URL+"/functions/v1/consume-access";
+const STORE_CONFIG_URL=SUPABASE_URL+"/functions/v1/store-config";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const canvaPackages={
@@ -705,6 +708,11 @@ const canvaPackages={
  * Stok = 0  = STOK HABIS + tidak bisa diklik
  */
 const productStock = {};
+// mark packages as loading until database config arrives
+document
+  .querySelectorAll(".package-option")
+  .forEach(el => el.classList.add("stock-loading"));
+
 const productPrices = {};
 
 function formatPriceShort(value){
@@ -725,91 +733,123 @@ function getProductPrice(product, packageName){
   );
 }
 
-async function loadProductPrices(){
+async function loadStoreConfig(){
+
   try{
 
     const response =
       await fetch(
-        SUPABASE_URL +
-        "/rest/v1/product_prices" +
-        "?select=product_name,package_name,price,active",
+        STORE_CONFIG_URL,
         {
+          method:"GET",
           headers:{
-            "apikey":
-              SUPABASE_KEY,
-            "Authorization":
-              "Bearer " + SUPABASE_KEY,
-            "Accept":
-              "application/json"
-          }
+            "apikey":SUPABASE_KEY,
+            "Authorization":"Bearer " + SUPABASE_KEY,
+            "Accept":"application/json"
+          },
+          cache:"no-store"
         }
       );
+
+    const data =
+      await response.json().catch(()=>({}));
 
     if(!response.ok){
       throw new Error(
-        "Gagal membaca harga produk."
+        data.error ||
+        "Gagal membaca stok dan harga."
       );
     }
 
-    const rows =
-      await response.json();
-
-    Object.keys(productPrices)
-      .forEach(
-        key =>
-          delete productPrices[key]
-      );
-
-    (rows || []).forEach(
-      row => {
-
-        const product =
-          String(
-            row.product_name ||
-            ""
-          ).trim();
-
-        const packageName =
-          String(
-            row.package_name ||
-            ""
-          ).trim();
-
-        if(
-          !product ||
-          !packageName ||
-          row.active === false
-        ){
-          return;
-        }
-
-        if(
-          !productPrices[product]
-        ){
-          productPrices[product] = {};
-        }
-
-        productPrices[product][packageName] =
-          Number(
-            row.price ||
-            0
-          );
-
-      }
+    Object.keys(productPrices).forEach(
+      key => delete productPrices[key]
     );
+
+    Object.keys(productStock).forEach(
+      key => delete productStock[key]
+    );
+
+    (data.prices || []).forEach(row => {
+
+      const product =
+        String(row.product_name || "").trim();
+
+      const packageName =
+        String(row.package_name || "").trim();
+
+      if(
+        !product ||
+        !packageName ||
+        row.active === false
+      ){
+        return;
+      }
+
+      if(!productPrices[product]){
+        productPrices[product] = {};
+      }
+
+      productPrices[product][packageName] =
+        Number(row.price || 0);
+
+    });
+
+    (data.stock || []).forEach(row => {
+
+      const product =
+        String(row.product_name || "").trim();
+
+      const packageName =
+        String(row.package_name || "").trim();
+
+      if(
+        !product ||
+        !packageName
+      ){
+        return;
+      }
+
+      if(!productStock[product]){
+        productStock[product] = {};
+      }
+
+      productStock[product][packageName] =
+        row.active === false
+          ? 0
+          : Number(row.stock || 0);
+
+    });
 
     applyProductPriceState();
     applyCanvaOriginalPriceState();
+    applyProductStockState();
 
   }catch(error){
 
     console.error(
-      "PRODUCT PRICE ERROR:",
+      "STORE CONFIG ERROR:",
       error
     );
 
+    showToast(
+      "Stok dan harga belum dapat dimuat.",
+      "error"
+    );
+
+    document
+      .querySelectorAll(".package-option")
+      .forEach(option => {
+
+        option.classList.add("out-of-stock");
+        option.classList.remove("stock-loading");
+        option.setAttribute("aria-disabled","true");
+
+      });
+
   }
+
 }
+
 
 function applyProductPriceState(){
 
@@ -881,242 +921,6 @@ function isPackageOutOfStock(product, packageName){
   return getStockValue(product, packageName) <= 0;
 }
 
-async function loadProductStock(){
-  try{
-
-    const response =
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/product_stock" +
-        "?select=product_name,package_name,stock,active"
-      ,
-        {
-          headers:{
-            "apikey":
-              SUPABASE_KEY,
-
-            "Authorization":
-              "Bearer " +
-              SUPABASE_KEY,
-
-            "Accept":
-              "application/json"
-          }
-        }
-      );
-
-    if(!response.ok){
-      throw new Error(
-        "Gagal membaca stok produk."
-      );
-    }
-
-    const rows =
-      await response.json();
-
-    Object.keys(
-      productStock
-    ).forEach(
-      key => delete productStock[key]
-    );
-
-    (rows || []).forEach(
-      row => {
-
-        const product =
-          String(
-            row.product_name ||
-            ""
-          ).trim();
-
-        const packageName =
-          String(
-            row.package_name ||
-            ""
-          ).trim();
-
-        if(!product || !packageName){
-          return;
-        }
-
-        if(!productStock[product]){
-          productStock[product] = {};
-        }
-
-        productStock[product][packageName] =
-          row.active === false
-            ? 0
-            : Number(
-                row.stock ||
-                0
-              );
-
-      }
-    );
-
-    applyProductStockState();
-
-  }catch(error){
-
-    console.error(
-      "PRODUCT STOCK ERROR:",
-      error
-    );
-
-    // Fail-safe: if stock cannot be read,
-    // do not leave packages purchasable.
-    document
-      .querySelectorAll(
-        ".package-option"
-      )
-      .forEach(
-        option => {
-
-          option.classList.add(
-            "out-of-stock"
-          );
-
-          option.setAttribute(
-            "aria-disabled",
-            "true"
-          );
-
-        }
-      );
-
-  }
-}
-
-
-function applyCanvaOriginalPriceState(){
-
-  const oneMonthPrice =
-    getProductPrice(
-      "Canva Premium",
-      "1 Bulan"
-    );
-
-  if(
-    oneMonthPrice <= 0
-  ){
-    return;
-  }
-
-  const threeMonthOriginal =
-    oneMonthPrice * 3;
-
-  const groupOriginal =
-    oneMonthPrice * 10;
-
-
-  const threeMonthOption =
-    document.querySelector(
-      '.package-option[data-product="Canva Premium"][data-package="3 Bulan"]'
-    );
-
-  if(
-    threeMonthOption
-  ){
-
-    const strike =
-      threeMonthOption.querySelector(
-        ".strikethrough"
-      );
-
-    if(
-      strike
-    ){
-
-      strike.textContent =
-        formatPriceShort(
-          threeMonthOriginal
-        );
-
-    }
-
-  }
-
-
-  const groupOption =
-    document.querySelector(
-      '.package-option[data-product="Canva Premium"][data-package="Paket Grup (10 akun)/Bulan"]'
-    );
-
-  if(
-    groupOption
-  ){
-
-    const strike =
-      groupOption.querySelector(
-        ".strikethrough"
-      );
-
-    if(
-      strike
-    ){
-
-      strike.textContent =
-        formatPriceShort(
-          groupOriginal
-        );
-
-    }
-
-  }
-
-}
-
-
-function applyProductStockState(){
-
-  document
-    .querySelectorAll(
-      ".package-option"
-    )
-    .forEach(
-      option => {
-
-        const product =
-          option.dataset.product ||
-          "";
-
-        const packageName =
-          option.dataset.package ||
-          "";
-
-        const out =
-          isPackageOutOfStock(
-            product,
-            packageName
-          );
-
-        option.classList.toggle(
-          "out-of-stock",
-          out
-        );
-
-        option.setAttribute(
-          "aria-disabled",
-          out
-            ? "true"
-            : "false"
-        );
-
-        if(out){
-          option.setAttribute(
-            "title",
-            "Stok produk sedang habis"
-          );
-        }else{
-          option.removeAttribute(
-            "title"
-          );
-        }
-
-      }
-    );
-
-}
 let selectedProduct=null,selectedPackage=null,selectedPrice=null,selectedCode=null;
 let historySortOrder='newest';
 let lastCanvaEmail='';
@@ -1163,8 +967,6 @@ document.querySelectorAll('.package-option').forEach(option=>option.addEventList
 
  openModal();
 }));
-
-applyProductStockState();
 
 // Existing info tooltip behavior
 document.querySelectorAll('.info-tooltip button').forEach(button=>button.addEventListener('click',function(e){
@@ -1246,66 +1048,711 @@ function closeModal(){
 }
 
 function initializeCanvaEmail(){
- const container=document.getElementById('single-emails-container');container.innerHTML='';
- const wrap=document.createElement('div');wrap.className='flex gap-2 items-center';
- wrap.innerHTML=`<input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" autocomplete="off" oninput="validateSingleEmails()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>`;
- container.appendChild(wrap);validateSingleEmails();
-}
+ const container=document.getElementById('single-emails-container');
+ container.innerHTML='';
 
-// Preserve non-Canva behaviors locally/WhatsApp
-function initializeSingleEmails(){
- const c=document.getElementById('single-emails-container');c.innerHTML='';
- c.innerHTML=`<div class="flex gap-2 items-center"><input type="email" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()"><button type="button" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button></div>`;
+ addSingleEmailInput(true);
+
  validateSingleEmails();
 }
-function addSingleEmailInput(){return;}
-function removeSingleEmailInput(){return;}
-function validateSingleEmails(){
- const inputs=document.querySelectorAll('.single-email-input');const emails=Array.from(inputs).map(i=>i.value.trim()).filter(Boolean);
- const valid=emails.length>0 && emails.every(e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
- document.getElementById('single-email-error').classList.toggle('hidden',emails.length===0||valid);
- document.getElementById('single-email-success').classList.toggle('hidden',!valid);
- if(valid)document.getElementById('single-email-success').textContent='✅ Email valid!';
- document.getElementById('checkout-btn').disabled=!valid;
-}
-function initializeGroupEmails(){}
-function addGroupEmailInput(){}
-function removeGroupEmailInput(){}
-function validateGroupEmails(){}
 
-// ===== Canva database checkout =====
-async function checkoutCanva(){
- const name=document.getElementById('canva-customer-name')?.value.trim()||'';
- const emailEl=document.querySelector('.single-email-input');
- const email=emailEl?.value.trim()||'';
- const voucher=document.getElementById('canva-voucher')?.value.trim().toUpperCase()||'';
- if(name.length<2){showToast('Nama belum diisi.','error');return;}
- if(!email){showToast('Masukkan email Canva terlebih dahulu.','error');return;}
- if(!selectedPackage){showToast('Pilih paket Canva terlebih dahulu.','error');return;}
- if(isPackageOutOfStock('Canva Premium',selectedPackage)){
-   showToast('Stok paket ini sedang habis.','error');
-   closeModal();
+function initializeSingleEmails(){
+ const c=document.getElementById('single-emails-container');
+ c.innerHTML='';
+
+ addSingleEmailInput(true);
+
+ validateSingleEmails();
+}
+
+function addSingleEmailInput(isFirst=false){
+
+ const container =
+   document.getElementById(
+     'single-emails-container'
+   );
+
+ if(!container){
    return;
  }
- const pkg={'1 Bulan':'1','2 Bulan':'2','3 Bulan':'3'}[selectedPackage];
- if(!pkg){showToast('Paket Canva tidak valid.','error');return;}
- lastCanvaEmail=email;localStorage.setItem('myclips_canva_email',email);localStorage.setItem('myclips_canva_name',name);
- const btn=document.getElementById('checkout-btn');btn.disabled=true;btn.textContent='Membuat pembayaran...';
- try{
-  const response=await fetch(CREATE_ORDER_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({package_code:pkg,customer_name:name,customer_email:email,voucher_code:voucher||undefined})});
-  const data=await response.json().catch(()=>({}));
-  if(!response.ok||!data.ok)throw new Error(data.error||'Gagal membuat pembayaran.');
-  window.snap.pay(data.snap_token,{
-   onSuccess:async()=>{
-    closeModal();showDbResult(data,'Pembayaran berhasil. Menyiapkan akses Canva...');await waitForAccess(data.order_code,email,data);
-   },
-   onPending:()=>{setMessage('Pembayaran belum selesai. Silakan selesaikan QRIS.',false);},
-   onError:()=>{setMessage('Pembayaran gagal. Silakan coba lagi.',false);},
-   onClose:()=>{setMessage('Jendela pembayaran ditutup.',false);}
-  });
- }catch(e){showToast(e.message,'error');}
- finally{btn.disabled=false;btn.textContent='Bayar Sekarang';}
+
+ const currentCount =
+   container.querySelectorAll(
+     '.single-email-input'
+   ).length;
+
+ /*
+  * Canva paket biasa dan Paket Grup sama-sama
+  * boleh menambah beberapa email.
+  *
+  * Paket Grup dibatasi 10 email.
+  * Paket 1/2/3 bulan juga dibatasi 10 email
+  * agar tidak membuat checkout terlalu panjang.
+  */
+ const maxEmails =
+   10;
+
+ if(
+   currentCount >=
+   maxEmails
+ ){
+
+   showToast(
+     'Maksimal 10 email dalam satu proses.',
+     'error'
+   );
+
+   return;
+ }
+
+ const wrap =
+   document.createElement(
+     'div'
+   );
+
+ wrap.className =
+   'flex gap-2 items-center';
+
+ wrap.innerHTML = `
+   <input
+     type="email"
+     class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input"
+     placeholder="contoh@gmail.com"
+     autocomplete="off"
+     oninput="validateSingleEmails()"
+   >
+   <button
+     type="button"
+     onclick="removeSingleEmailInput(this)"
+     class="text-pink-400 hover:text-pink-600 text-lg font-bold ${
+       isFirst
+         ? 'hidden'
+         : ''
+     }"
+   >
+     ✕
+   </button>
+ `;
+
+ container.appendChild(
+   wrap
+ );
+
 }
+
+function removeSingleEmailInput(
+ button
+){
+
+ const wrap =
+   button?.closest(
+     '.flex'
+   );
+
+ if(
+   wrap
+ ){
+
+   wrap.remove();
+
+ }
+
+ validateSingleEmails();
+
+}
+
+function validateSingleEmails(){
+
+ const inputs =
+   Array.from(
+     document.querySelectorAll(
+       '#single-emails-container .single-email-input'
+     )
+   );
+
+ const emails =
+   inputs
+     .map(
+       input =>
+         input.value
+           .trim()
+           .toLowerCase()
+     )
+     .filter(Boolean);
+
+ const pattern =
+   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+ const validFormat =
+   emails.length > 0 &&
+   emails.every(
+     email =>
+       pattern.test(
+         email
+       )
+   );
+
+ const unique =
+   new Set(
+     emails
+   ).size ===
+   emails.length;
+
+ const duplicate =
+   emails.length >
+     0 &&
+   !unique;
+
+ const errorEl =
+   document.getElementById(
+     'single-email-error'
+   );
+
+ const successEl =
+   document.getElementById(
+     'single-email-success'
+   );
+
+ if(
+   duplicate
+ ){
+
+   if(errorEl){
+     errorEl.textContent =
+       'Email tidak boleh sama.';
+     errorEl.classList.remove(
+       'hidden'
+     );
+   }
+
+   if(successEl){
+     successEl.classList.add(
+       'hidden'
+     );
+   }
+
+ }
+ else if(
+   emails.length >
+     0 &&
+   !validFormat
+ ){
+
+   if(errorEl){
+     errorEl.textContent =
+       'Ada email yang belum valid.';
+     errorEl.classList.remove(
+       'hidden'
+     );
+   }
+
+   if(successEl){
+     successEl.classList.add(
+       'hidden'
+     );
+   }
+
+ }
+ else{
+
+   if(errorEl){
+     errorEl.classList.add(
+       'hidden'
+     );
+   }
+
+   if(successEl){
+
+     successEl.textContent =
+       emails.length > 1
+         ? `✅ ${emails.length} email valid. Masing-masing akan dibuatkan order terpisah.`
+         : '✅ Email valid!';
+
+     successEl.classList.toggle(
+       'hidden',
+       !validFormat ||
+       !unique
+     );
+
+   }
+
+ }
+
+ const checkout =
+   document.getElementById(
+     'checkout-btn'
+   );
+
+ if(
+   checkout
+ ){
+
+   checkout.disabled =
+     !validFormat ||
+     !unique;
+
+ }
+
+}
+
+function initializeGroupEmails(){
+ initializeCanvaEmail();
+}
+
+function addGroupEmailInput(){
+ addSingleEmailInput(false);
+}
+
+function removeGroupEmailInput(
+ button
+){
+ removeSingleEmailInput(
+   button
+ );
+}
+
+function validateGroupEmails(){
+ validateSingleEmails();
+}
+
+
+/* =====================================================
+   CANVA MULTI-EMAIL CHECKOUT
+   ===================================================== */
+
+async function createPaymentBatch(
+  emails,
+  pkg,
+  name,
+  voucher
+){
+
+  const response =
+    await fetch(
+      CREATE_ORDER_URL,
+      {
+        method:
+          'POST',
+
+        headers:{
+          'Content-Type':
+            'application/json',
+
+          'apikey':
+            SUPABASE_KEY,
+
+          'Authorization':
+            'Bearer ' +
+            SUPABASE_KEY
+        },
+
+        body:
+          JSON.stringify({
+
+            package_code:
+              pkg,
+
+            customer_name:
+              name,
+
+            customer_emails:
+              emails,
+
+            voucher_code:
+              voucher ||
+              undefined
+
+          })
+      }
+    );
+
+
+  const data =
+    await response
+      .json()
+      .catch(
+        () => ({})
+      );
+
+
+  if(
+    !response.ok ||
+    !data.ok
+  ){
+
+    throw new Error(
+      data.error ||
+      'Gagal membuat pembayaran.'
+    );
+
+  }
+
+
+  return data;
+
+}
+
+
+function openPaymentBatch(
+  data
+){
+
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
+
+      window.snap.pay(
+        data.snap_token,
+        {
+
+          onSuccess:
+            () =>
+              resolve(data),
+
+          onPending:
+            () =>
+              reject(
+                new Error(
+                  'Pembayaran belum selesai.'
+                )
+              ),
+
+          onError:
+            () =>
+              reject(
+                new Error(
+                  'Pembayaran gagal.'
+                )
+              ),
+
+          onClose:
+            () =>
+              reject(
+                new Error(
+                  'Jendela pembayaran ditutup.'
+                )
+              )
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+async function checkoutCanva(){
+
+ const name =
+   document
+     .getElementById(
+       'canva-customer-name'
+     )
+     ?.value
+     .trim() ||
+   '';
+
+ const emailInputs =
+   Array.from(
+     document.querySelectorAll(
+       '#single-emails-container .single-email-input'
+     )
+   );
+
+ const emails =
+   emailInputs
+     .map(
+       input =>
+         input.value
+           .trim()
+           .toLowerCase()
+     )
+     .filter(Boolean);
+
+ const voucher =
+   document
+     .getElementById(
+       'canva-voucher'
+     )
+     ?.value
+     .trim()
+     .toUpperCase() ||
+   '';
+
+
+ if(
+   name.length <
+   2
+ ){
+
+   showToast(
+     'Nama belum diisi.',
+     'error'
+   );
+
+   return;
+
+ }
+
+
+ if(
+   !emails.length
+ ){
+
+   showToast(
+     'Masukkan minimal satu email Canva.',
+     'error'
+   );
+
+   return;
+
+ }
+
+
+ const emailPattern =
+   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+ if(
+   !emails.every(
+     email =>
+       emailPattern.test(
+         email
+       )
+   )
+ ){
+
+   showToast(
+     'Pastikan semua email valid.',
+     'error'
+   );
+
+   return;
+
+ }
+
+
+ if(
+   new Set(emails).size !==
+   emails.length
+ ){
+
+   showToast(
+     'Email tidak boleh sama.',
+     'error'
+   );
+
+   return;
+
+ }
+
+
+ if(
+   !selectedPackage
+ ){
+
+   showToast(
+     'Pilih paket Canva terlebih dahulu.',
+     'error'
+   );
+
+   return;
+
+ }
+
+
+ if(
+   isPackageOutOfStock(
+     'Canva Premium',
+     selectedPackage
+   )
+ ){
+
+   showToast(
+     'Stok paket ini sedang habis.',
+     'error'
+   );
+
+   closeModal();
+
+   return;
+
+ }
+
+
+ const packageMap = {
+
+   '1 Bulan':
+     '1',
+
+   '2 Bulan':
+     '2',
+
+   '3 Bulan':
+     '3',
+
+   'Paket Grup (10 akun)/Bulan':
+     'GROUP10'
+
+ };
+
+ const pkg =
+   packageMap[
+     selectedPackage
+   ];
+
+
+ if(
+   !pkg
+ ){
+
+   showToast(
+     'Paket Canva tidak valid.',
+     'error'
+   );
+
+   return;
+
+ }
+
+
+ const btn =
+   document.getElementById(
+     'checkout-btn'
+   );
+
+ btn.disabled =
+   true;
+
+ btn.textContent =
+   'Menyiapkan pembayaran...';
+
+
+ try{
+
+   lastCanvaEmail =
+     emails[0];
+
+
+   localStorage.setItem(
+     'myclips_canva_email',
+     emails[0]
+   );
+
+
+   localStorage.setItem(
+     'myclips_canva_name',
+     name
+   );
+
+
+   /*
+    * SATU request → satu batch
+    * → satu transaksi Midtrans
+    * → banyak order_code.
+    */
+
+   const data =
+     await createPaymentBatch(
+       emails,
+       pkg,
+       name,
+       voucher
+     );
+
+
+   const paidData =
+     await openPaymentBatch(
+       data
+     );
+
+
+   closeModal();
+
+
+   /*
+    * Tampilkan semua order code.
+    */
+
+   showDbResult(
+     paidData,
+     `Pembayaran berhasil untuk ${emails.length} email. Akses sedang diproses.`
+   );
+
+
+   /*
+    * Setelah settlement webhook,
+    * masing-masing email/order mempunyai token sendiri.
+    */
+
+   for(
+     const item
+     of (
+       paidData.orders ||
+       []
+     )
+   ){
+
+     try{
+
+       await waitForAccess(
+         item.order_code,
+         item.customer_email,
+         paidData
+       );
+
+     }
+     catch(
+       accessError
+     ){
+
+       console.warn(
+         'Akses order belum siap:',
+         item.order_code,
+         accessError
+       );
+
+     }
+
+   }
+
+   loadCanvaHistory(
+     lastCanvaEmail
+   );
+
+ }
+ catch(error){
+
+   showToast(
+     error?.message ||
+     'Pembayaran gagal.',
+     'error'
+   );
+
+ }
+ finally{
+
+   btn.disabled =
+     false;
+
+   btn.textContent =
+     'Bayar Sekarang';
+
+ }
+
+}
+
+
+/* =====================================================
+   END CANVA MULTI-EMAIL CHECKOUT
+   ===================================================== */
+
+/* =====================================================
+   END CANVA MULTI-EMAIL CHECKOUT
+   ===================================================== */
+
 
 // Hook checkout button while preserving design for other products.
 document.getElementById('checkout-btn').onclick=async()=>{
@@ -1634,8 +2081,7 @@ if(histBtn){
 // dan tidak otomatis mencari riwayat saat refresh.
 
 
-loadProductPrices();
-loadProductStock();
+loadStoreConfig();
 
 window.addEventListener(
   "pageshow",
