@@ -705,6 +705,170 @@ const canvaPackages={
  * Stok = 0  = STOK HABIS + tidak bisa diklik
  */
 const productStock = {};
+const productPrices = {};
+
+function formatPriceShort(value){
+  const n = Number(value || 0);
+  if(n < 1000){
+    return `Rp ${n.toLocaleString('id-ID')}`;
+  }
+  const k = n / 1000;
+  const label = Number.isInteger(k)
+    ? String(k)
+    : String(k).replace('.', ',');
+  return `Rp ${label}K`;
+}
+
+function getProductPrice(product, packageName){
+  return Number(
+    productPrices?.[product]?.[packageName] ?? 0
+  );
+}
+
+async function loadProductPrices(){
+  try{
+
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/product_prices" +
+        "?select=product_name,package_name,price,active",
+        {
+          headers:{
+            "apikey":
+              SUPABASE_KEY,
+            "Authorization":
+              "Bearer " + SUPABASE_KEY,
+            "Accept":
+              "application/json"
+          }
+        }
+      );
+
+    if(!response.ok){
+      throw new Error(
+        "Gagal membaca harga produk."
+      );
+    }
+
+    const rows =
+      await response.json();
+
+    Object.keys(productPrices)
+      .forEach(
+        key =>
+          delete productPrices[key]
+      );
+
+    (rows || []).forEach(
+      row => {
+
+        const product =
+          String(
+            row.product_name ||
+            ""
+          ).trim();
+
+        const packageName =
+          String(
+            row.package_name ||
+            ""
+          ).trim();
+
+        if(
+          !product ||
+          !packageName ||
+          row.active === false
+        ){
+          return;
+        }
+
+        if(
+          !productPrices[product]
+        ){
+          productPrices[product] = {};
+        }
+
+        productPrices[product][packageName] =
+          Number(
+            row.price ||
+            0
+          );
+
+      }
+    );
+
+    applyProductPriceState();
+
+  }catch(error){
+
+    console.error(
+      "PRODUCT PRICE ERROR:",
+      error
+    );
+
+  }
+}
+
+function applyProductPriceState(){
+
+  document
+    .querySelectorAll(
+      ".package-option"
+    )
+    .forEach(
+      option => {
+
+        const product =
+          option.dataset.product ||
+          "";
+
+        const packageName =
+          option.dataset.package ||
+          "";
+
+        const price =
+          getProductPrice(
+            product,
+            packageName
+          );
+
+        if(
+          price <= 0
+        ){
+          return;
+        }
+
+        option.dataset.price =
+          String(
+            price
+          );
+
+        const priceNodes =
+          option.querySelectorAll(
+            "p.font-bold.text-pink-500.text-lg"
+          );
+
+        if(
+          priceNodes.length
+        ){
+
+          const target =
+            priceNodes[
+              priceNodes.length - 1
+            ];
+
+          target.textContent =
+            formatPriceShort(
+              price
+            );
+
+        }
+
+      }
+    );
+
+}
 
 function getStockValue(product, packageName){
   return Number(
@@ -950,18 +1114,18 @@ function openModal(){
 
  if(selectedProduct==='Canva Premium'){
   icon.textContent='🎨';title.textContent='Canva Premium';
-  packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
+  packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
   cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');
   initializeCanvaEmail();
   document.getElementById('canva-name-wrap').classList.remove('hidden');
   document.getElementById('canva-voucher-wrap').classList.remove('hidden');
   document.getElementById('price-total').classList.add('hidden');
  } else if(selectedProduct==='CapCut Premium'){
-  icon.textContent='🎬';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
+  icon.textContent='🎬';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
   cap.classList.remove('hidden');single.classList.add('hidden');group.classList.add('hidden');document.getElementById('canva-name-wrap').classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');
   initializeCapCutQuantity();
  } else {
-  icon.textContent='🤖';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - Rp ${(parseInt(selectedPrice)/1000)}K`;
+  icon.textContent='🤖';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
   cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');document.getElementById('canva-name-wrap').classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');initializeSingleEmails();
  }
  document.getElementById('checkout-btn').disabled=true;
@@ -1389,6 +1553,7 @@ if(histBtn){
 // dan tidak otomatis mencari riwayat saat refresh.
 
 
+loadProductPrices();
 loadProductStock();
 
 window.addEventListener(
