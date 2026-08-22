@@ -911,12 +911,13 @@ async function loadProductStock(){
       error
     );
 
-    /*
-     * Gagal membaca stok = jangan menganggap
-     * semua paket habis secara permanen.
-     * Tetap biarkan state lama sambil menampilkan
-     * pesan diagnostik di console.
-     */
+    /* FAIL-CLOSED: bila stok gagal dibaca,
+       semua paket sementara dianggap habis. */
+    Object.keys(productStock).forEach(
+      key => delete productStock[key]
+    );
+
+    applyProductStockState();
   }
 }
 
@@ -981,6 +982,39 @@ function applyProductPriceState(){
 
 }
 
+function applyProductStockState(){
+  const options = document.querySelectorAll('.package-option');
+
+  options.forEach(option => {
+    const product = String(option.dataset.product || '').trim();
+    const packageName = String(option.dataset.package || '').trim();
+
+    option.classList.remove('stock-loading');
+
+    const productExists = Object.prototype.hasOwnProperty.call(productStock, product);
+    const packageExists = productExists && Object.prototype.hasOwnProperty.call(productStock[product] || {}, packageName);
+
+    if(!packageExists){
+      // FAIL-CLOSED: paket yang tidak ditemukan di database dianggap habis.
+      option.classList.add('out-of-stock');
+      option.setAttribute('aria-disabled','true');
+      option.dataset.stock = '0';
+      return;
+    }
+
+    const stock = getStockValue(product, packageName);
+    option.dataset.stock = String(stock);
+
+    if(stock <= 0){
+      option.classList.add('out-of-stock');
+      option.setAttribute('aria-disabled','true');
+    }else{
+      option.classList.remove('out-of-stock');
+      option.removeAttribute('aria-disabled');
+    }
+  });
+}
+
 function getStockValue(product, packageName){
   return Number(
     productStock?.[product]?.[packageName] ?? 0
@@ -1037,7 +1071,7 @@ document.querySelectorAll('.package-option').forEach(option=>option.addEventList
    );
 
  if(
-   stockKnown &&
+   !stockKnown ||
    isPackageOutOfStock(
      productName,
      packageName
@@ -1905,8 +1939,6 @@ async function waitForAccess(orderCode,email,paymentData){
           button = document.createElement('a');
           button.id = buttonId;
           button.href = order.access_url;
-          button.target = '_blank';
-          button.rel = 'noopener noreferrer';
           button.className = 'block w-full text-center bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 rounded-xl mb-2 transition-all shadow-md';
           button.textContent = '🔗 Akses Canva' + (safeEmail ? ' — ' + safeEmail : '');
           container.appendChild(button);
