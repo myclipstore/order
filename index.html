@@ -691,7 +691,6 @@ const CREATE_ORDER_URL=SUPABASE_URL+"/functions/v1/create-order";
 const PURCHASE_HISTORY_URL=SUPABASE_URL+"/functions/v1/purchase-history";
 const GET_ACCESS_URL=SUPABASE_URL+"/functions/v1/get-access";
 const CONSUME_ACCESS_URL=SUPABASE_URL+"/functions/v1/consume-access";
-const STORE_CONFIG_URL=SUPABASE_URL+"/functions/v1/store-config";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const canvaPackages={
@@ -733,121 +732,195 @@ function getProductPrice(product, packageName){
   );
 }
 
-async function loadStoreConfig(){
-
+async function loadProductPrices(){
   try{
 
     const response =
       await fetch(
-        STORE_CONFIG_URL,
+        SUPABASE_URL +
+        "/rest/v1/product_prices" +
+        "?select=product_name,package_name,price,active",
         {
-          method:"GET",
           headers:{
-            "apikey":SUPABASE_KEY,
-            "Authorization":"Bearer " + SUPABASE_KEY,
-            "Accept":"application/json"
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_KEY,
+
+            "Accept":
+              "application/json"
           },
           cache:"no-store"
         }
       );
 
-    const data =
-      await response.json().catch(()=>({}));
-
     if(!response.ok){
       throw new Error(
-        data.error ||
-        "Gagal membaca stok dan harga."
+        "Gagal membaca harga produk."
       );
     }
 
-    Object.keys(productPrices).forEach(
-      key => delete productPrices[key]
-    );
+    const rows =
+      await response
+        .json();
 
-    Object.keys(productStock).forEach(
-      key => delete productStock[key]
-    );
+    Object.keys(productPrices)
+      .forEach(
+        key =>
+          delete productPrices[key]
+      );
 
-    (data.prices || []).forEach(row => {
+    (rows || [])
+      .forEach(
+        row => {
 
-      const product =
-        String(row.product_name || "").trim();
+          const product =
+            String(
+              row.product_name ||
+              ""
+            ).trim();
 
-      const packageName =
-        String(row.package_name || "").trim();
+          const packageName =
+            String(
+              row.package_name ||
+              ""
+            ).trim();
 
-      if(
-        !product ||
-        !packageName ||
-        row.active === false
-      ){
-        return;
-      }
+          if(
+            !product ||
+            !packageName ||
+            row.active === false
+          ){
+            return;
+          }
 
-      if(!productPrices[product]){
-        productPrices[product] = {};
-      }
+          if(
+            !productPrices[product]
+          ){
+            productPrices[product] = {};
+          }
 
-      productPrices[product][packageName] =
-        Number(row.price || 0);
+          productPrices[product][packageName] =
+            Number(
+              row.price ||
+              0
+            );
 
-    });
-
-    (data.stock || []).forEach(row => {
-
-      const product =
-        String(row.product_name || "").trim();
-
-      const packageName =
-        String(row.package_name || "").trim();
-
-      if(
-        !product ||
-        !packageName
-      ){
-        return;
-      }
-
-      if(!productStock[product]){
-        productStock[product] = {};
-      }
-
-      productStock[product][packageName] =
-        row.active === false
-          ? 0
-          : Number(row.stock || 0);
-
-    });
+        }
+      );
 
     applyProductPriceState();
     applyCanvaOriginalPriceState();
+
+  }catch(error){
+
+    console.error(
+      "PRODUCT PRICE ERROR:",
+      error
+    );
+
+  }
+}
+
+
+async function loadProductStock(){
+  try{
+
+    const response =
+      await fetch(
+        SUPABASE_URL +
+        "/rest/v1/product_stock" +
+        "?select=product_name,package_name,stock,active",
+        {
+          headers:{
+            "apikey":
+              SUPABASE_KEY,
+
+            "Authorization":
+              "Bearer " +
+              SUPABASE_KEY,
+
+            "Accept":
+              "application/json"
+          },
+          cache:"no-store"
+        }
+      );
+
+    if(!response.ok){
+      throw new Error(
+        "Gagal membaca stok produk."
+      );
+    }
+
+    const rows =
+      await response
+        .json();
+
+    Object.keys(productStock)
+      .forEach(
+        key =>
+          delete productStock[key]
+      );
+
+    (rows || [])
+      .forEach(
+        row => {
+
+          const product =
+            String(
+              row.product_name ||
+              ""
+            ).trim();
+
+          const packageName =
+            String(
+              row.package_name ||
+              ""
+            ).trim();
+
+          if(
+            !product ||
+            !packageName
+          ){
+            return;
+          }
+
+          if(
+            !productStock[product]
+          ){
+            productStock[product] = {};
+          }
+
+          productStock[product][packageName] =
+            row.active === false
+              ? 0
+              : Number(
+                  row.stock ||
+                  0
+                );
+
+        }
+      );
+
     applyProductStockState();
 
   }catch(error){
 
     console.error(
-      "STORE CONFIG ERROR:",
+      "PRODUCT STOCK ERROR:",
       error
     );
 
-    showToast(
-      "Stok dan harga belum dapat dimuat.",
-      "error"
-    );
-
-    document
-      .querySelectorAll(".package-option")
-      .forEach(option => {
-
-        option.classList.add("out-of-stock");
-        option.classList.remove("stock-loading");
-        option.setAttribute("aria-disabled","true");
-
-      });
-
+    /*
+     * Gagal membaca stok = jangan menganggap
+     * semua paket habis secara permanen.
+     * Tetap biarkan state lama sambil menampilkan
+     * pesan diagnostik di console.
+     */
   }
-
 }
 
 
@@ -2081,7 +2154,10 @@ if(histBtn){
 // dan tidak otomatis mencari riwayat saat refresh.
 
 
-loadStoreConfig();
+Promise.all([
+  loadProductPrices(),
+  loadProductStock()
+]);
 
 window.addEventListener(
   "pageshow",
