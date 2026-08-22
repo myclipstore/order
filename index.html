@@ -578,10 +578,7 @@
        </div>
 
        <div id="single-email-section">
-        <div id="canva-name-wrap" class="mb-3">
-         <label class="block text-gray-600 text-sm font-medium mb-2">Nama</label>
-         <input id="canva-customer-name" type="text" autocomplete="off" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" placeholder="Nama Anda" oninput="persistCanvaCustomerFields()">
-        </div>
+        
         <label class="block text-gray-600 text-sm font-medium mb-2">Alamat Email</label>
         <div id="single-emails-container" class="space-y-2">
          <div class="flex gap-2 items-center">
@@ -1095,11 +1092,9 @@ function closeModal(){
    p.classList.remove('selected');
  });
 
- const nameEl=document.getElementById('canva-customer-name');
  const emailEl=document.querySelector('#single-emails-container .single-email-input');
  const voucherEl=document.getElementById('canva-voucher');
 
- if(nameEl) nameEl.value='';
  if(emailEl) emailEl.value='';
  if(voucherEl) voucherEl.value='';
 
@@ -1237,24 +1232,6 @@ function addSingleEmailInput(isFirst=false){
      '.single-email-input'
    );
 
- /*
-  * Fokus selalu diarahkan ke input yang baru dibuat.
-  * Ini mencegah keyboard/input event berikutnya
-  * masuk ke input sebelumnya.
-  */
- if(
-   newInput
- ){
-
-   requestAnimationFrame(
-     () => {
-
-       newInput.focus();
-
-     }
-   );
-
- }
 
 }
 
@@ -1612,14 +1589,7 @@ function openPaymentBatch(
 
 async function checkoutCanva(){
 
- const name =
-   document
-     .getElementById(
-       'canva-customer-name'
-     )
-     ?.value
-     .trim() ||
-   '';
+ const name = '';
 
  const emailInputs =
    Array.from(
@@ -1647,21 +1617,6 @@ async function checkoutCanva(){
      .trim()
      .toUpperCase() ||
    '';
-
-
- if(
-   name.length <
-   2
- ){
-
-   showToast(
-     'Nama belum diisi.',
-     'error'
-   );
-
-   return;
-
- }
 
 
  if(
@@ -1805,12 +1760,6 @@ async function checkoutCanva(){
    localStorage.setItem(
      'myclips_canva_email',
      emails[0]
-   );
-
-
-   localStorage.setItem(
-     'myclips_canva_name',
-     name
    );
 
 
