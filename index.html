@@ -834,11 +834,9 @@ async function loadProductStock(){
           headers:{
             "apikey":
               SUPABASE_KEY,
-
             "Authorization":
               "Bearer " +
               SUPABASE_KEY,
-
             "Accept":
               "application/json"
           },
@@ -848,7 +846,7 @@ async function loadProductStock(){
 
     if(!response.ok){
       throw new Error(
-        "Gagal membaca stok produk."
+        "Gagal membaca stok produk. HTTP " + response.status
       );
     }
 
@@ -865,7 +863,6 @@ async function loadProductStock(){
     (rows || [])
       .forEach(
         row => {
-
           const product =
             String(
               row.product_name ||
@@ -898,26 +895,96 @@ async function loadProductStock(){
                   row.stock ||
                   0
                 );
-
         }
       );
 
+    /*
+     * PENTING:
+     * Jika tabel kosong / sebagian row tidak ditemukan,
+     * paket yang tidak punya data stok dianggap HABIS.
+     * Jadi website tidak pernah menganggap paket tersedia
+     * hanya karena data stok gagal dibaca.
+     */
     applyProductStockState();
 
   }catch(error){
-
     console.error(
       "PRODUCT STOCK ERROR:",
       error
     );
 
     /*
-     * Gagal membaca stok = jangan menganggap
-     * semua paket habis secara permanen.
-     * Tetap biarkan state lama sambil menampilkan
-     * pesan diagnostik di console.
+     * FAIL-CLOSED:
+     * Jika REST API gagal dibaca, semua paket dibuat
+     * tidak tersedia sampai data stok berhasil dibaca.
      */
+    Object.keys(productStock)
+      .forEach(
+        key =>
+          delete productStock[key]
+      );
+
+    applyProductStockState();
   }
+}
+
+
+function applyProductStockState(){
+  document
+    .querySelectorAll(
+      ".package-option"
+    )
+    .forEach(
+      option => {
+        const product =
+          option.dataset.product ||
+          "";
+
+        const packageName =
+          option.dataset.package ||
+          "";
+
+        const stock =
+          getStockValue(
+            product,
+            packageName
+          );
+
+        /* selesai loading */
+        option.classList.remove(
+          "stock-loading"
+        );
+
+        if(stock <= 0){
+          option.classList.add(
+            "out-of-stock"
+          );
+
+          option.setAttribute(
+            "aria-disabled",
+            "true"
+          );
+
+          option.dataset.stock = "0";
+
+          /* Jangan biarkan paket stok habis tetap terseleksi. */
+          option.classList.remove(
+            "selected"
+          );
+        }else{
+          option.classList.remove(
+            "out-of-stock"
+          );
+
+          option.removeAttribute(
+            "aria-disabled"
+          );
+
+          option.dataset.stock =
+            String(stock);
+        }
+      }
+    );
 }
 
 
@@ -1037,7 +1104,19 @@ document.querySelectorAll('.package-option').forEach(option=>option.addEventList
    );
 
  if(
-   stockKnown &&
+   this.classList.contains('stock-loading')
+ ){
+   showToast(
+     'Sedang memuat stok, coba lagi sebentar.',
+     'error'
+   );
+   return;
+ }
+
+ /* FAIL-CLOSED: tanpa data stok paket tidak boleh dibeli. */
+ if(
+   !stockKnown ||
+   this.classList.contains('out-of-stock') ||
    isPackageOutOfStock(
      productName,
      packageName
@@ -1716,7 +1795,7 @@ async function checkoutCanva(){
    );
 
  if(
-   stockKnown &&
+   !stockKnown ||
    isPackageOutOfStock(
      'Canva Premium',
      selectedPackage
