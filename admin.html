@@ -328,6 +328,87 @@ button.small{
 
 }
 
+
+.stock-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-top:15px;
+}
+.stock-item{
+  border:1px solid #e7e9ef;
+  border-radius:14px;
+  padding:15px;
+  background:#fafbff;
+}
+.stock-item-title{
+  font-weight:800;
+  font-size:14px;
+  margin-bottom:10px;
+}
+.stock-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.stock-row input{
+  flex:1;
+  min-width:0;
+}
+.stock-badge{
+  display:inline-block;
+  margin-top:9px;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+}
+.stock-badge.ready{
+  background:#dcfce7;
+  color:#166534;
+}
+.stock-badge.empty{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+.stock-save-all{
+  margin-top:15px;
+}
+@media(max-width:1100px){
+  .stock-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:650px){
+  .stock-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+.stock-product-group{
+  margin-top:18px;
+}
+.stock-product-title{
+  font-weight:900;
+  font-size:15px;
+  color:#344054;
+  margin-bottom:9px;
+}
+.stock-product-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+}
+@media(max-width:1100px){
+  .stock-product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:650px){
+  .stock-product-grid{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 
 </head>
@@ -479,8 +560,61 @@ button.small{
 
 
 <!-- =====================================================
-     VOUCHER
+     KONTROL STOK
      ===================================================== -->
+
+<section class="card">
+
+  <div class="section-title">
+    Kontrol Stok Canva
+  </div>
+
+  <div class="section-subtitle">
+    Atur jumlah stok setiap paket Canva. Jika stok 0,
+    paket akan dianggap <strong>STOK HABIS</strong> dan
+    website akan menonaktifkan pembeliannya.
+  </div>
+
+  <div
+    id="stockMessage"
+    class="message"
+  ></div>
+
+  <div
+    id="stockGrid"
+    class="stock-grid"
+  >
+    <div
+      style="color:#667085"
+    >
+      Memuat stok...
+    </div>
+  </div>
+
+  <div class="actions stock-save-all">
+
+    <button
+      id="refreshStockBtn"
+      class="dark"
+    >
+      Refresh Stok
+    </button>
+
+    <button
+      id="saveStockBtn"
+      class="green"
+    >
+      Simpan Semua Stok
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     VOUCHER
+     =====================================================
 
 <section class="card">
 
@@ -840,6 +974,27 @@ let orders =
 let vouchers =
   [];
 
+let productStock =
+  [];
+
+const stockPackages = {
+  "Canva Premium": [
+    "1 Bulan",
+    "2 Bulan",
+    "3 Bulan",
+    "Paket Grup (15 akun)/Bulan"
+  ],
+  "CapCut Premium": [
+    "7 Hari",
+    "14 Hari",
+    "1 Bulan"
+  ],
+  "ChatGPT Pro": [
+    "15 Hari",
+    "30 Hari"
+  ]
+};
+
 let currentFilter =
   "ALL";
 
@@ -1182,6 +1337,254 @@ async function saveTeam(){
       error.message,
       false
     );
+
+  }
+
+}
+
+
+/* =====================================================
+   PRODUCT STOCK
+   ===================================================== */
+
+async function loadStock(){
+
+  const data =
+    await api(
+      "list_stock"
+    );
+
+  productStock =
+    data.stock ||
+    [];
+
+  renderStock();
+
+}
+
+
+function renderStock(){
+
+  const container =
+    $("stockGrid");
+
+  const map =
+    new Map(
+      productStock.map(
+        item => [
+          `${item.product_name}||${item.package_name}`,
+          item
+        ]
+      )
+    );
+
+  container.innerHTML =
+    Object.entries(stockPackages)
+      .map(
+        ([productName, packages]) => {
+
+          const cards =
+            packages
+              .map(
+                packageName => {
+
+                  const item =
+                    map.get(
+                      `${productName}||${packageName}`
+                    );
+
+                  const stock =
+                    Number(
+                      item?.stock ??
+                      0
+                    );
+
+                  const active =
+                    item?.active !==
+                    false;
+
+                  const empty =
+                    !active ||
+                    stock <=
+                    0;
+
+                  return `
+
+                    <div
+                      class="stock-item"
+                    >
+
+                      <div
+                        class="stock-item-title"
+                      >
+                        ${esc(
+                          packageName
+                        )}
+                      </div>
+
+                      <div
+                        class="stock-row"
+                      >
+
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          data-stock-product="${esc(
+                            productName
+                          )}"
+                          data-stock-package="${esc(
+                            packageName
+                          )}"
+                          value="${stock}"
+                        >
+
+                      </div>
+
+                      <span
+                        class="stock-badge ${
+                          empty
+                            ? "empty"
+                            : "ready"
+                        }"
+                      >
+                        ${
+                          empty
+                            ? "STOK HABIS"
+                            : "TERSEDIA"
+                        }
+                      </span>
+
+                    </div>
+
+                  `;
+
+                }
+              )
+              .join("");
+
+          return `
+
+            <div
+              class="stock-product-group"
+            >
+
+              <div
+                class="stock-product-title"
+              >
+                ${esc(
+                  productName
+                )}
+              </div>
+
+              <div
+                class="stock-product-grid"
+              >
+                ${cards}
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+async function saveStock(){
+
+  const inputs =
+    Array.from(
+      document.querySelectorAll(
+        "[data-stock-product][data-stock-package]"
+      )
+    );
+
+  try{
+
+    $("saveStockBtn")
+      .disabled =
+      true;
+
+    for(
+      const input
+      of inputs
+    ){
+
+      const productName =
+        input.dataset
+          .stockProduct;
+
+      const packageName =
+        input.dataset
+          .stockPackage;
+
+      const stock =
+        Number(
+          input.value
+        );
+
+      if(
+        !Number.isInteger(
+          stock
+        ) ||
+        stock <
+          0
+      ){
+
+        throw new Error(
+          "Stok harus berupa angka bulat minimal 0."
+        );
+
+      }
+
+      await api(
+        "update_stock",
+        {
+          product_name:
+            productName,
+
+          package_name:
+            packageName,
+
+          stock:
+            stock,
+
+          active:
+            stock >
+            0
+        }
+      );
+
+    }
+
+    message(
+      $("stockMessage"),
+      "Semua stok berhasil disimpan.",
+      true
+    );
+
+    await loadStock();
+
+  }
+
+  catch(error){
+
+    message(
+      $("stockMessage"),
+      error.message,
+      false
+    );
+
+  }
+
+  finally{
+
+    $("saveStockBtn")
+      .disabled =
+      false;
 
   }
 
@@ -2722,6 +3125,8 @@ $("loginBtn")
 
         await loadTeam();
 
+        await loadStock();
+
         await loadVouchers();
 
         await loadOrders();
@@ -2811,6 +3216,9 @@ $("logoutBtn")
       vouchers =
         [];
 
+      productStock =
+        [];
+
 
       $("app")
         .classList
@@ -2854,12 +3262,28 @@ $("addVoucherBtn")
   );
 
 
+$("refreshStockBtn")
+  .addEventListener(
+    "click",
+    loadStock
+  );
+
+
+$("saveStockBtn")
+  .addEventListener(
+    "click",
+    saveStock
+  );
+
+
 $("refreshBtn")
   .addEventListener(
     "click",
     async () => {
 
       await loadTeam();
+
+      await loadStock();
 
       await loadVouchers();
 
