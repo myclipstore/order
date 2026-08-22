@@ -70,6 +70,22 @@
       text-decoration: line-through;
       opacity: 0.6;
     }
+
+    .payment-access-status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #b45309;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .payment-access-status.hidden {
+      display: none;
+    }
     
     .discount-badge {
       background: linear-gradient(135deg, #FF4757 0%, #FF6B81 100%);
@@ -809,7 +825,7 @@ async function loadProductPrices(){
       );
 
     applyProductPriceState();
-    applyCanvaOriginalPriceState();
+    applyDynamicStrikePrices();
 
   }catch(error){
 
@@ -821,6 +837,55 @@ async function loadProductPrices(){
   }
 }
 
+
+function applyDynamicStrikePrices(){
+  const getPrice = (product, packageName) => {
+    const value = getProductPrice(product, packageName);
+    return value > 0 ? value : 0;
+  };
+
+  // Canva Paket Grup = 10 x harga Canva 1 Bulan.
+  const canvaMonthly = getPrice('Canva Premium', '1 Bulan');
+  const canvaGroup = document.querySelector(
+    '.package-option[data-product="Canva Premium"][data-package="Paket Grup (10 akun)/Bulan"]'
+  );
+  if(canvaGroup && canvaMonthly > 0){
+    const strike = canvaGroup.querySelector('.strikethrough');
+    if(strike){
+      strike.textContent = formatPriceShort(canvaMonthly * 10);
+    }
+  }
+
+  // CapCut: 14 Hari = 2 x 7 Hari; 1 Bulan = 4 x 7 Hari.
+  const capcut7 = getPrice('CapCut Premium', '7 Hari');
+  const capcut14 = document.querySelector(
+    '.package-option[data-product="CapCut Premium"][data-package="14 Hari"]'
+  );
+  const capcutMonth = document.querySelector(
+    '.package-option[data-product="CapCut Premium"][data-package="1 Bulan"]'
+  );
+  if(capcut7 > 0){
+    const strike14 = capcut14?.querySelector('.strikethrough');
+    const strikeMonth = capcutMonth?.querySelector('.strikethrough');
+    if(strike14) strike14.textContent = formatPriceShort(capcut7 * 2);
+    if(strikeMonth) strikeMonth.textContent = formatPriceShort(capcut7 * 4);
+  }
+
+  // ChatGPT: 15 Hari = 2 x harga 15 Hari; 30 Hari = 4 x harga 15 Hari.
+  const chat15 = getPrice('ChatGPT Pro', '15 Hari');
+  const chat15Option = document.querySelector(
+    '.package-option[data-product="ChatGPT Pro"][data-package="15 Hari"]'
+  );
+  const chat30Option = document.querySelector(
+    '.package-option[data-product="ChatGPT Pro"][data-package="30 Hari"]'
+  );
+  if(chat15 > 0){
+    const strike15 = chat15Option?.querySelector('.strikethrough');
+    const strike30 = chat30Option?.querySelector('.strikethrough');
+    if(strike15) strike15.textContent = formatPriceShort(chat15 * 2);
+    if(strike30) strike30.textContent = formatPriceShort(chat15 * 4);
+  }
+}
 
 async function loadProductStock(){
   try{
@@ -1029,6 +1094,8 @@ let selectedProduct=null,selectedPackage=null,selectedPrice=null,selectedCode=nu
 let historySortOrder='newest';
 let lastCanvaEmail='';
 let accessToken=new URLSearchParams(window.location.search).get('access');
+let waitingReturnFromCanva=false;
+let accessRefreshInProgress=false;
 
 const fmt=n=>new Intl.NumberFormat('id-ID').format(Number(n||0));
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -1889,11 +1956,15 @@ function makeResetWhatsAppUrl(order){
  return 'https://wa.me/'+waNumber+'?text='+encodeURIComponent(message);
 }
 
-function getCanvaDisplayTitle(packageName){
+function normalizeCanvaPackageLabel(packageName){
   const pkg = String(packageName || '').trim();
   if(!pkg) return 'Canva Premium';
-  if(pkg.toLowerCase().includes('grup')) return 'Canva Premium Paket Grup';
-  return `Canva Premium Paket ${pkg}`;
+  if(pkg.toLowerCase().includes('grup')) return 'Paket Grup';
+  return pkg;
+}
+
+function getCanvaDisplayTitle(packageName){
+  return 'Canva Premium';
 }
 
 function showDbResult(data,msg){
@@ -1912,9 +1983,37 @@ function showDbResult(data,msg){
   const emailsHtml = isGroup && emailList.length
     ? `<div class="mt-3 bg-white rounded-xl border border-pink-100 p-3 text-sm"><b>Email dalam Paket Grup (${emailList.length}):</b><div class="mt-2 space-y-1">${emailList.map((e,i)=>`<div>${i+1}. ${esc(e)}</div>`).join('')}</div></div>`
     : '';
-  body.innerHTML=`<div class="text-center mb-5"><span class="text-4xl">✅</span><h3 class="font-bold text-xl text-gray-700 mt-2">Pembayaran Berhasil</h3><p class="text-pink-500 font-semibold">${esc(getCanvaDisplayTitle(data.package_name))}</p></div><div class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 space-y-2"><div class="flex justify-between"><span>Harga Paket</span><b>Rp ${fmt(data.amount)}</b></div><div class="flex justify-between"><span>Biaya QRIS</span><b>Rp ${fmt(data.qris_fee)}</b></div><div class="flex justify-between border-t border-pink-200 pt-2"><span>Total Pembayaran</span><b>Rp ${fmt(data.customer_payment||data.final_amount)}</b></div></div><div class="mt-4 text-xs text-gray-500">${esc(msg||'Akses sedang diproses...')}</div><div id="db-result-access-status" class="payment-access-status">Akses Canva sedang disiapkan...</div><div id="db-result-access" class="mt-4"></div><div class="mt-4 bg-white rounded-xl border border-pink-100 p-3 text-sm"><b>${isGroup?'Kode Order Paket Grup:':'Kode Order:'}</b><br>${codeHtml}</div>${emailsHtml}`;
+  const packageLabel = normalizeCanvaPackageLabel(data.package_name);
+  const initialStatus = 'Akses Canva sedang disiapkan...';
+
+  body.innerHTML=`
+    <div class="text-center mb-5">
+      <span class="text-4xl">✅</span>
+      <h3 class="font-bold text-xl text-gray-700 mt-2">Pembayaran Berhasil</h3>
+      <p class="text-pink-500 font-semibold text-sm mt-1">Canva Premium</p>
+      <p class="text-pink-500 font-semibold text-sm">${esc(packageLabel)}</p>
+    </div>
+
+    <div class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 space-y-2">
+      <div class="flex justify-between"><span>Harga Paket</span><b>Rp ${fmt(data.amount)}</b></div>
+      <div class="flex justify-between"><span>Biaya QRIS</span><b>Rp ${fmt(data.qris_fee)}</b></div>
+      <div class="flex justify-between border-t border-pink-200 pt-2"><span>Total Pembayaran</span><b>Rp ${fmt(data.customer_payment||data.final_amount)}</b></div>
+    </div>
+
+    <div class="mt-4 text-sm text-gray-600 leading-6">${esc(msg||'Pembayaran berhasil. Akses sedang diproses.')}</div>
+
+    <div id="db-result-access-status" class="payment-access-status">${initialStatus}</div>
+
+    <div id="db-result-access" class="mt-4 space-y-2"></div>
+
+    <div class="mt-4 bg-white rounded-xl border border-pink-100 p-3 text-sm">
+      <b>${isGroup?'Kode Order Paket Grup:':'Kode Order:'}</b><br>${codeHtml}
+    </div>
+    ${emailsHtml}
+  `;
   modal.classList.remove('hidden');
 }
+
 function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
 
 async function waitForAccess(orderCode,email,paymentData){
@@ -2216,7 +2315,7 @@ async function loadCanvaHistory(email){
     */
    const joinButton=
     canJoin
-      ? `<a href="${esc(order.access_url)}" class="history-join-button">
+      ? `<a href="${esc(order.access_url)}" target="_self" rel="noopener" class="history-join-button">
            <span class="history-join-icon">🔗</span>
            <span>${order.can_join_again?'Gabung Canva Lagi':'Gabung Canva'}</span>
          </a>`
@@ -2238,7 +2337,7 @@ async function loadCanvaHistory(email){
 
           <div class="flex items-center gap-3 mb-3 flex-wrap">
             <h3 class="font-bold text-lg text-gray-800">
-              ${esc(getCanvaDisplayTitle(order.package_name))}
+              Canva Premium
             </h3>
 
             <span class="status-badge ${payCls}">
@@ -2347,18 +2446,32 @@ async function loadAccessPage(){
     });
     const historyData = await historyResponse.json().catch(()=>({}));
     if(historyResponse.ok){
-      const matched = (historyData.orders||[]).find(o => String(o.order_code||'').trim() === String(row.order_code||'').trim() || String(o.access_url||'').includes(String(row.access_token||'')));
+      const orders = Array.isArray(historyData.orders) ? historyData.orders : [];
+      // Paling akurat: cocokkan access_token dari halaman akses.
+      // Fallback ke order_code untuk kompatibilitas order lama.
+      const matched = orders.find(o =>
+        String(o.access_token || '').trim() === String(row.access_token || '').trim()
+      ) || orders.find(o =>
+        String(o.order_code || '').trim() === String(row.order_code || '').trim()
+      );
       packageName = matched?.package_name || '';
     }
   }catch(_){}
-  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName||'-')}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
-  document.getElementById('db-access-title').textContent=getCanvaDisplayTitle(packageName);
+  if(!packageName){
+    const months = Math.max(1, Number(row.duration_months || 1));
+    packageName = months === 1 ? '1 Bulan' : months === 2 ? '2 Bulan' : '3 Bulan';
+  }
+  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName)}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
+  const accessTitle = document.getElementById('db-access-title');
+  // Halaman akses selalu memakai judul utama "Canva Premium".
+  // Informasi paket tetap ditampilkan pada baris Paket di bawahnya.
+  accessTitle.textContent = 'Canva Premium';
   const status=String(row.access_status||'').toUpperCase();
   const badge=document.getElementById('db-access-badge');const title=document.getElementById('db-access-title');const warning=document.getElementById('db-access-warning');const btn=document.getElementById('db-continue-canva');
   if(status==='EXPIRED'){badge.textContent='MASA AKSES BERAKHIR';title.textContent='Masa akses sudah berakhir';warning.textContent='Billing order ini sudah berakhir.';btn.style.display='none';return;}
   if(status==='USED'){
    badge.textContent='AKSES DIGUNAKAN';
-   title.textContent='Akses sudah digunakan';
+   title.textContent='Canva Premium';
    warning.innerHTML=`Akses ini sudah digunakan.
 <div style="margin-top:7px"></div>
 <span style="display:block;margin:6px 0;padding:10px 12px;background:#fff7ed;color:#b45309;border:1px solid #fed7aa;border-radius:12px;line-height:1.55;">
@@ -2388,9 +2501,77 @@ ${row.next_access_at?'<div style="margin-top:8px;">Akses berikutnya tersedia: <s
 }
 
 document.getElementById('db-continue-canva').addEventListener('click',async()=>{
- const btn=document.getElementById('db-continue-canva');const msg=document.getElementById('db-access-message');btn.disabled=true;btn.textContent='Memproses akses...';
- try{const r=await fetch(CONSUME_ACCESS_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},body:JSON.stringify({access_token:accessToken})});const d=await r.json().catch(()=>({}));if(!r.ok||!d.access_url)throw new Error(d.error||'Akses tidak dapat digunakan.');window.location.href=d.access_url;}catch(e){btn.disabled=false;btn.textContent='Lanjut ke Canva';msg.className='message err';msg.style.display='block';msg.textContent=e.message;}
+ const btn=document.getElementById('db-continue-canva');
+ const msg=document.getElementById('db-access-message');
+ btn.disabled=true;
+ btn.textContent='Memproses akses...';
+
+ try{
+  const r=await fetch(CONSUME_ACCESS_URL,{
+   method:'POST',
+   headers:{
+    'Content-Type':'application/json',
+    'apikey':SUPABASE_KEY,
+    'Authorization':'Bearer '+SUPABASE_KEY
+   },
+   body:JSON.stringify({access_token:accessToken})
+  });
+
+  const d=await r.json().catch(()=>({}));
+
+  if(!r.ok||!d.access_url){
+   throw new Error(d.error||'Akses tidak dapat digunakan.');
+  }
+
+  // Tandai bahwa buyer sedang meninggalkan halaman akses.
+  // sessionStorage tetap ada ketika buyer kembali dari Canva,
+  // termasuk saat browser memakai back-cache (bfcache).
+  sessionStorage.setItem('myclips_refresh_after_canva','1');
+
+  window.location.href=d.access_url;
+
+ }catch(e){
+  btn.disabled=false;
+  btn.textContent='Lanjut ke Canva';
+  msg.className='message err';
+  msg.style.display='block';
+  msg.textContent=e.message;
+ }
 });
+
+// ==========================================================
+// AUTO REFRESH SAAT KEMBALI DARI CANVA
+// ==========================================================
+async function refreshAccessAfterCanvaReturn(){
+ if(!accessToken || accessRefreshInProgress)return;
+
+ const shouldRefresh =
+  sessionStorage.getItem('myclips_refresh_after_canva') === '1';
+
+ if(!shouldRefresh)return;
+
+ accessRefreshInProgress=true;
+ sessionStorage.removeItem('myclips_refresh_after_canva');
+
+ // Benar-benar reload halaman agar status dari database,
+ // badge akses, billing, dan tombol selalu mengambil data terbaru.
+ window.location.reload();
+}
+
+window.addEventListener('pageshow',()=>{
+ refreshAccessAfterCanvaReturn();
+});
+
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden){
+  refreshAccessAfterCanvaReturn();
+ }
+});
+
+window.addEventListener('focus',()=>{
+ refreshAccessAfterCanvaReturn();
+});
+
 document.getElementById('db-copy-order').addEventListener('click',async()=>{const t=document.getElementById('db-access-order').textContent;try{await navigator.clipboard.writeText(t);showToast('Kode order disalin ✅','success')}catch{showToast('Gagal menyalin kode','error')}});
 
 // Initialize with supplied design; only hide/show database access page when token exists.
