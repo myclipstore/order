@@ -667,9 +667,19 @@
    </div>
 
    <!-- Canva access page -->
-   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-auto bg-[#FFF0F5]">
-    <div class="min-h-full flex items-center justify-center p-4">
-     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100">
+   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-auto texture-bg relative">
+    <div class="floating-hearts">
+     <span class="heart" style="left: 5%; top: 12%; animation-delay: 0s;">💕</span>
+     <span class="heart" style="left: 16%; top: 68%; animation-delay: 2s;">💗</span>
+     <span class="heart" style="left: 28%; top: 28%; animation-delay: 4s;">💖</span>
+     <span class="heart" style="left: 46%; top: 78%; animation-delay: 1s;">💕</span>
+     <span class="heart" style="left: 64%; top: 18%; animation-delay: 3s;">💗</span>
+     <span class="heart" style="left: 76%; top: 52%; animation-delay: 5s;">💖</span>
+     <span class="heart" style="left: 87%; top: 82%; animation-delay: 2.5s;">💕</span>
+     <span class="heart" style="left: 95%; top: 40%; animation-delay: 4.5s;">💗</span>
+    </div>
+    <div class="min-h-full flex items-center justify-center p-4 relative z-10">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100 relative z-10">
       <div class="text-center mb-5">
        <div class="text-4xl">🎨</div>
        <div id="db-access-badge" class="status-badge status-completed mt-3">AKSES SIAP</div>
@@ -1668,37 +1678,36 @@ function openPaymentBatch(
       reject
     ) => {
 
+      let settled = false;
+
+      const finish = (state) => {
+        if(settled) return;
+        settled = true;
+        resolve({
+          ...data,
+          _paymentState: state
+        });
+      };
+
       window.snap.pay(
         data.snap_token,
         {
 
           onSuccess:
-            () =>
-              resolve(data),
+            () => finish('SUCCESS'),
 
           onPending:
-            () =>
-              reject(
-                new Error(
-                  'Pembayaran belum selesai.'
-                )
-              ),
+            () => finish('PENDING'),
 
           onError:
-            () =>
-              reject(
-                new Error(
-                  'Pembayaran gagal.'
-                )
-              ),
+            () => reject(
+              new Error(
+                'Pembayaran gagal.'
+              )
+            ),
 
           onClose:
-            () =>
-              reject(
-                new Error(
-                  'Jendela pembayaran ditutup.'
-                )
-              )
+            () => finish('PENDING')
 
         }
       );
@@ -1706,6 +1715,81 @@ function openPaymentBatch(
     }
   );
 
+}
+
+
+/* =====================================================
+   AUTO-CHECK PEMBAYARAN
+   ===================================================== */
+async function waitForPaymentSettlement(paymentData){
+
+  const emails = Array.isArray(paymentData?.customer_emails)
+    ? paymentData.customer_emails.map(e => String(e || '').trim().toLowerCase()).filter(Boolean)
+    : [];
+
+  const orderCodes = new Set(
+    (Array.isArray(paymentData?.orders) ? paymentData.orders : [])
+      .map(o => String(o?.order_code || '').trim())
+      .filter(Boolean)
+  );
+
+  if(!emails.length || !orderCodes.size){
+    return false;
+  }
+
+  const maxAttempts = 60;
+  const intervalMs = 3000;
+
+  for(let attempt = 1; attempt <= maxAttempts; attempt++){
+
+    let allPaid = true;
+
+    for(const email of emails){
+
+      try{
+
+        const response = await fetch(
+          PURCHASE_HISTORY_URL,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_KEY
+            },
+            body: JSON.stringify({ email })
+          }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if(!response.ok){
+          allPaid = false;
+          continue;
+        }
+
+        const orders = Array.isArray(data.orders) ? data.orders : [];
+        const matching = orders.filter(order =>
+          orderCodes.has(String(order?.order_code || '').trim())
+        );
+
+        if(!matching.length || !matching.every(order => String(order?.payment_status || '').toUpperCase() === 'PAID')){
+          allPaid = false;
+        }
+
+      }catch(_){
+        allPaid = false;
+      }
+    }
+
+    if(allPaid){
+      return true;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, intervalMs));
+  }
+
+  return false;
 }
 
 
@@ -1830,23 +1914,56 @@ async function checkoutCanva(){
       voucher
     );
 
-    const paidData = await openPaymentBatch(data);
+    const paymentResult = await openPaymentBatch(data);
 
     closeModal();
 
-    const orderMessage = isGroup
-      ? `Pembayaran berhasil untuk Paket Grup dengan ${emails.length} email. 1 kode order digunakan untuk seluruh email.`
-      : `Pembayaran berhasil untuk ${emails.length} email. Akses sedang diproses.`;
+    const paidData = paymentResult;
+    const paymentIsImmediatelySuccessful = paymentResult?._paymentState === 'SUCCESS';
+
+    const orderMessage = paymentIsImmediatelySuccessful
+      ? (isGroup
+          ? `Pembayaran berhasil untuk Paket Grup dengan ${emails.length} email. 1 kode order digunakan untuk seluruh email.`
+          : `Pembayaran berhasil untuk ${emails.length} email. Akses sedang diproses.`)
+      : 'Menunggu konfirmasi pembayaran QRIS...';
 
     showDbResult(
       paidData,
       orderMessage
     );
 
+    const accessStatusEl = document.getElementById('db-result-access-status');
+
+    if(!paymentIsImmediatelySuccessful){
+      if(accessStatusEl){
+        accessStatusEl.textContent = 'Menunggu pembayaran QRIS... Sistem akan mengecek otomatis. Anda tidak perlu menekan tombol apa pun.';
+        accessStatusEl.classList.remove('hidden');
+      }
+
+      const paymentReady = await waitForPaymentSettlement(paidData);
+
+      if(!paymentReady){
+        if(accessStatusEl){
+          accessStatusEl.textContent = 'Pembayaran belum terkonfirmasi. Silakan tunggu beberapa saat lalu cek Riwayat Pembelian.';
+          accessStatusEl.classList.remove('hidden');
+        }
+        await loadProductStock();
+        loadCanvaHistory(lastCanvaEmail);
+        return;
+      }
+
+      /*
+       * Pembayaran sudah PAID di database.
+       * Refresh otomatis agar stok, history, dan status akses
+       * membaca data terbaru tanpa buyer menekan Cek Status.
+       */
+      window.location.reload();
+      return;
+    }
+
     /*
-     * Segarkan stok setelah pembayaran sukses.
-     * Jika webhook sudah mengurangi stok, kartu produk
-     * langsung berubah menjadi STOK HABIS / TERSEDIA.
+     * Pembayaran langsung terkonfirmasi oleh Midtrans.
+     * Segarkan stok dan lanjutkan proses akses.
      */
     await loadProductStock();
 
@@ -1881,14 +1998,14 @@ async function checkoutCanva(){
 
     const accessResults = await Promise.all(accessTasks);
     const allAccessReady = accessResults.length === 0 || accessResults.every(Boolean);
-    const accessStatusEl = document.getElementById('db-result-access-status');
+    const accessStatusAfterTasks = document.getElementById('db-result-access-status');
 
-    if(accessStatusEl){
+    if(accessStatusAfterTasks){
       if(allAccessReady){
-        accessStatusEl.classList.add('hidden');
+        accessStatusAfterTasks.classList.add('hidden');
       }else{
-        accessStatusEl.textContent = 'Pembayaran berhasil. Sebagian akses Canva masih disiapkan. Silakan cek Riwayat Pembelian.';
-        accessStatusEl.classList.remove('hidden');
+        accessStatusAfterTasks.textContent = 'Pembayaran berhasil. Sebagian akses Canva masih disiapkan. Silakan cek Riwayat Pembelian.';
+        accessStatusAfterTasks.classList.remove('hidden');
       }
     }
 
@@ -1898,7 +2015,12 @@ async function checkoutCanva(){
      */
     await loadProductStock();
 
-    loadCanvaHistory(lastCanvaEmail);
+    /*
+     * Setelah pembayaran sukses, refresh otomatis sekali agar
+     * seluruh halaman sinkron dengan database terbaru.
+     */
+    window.location.reload();
+    return;
 
   }catch(error){
 
