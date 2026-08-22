@@ -585,7 +585,7 @@
         <label class="block text-gray-600 text-sm font-medium mb-2">Alamat Email</label>
         <div id="single-emails-container" class="space-y-2">
          <div class="flex gap-2 items-center">
-          <input type="email" autocomplete="off" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()">
+          <input type="email" name="canva_email_1" id="canva-email-1" autocomplete="section-canva-1 email" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="email" data-form-type="other" data-lpignore="true" data-1p-ignore="true" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()">
           <button type="button" onclick="removeSingleEmailInput(this)" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>
          </div>
         </div>
@@ -1109,6 +1109,17 @@ function closeModal(){
  if(err) err.classList.add('hidden');
  if(ok) ok.classList.add('hidden');
 
+ document
+   .querySelectorAll(
+     '#single-emails-container .single-email-input'
+   )
+   .forEach(
+     input => {
+       input.value = '';
+       input.removeAttribute('value');
+     }
+   );
+
  const price=document.getElementById('price-total');
 
  if(price) price.classList.add('hidden');
@@ -1154,14 +1165,6 @@ function addSingleEmailInput(isFirst=false){
      '.single-email-input'
    ).length;
 
- /*
-  * Canva paket biasa dan Paket Grup sama-sama
-  * boleh menambah beberapa email.
-  *
-  * Paket Grup dibatasi 10 email.
-  * Paket 1/2/3 bulan juga dibatasi 10 email
-  * agar tidak membuat checkout terlalu panjang.
-  */
  const maxEmails =
    10;
 
@@ -1178,6 +1181,9 @@ function addSingleEmailInput(isFirst=false){
    return;
  }
 
+ const emailIndex =
+   currentCount + 1;
+
  const wrap =
    document.createElement(
      'div'
@@ -1186,12 +1192,27 @@ function addSingleEmailInput(isFirst=false){
  wrap.className =
    'flex gap-2 items-center';
 
+ /*
+  * Setiap input diberi NAME + autocomplete section
+  * yang berbeda agar Chrome/Edge/password manager
+  * tidak menganggap semua field email sebagai field
+  * yang sama dan mengisi email pertama ke field kedua.
+  */
  wrap.innerHTML = `
    <input
      type="email"
+     name="canva_email_${emailIndex}"
+     id="canva-email-${emailIndex}"
      class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input"
      placeholder="contoh@gmail.com"
-     autocomplete="off"
+     autocomplete="section-canva-${emailIndex} email"
+     autocorrect="off"
+     autocapitalize="none"
+     spellcheck="false"
+     inputmode="email"
+     data-form-type="other"
+     data-lpignore="true"
+     data-1p-ignore="true"
      oninput="validateSingleEmails()"
    >
    <button
@@ -1211,7 +1232,79 @@ function addSingleEmailInput(isFirst=false){
    wrap
  );
 
+ const newInput =
+   wrap.querySelector(
+     '.single-email-input'
+   );
+
+ /*
+  * Fokus selalu diarahkan ke input yang baru dibuat.
+  * Ini mencegah keyboard/input event berikutnya
+  * masuk ke input sebelumnya.
+  */
+ if(
+   newInput
+ ){
+
+   requestAnimationFrame(
+     () => {
+
+       newInput.focus();
+
+     }
+   );
+
+ }
+
 }
+
+/*
+ * Guard untuk input email multi-field.
+ *
+ * Jika browser/password-manager mencoba menyalin
+ * nilai email aktif ke field lain saat keyboard digunakan,
+ * field lain tidak dibiarkan ikut terisi.
+ */
+document.addEventListener(
+  "focusin",
+  event => {
+
+    const input =
+      event.target?.closest(
+        "#single-emails-container .single-email-input"
+      );
+
+    if(
+      !input
+    ){
+      return;
+    }
+
+    document
+      .querySelectorAll(
+        "#single-emails-container .single-email-input"
+      )
+      .forEach(
+        other => {
+
+          if(
+            other !== input &&
+            other.dataset.autoFilledMirror === "1"
+          ){
+
+            other.value = "";
+
+            delete other.dataset
+              .autoFilledMirror;
+
+          }
+
+        }
+      );
+
+  }
+);
+
 
 function removeSingleEmailInput(
  button
