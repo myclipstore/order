@@ -2430,74 +2430,145 @@ async function loadAccessPage(){
  try{
   const {data,error}=await supabaseClient.rpc('open_access',{p_access_token:accessToken});
   if(error)throw error;
+
   const row=Array.isArray(data)?data[0]:data;
   if(!row)throw new Error('Akses tidak ditemukan.');
-  document.getElementById('db-access-order').textContent=row.order_code||'-';
-  let packageName = '';
-  try{
-    const historyResponse = await fetch(PURCHASE_HISTORY_URL,{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey':SUPABASE_KEY,
-        'Authorization':'Bearer '+SUPABASE_KEY
-      },
-      body:JSON.stringify({email:row.customer_email||''})
-    });
-    const historyData = await historyResponse.json().catch(()=>({}));
-    if(historyResponse.ok){
-      const orders = Array.isArray(historyData.orders) ? historyData.orders : [];
-      // Paling akurat: cocokkan access_token dari halaman akses.
-      // Fallback ke order_code untuk kompatibilitas order lama.
-      const matched = orders.find(o =>
-        String(o.access_token || '').trim() === String(row.access_token || '').trim()
-      ) || orders.find(o =>
-        String(o.order_code || '').trim() === String(row.order_code || '').trim()
-      );
-      packageName = matched?.package_name || '';
-    }
-  }catch(_){}
-  if(!packageName){
-    const months = Math.max(1, Number(row.duration_months || 1));
-    packageName = months === 1 ? '1 Bulan' : months === 2 ? '2 Bulan' : '3 Bulan';
+
+  const rowDuration=Math.max(1,Number(row.duration_months||1));
+  const rowPackageName=String(row.package_name||'').trim();
+  let packageName='';
+
+  /*
+   * PRIORITAS PAKET:
+   * 1) package_name langsung dari open_access bila tersedia.
+   * 2) Untuk paket biasa, duration_months menjadi sumber kebenaran.
+   * 3) Untuk durasi 1 bulan, cek purchase-history berdasarkan access_token
+   *    untuk membedakan "1 Bulan" dengan "Paket Grup".
+   *
+   * Ini mencegah order 3 Bulan terbaca sebagai 1 Bulan hanya karena
+   * pencarian history menemukan order lama dengan order_code yang sama.
+   */
+  if(rowPackageName){
+    packageName=rowPackageName;
   }
+
+  if(!packageName && rowDuration>=3){
+    packageName='3 Bulan';
+  }else if(!packageName && rowDuration===2){
+    packageName='2 Bulan';
+  }
+
+  if(!packageName || rowDuration===1){
+    try{
+      const historyResponse=await fetch(PURCHASE_HISTORY_URL,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':SUPABASE_KEY,
+          'Authorization':'Bearer '+SUPABASE_KEY
+        },
+        body:JSON.stringify({email:row.customer_email||''})
+      });
+
+      const historyData=await historyResponse.json().catch(()=>({}));
+
+      if(historyResponse.ok){
+        const orders=Array.isArray(historyData.orders)?historyData.orders:[];
+
+        /* exact access_token hanya */
+        const exactTokenMatch=orders.find(o=>
+          String(o.access_token||'').trim()===String(row.access_token||'').trim()
+        );
+
+        if(exactTokenMatch?.package_name){
+          packageName=String(exactTokenMatch.package_name).trim();
+        }else if(!packageName){
+          /* fallback paling ketat: order_code + email */
+          const exactOrderMatch=orders.find(o=>
+            String(o.order_code||'').trim()===String(row.order_code||'').trim() &&
+            String(o.customer_email||'').trim().toLowerCase()===String(row.customer_email||'').trim().toLowerCase()
+          );
+
+          if(exactOrderMatch?.package_name){
+            packageName=String(exactOrderMatch.package_name).trim();
+          }
+        }
+      }
+    }catch(_){
+      /* fallback di bawah */
+    }
+  }
+
+  /*
+   * Jika tetap kosong, gunakan duration sebagai fallback terakhir.
+   * Durasi 1 bulan = 1 Bulan. Paket Grup akan terdeteksi dari history
+   * bila history menyediakan nama paketnya.
+   */
+  if(!packageName){
+    packageName=rowDuration>=3
+      ? '3 Bulan'
+      : rowDuration===2
+        ? '2 Bulan'
+        : '1 Bulan';
+  }
+
+  document.getElementById('db-access-order').textContent=row.order_code||'-';
   document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName)}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
-  const accessTitle = document.getElementById('db-access-title');
-  // Halaman akses selalu memakai judul utama "Canva Premium".
-  // Informasi paket tetap ditampilkan pada baris Paket di bawahnya.
-  accessTitle.textContent = 'Canva Premium';
+
+  /* Halaman akses selalu memakai judul utama Canva Premium. */
+  document.getElementById('db-access-title').textContent='Canva Premium';
+
   const status=String(row.access_status||'').toUpperCase();
-  const badge=document.getElementById('db-access-badge');const title=document.getElementById('db-access-title');const warning=document.getElementById('db-access-warning');const btn=document.getElementById('db-continue-canva');
-  if(status==='EXPIRED'){badge.textContent='MASA AKSES BERAKHIR';title.textContent='Masa akses sudah berakhir';warning.textContent='Billing order ini sudah berakhir.';btn.style.display='none';return;}
+  const badge=document.getElementById('db-access-badge');
+  const title=document.getElementById('db-access-title');
+  const warning=document.getElementById('db-access-warning');
+  const btn=document.getElementById('db-continue-canva');
+
+  if(status==='EXPIRED'){
+    badge.textContent='MASA AKSES BERAKHIR';
+    title.textContent='Masa akses sudah berakhir';
+    warning.textContent='Billing order ini sudah berakhir.';
+    btn.style.display='none';
+    return;
+  }
+
   if(status==='USED'){
-   badge.textContent='AKSES DIGUNAKAN';
-   title.textContent='Canva Premium';
-   warning.innerHTML=`Akses ini sudah digunakan.
+    badge.textContent='AKSES DIGUNAKAN';
+    title.textContent='Canva Premium';
+    warning.innerHTML=`Akses ini sudah digunakan.
 <div style="margin-top:7px"></div>
 <span style="display:block;margin:6px 0;padding:10px 12px;background:#fff7ed;color:#b45309;border:1px solid #fed7aa;border-radius:12px;line-height:1.55;">
 <strong>PENTING!</strong> Jika anda <strong>salah akun Canva</strong>, segeralah reset akses Canva melalui tombol merah dibawah! (Via WhatsApp)
 </span>
 ${row.next_access_at?'<div style="margin-top:8px;">Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong></div>':''}`;
-   btn.style.display='none';
-   const resetBtn=document.getElementById('db-reset-request');
-   const waNumber='85707486749';
-   const message=[
-    'Halo Admin MYCLIPS, saya ingin mengajukan reset akses Canva.',
-    '',
-    'Kode Order: '+(row.order_code||'-'),
-    'Email pembelian: '+(row.customer_email||'-'),
-    'Siklus akses: '+(Number(row.access_cycle||0))+' / '+(Number(row.duration_months||1)),
-    '',
-    'Saya salah memasukkan email / mengalami kendala saat menggunakan akses. Mohon akses pada siklus ini di-reset agar saya dapat mencoba kembali.',
-    '',
-    'Terima kasih.'
-   ].join('\n');
-   resetBtn.href='https://wa.me/'+waNumber+'?text='+encodeURIComponent(message);
-   resetBtn.classList.remove('hidden');
-   return;
+    btn.style.display='none';
+
+    const resetBtn=document.getElementById('db-reset-request');
+    const waNumber='85707486749';
+    const message=[
+      'Halo Admin MYCLIPS, saya ingin mengajukan reset akses Canva.',
+      '',
+      'Kode Order: '+(row.order_code||'-'),
+      'Email pembelian: '+(row.customer_email||'-'),
+      'Paket: '+packageName,
+      'Siklus akses: '+(Number(row.access_cycle||0))+' / '+(Number(row.duration_months||1)),
+      '',
+      'Saya salah memasukkan email / mengalami kendala saat menggunakan akses. Mohon akses pada siklus ini di-reset agar saya dapat mencoba kembali.',
+      '',
+      'Terima kasih.'
+    ].join('\n');
+    resetBtn.href='https://wa.me/'+waNumber+'?text='+encodeURIComponent(message);
+    resetBtn.classList.remove('hidden');
+    return;
   }
-  badge.textContent='AKSES SIAP';warning.innerHTML='Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
- }catch(e){document.getElementById('db-access-title').textContent='Akses tidak dapat digunakan';document.getElementById('db-access-warning').textContent=e.message;document.getElementById('db-continue-canva').style.display='none';}
+
+  badge.textContent='AKSES SIAP';
+  warning.innerHTML='Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
+ }catch(e){
+  document.getElementById('db-access-title').textContent='Akses tidak dapat digunakan';
+  document.getElementById('db-access-warning').textContent=e.message;
+  document.getElementById('db-continue-canva').style.display='none';
+ }
 }
 
 document.getElementById('db-continue-canva').addEventListener('click',async()=>{
