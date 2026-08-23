@@ -2165,12 +2165,27 @@ function showDbResult(data,msg){
 function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
 
 function buildCanvaAccessUrl(order){
-  const token = String(order?.access_token || '').trim();
-  if(token){
-    return `${window.location.origin}/order/?access=${encodeURIComponent(token)}`;
+  if(!order) return '';
+  const directToken = String(order.access_token || '').trim();
+  if(directToken){
+    return `${window.location.origin}/order/?access=${encodeURIComponent(directToken)}`;
   }
-  const backendUrl = String(order?.access_url || '').trim();
-  return backendUrl;
+  const backendUrl = String(order.access_url || '').trim();
+  if(backendUrl){
+    try{
+      const parsed = new URL(backendUrl, window.location.origin);
+      const token = String(parsed.searchParams.get('access') || '').trim();
+      if(token){
+        return `${window.location.origin}/order/?access=${encodeURIComponent(token)}`;
+      }
+      if(parsed.pathname.toLowerCase().startsWith('/order/')){
+        return parsed.toString();
+      }
+    }catch(error){
+      console.warn('INVALID ACCESS URL:', error);
+    }
+  }
+  return '';
 }
 
 async function waitForAccess(orderCode,email,paymentData){
@@ -2295,15 +2310,15 @@ async function waitForAccess(orderCode,email,paymentData){
           ? data.orders
           : [];
 
+      const normalizedOrderCode = String(orderCode || '').trim();
+      const normalizedEmail = safeEmail;
       const order =
-        orders.find(
-          item =>
-            String(
-              item?.order_code || ''
-            ).trim() ===
-            String(
-              orderCode || ''
-            ).trim()
+        orders.find(item =>
+          String(item?.order_code || '').trim() === normalizedOrderCode &&
+          String(item?.customer_email || '').trim().toLowerCase() === normalizedEmail
+        ) ||
+        orders.find(item =>
+          String(item?.order_code || '').trim() === normalizedOrderCode
         );
 
       const accessUrl = buildCanvaAccessUrl(order);
@@ -2338,7 +2353,12 @@ async function waitForAccess(orderCode,email,paymentData){
             '_self';
 
           button.rel =
-            'noopener';
+            'noopener noreferrer';
+
+          button.addEventListener('click', event => {
+            event.preventDefault();
+            window.location.href = button.href;
+          });
 
           button.className =
             'block w-full text-center ' +
