@@ -2446,11 +2446,22 @@ async function loadAccessPage(){
     });
     const historyData = await historyResponse.json().catch(()=>({}));
     if(historyResponse.ok){
-      const matched = (historyData.orders||[]).find(o => String(o.order_code||'').trim() === String(row.order_code||'').trim() || String(o.access_url||'').includes(String(row.access_token||'')));
+      const orders = Array.isArray(historyData.orders) ? historyData.orders : [];
+      // Paling akurat: cocokkan access_token dari halaman akses.
+      // Fallback ke order_code untuk kompatibilitas order lama.
+      const matched = orders.find(o =>
+        String(o.access_token || '').trim() === String(row.access_token || '').trim()
+      ) || orders.find(o =>
+        String(o.order_code || '').trim() === String(row.order_code || '').trim()
+      );
       packageName = matched?.package_name || '';
     }
   }catch(_){}
-  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName||'-')}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
+  if(!packageName){
+    const months = Math.max(1, Number(row.duration_months || 1));
+    packageName = months === 1 ? '1 Bulan' : months === 2 ? '2 Bulan' : '3 Bulan';
+  }
+  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName)}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
   const accessTitle = document.getElementById('db-access-title');
   // Halaman akses selalu memakai judul utama "Canva Premium".
   // Informasi paket tetap ditampilkan pada baris Paket di bawahnya.
