@@ -2164,6 +2164,15 @@ function showDbResult(data,msg){
 
 function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
 
+function buildCanvaAccessUrl(order){
+  const token = String(order?.access_token || '').trim();
+  if(token){
+    return `${window.location.origin}/order/?access=${encodeURIComponent(token)}`;
+  }
+  const backendUrl = String(order?.access_url || '').trim();
+  return backendUrl;
+}
+
 async function waitForAccess(orderCode,email,paymentData){
 
   const rootContainer =
@@ -2297,9 +2306,11 @@ async function waitForAccess(orderCode,email,paymentData){
             ).trim()
         );
 
+      const accessUrl = buildCanvaAccessUrl(order);
+
       if(
         order &&
-        order.access_url &&
+        accessUrl &&
         order.can_join !== false
       ){
 
@@ -2317,7 +2328,7 @@ async function waitForAccess(orderCode,email,paymentData){
             buttonId;
 
           button.href =
-            order.access_url;
+            accessUrl;
 
           /*
            * Tidak ada target="_blank".
@@ -2348,7 +2359,7 @@ async function waitForAccess(orderCode,email,paymentData){
         }else{
 
           button.href =
-            order.access_url;
+            accessUrl;
 
         }
 
@@ -2451,9 +2462,11 @@ async function loadCanvaHistory(email){
       ? `${dateOnly(order.billing_start_at)} – ${dateOnly(order.billing_end_at)}`
       : '-';
 
+   const historyAccessUrl = buildCanvaAccessUrl(order);
+
    const canJoin=
     Boolean(order.can_join) &&
-    Boolean(order.access_url);
+    Boolean(historyAccessUrl);
 
    /*
     * GREEN = ready
@@ -2463,7 +2476,7 @@ async function loadCanvaHistory(email){
     */
    const joinButton=
     canJoin
-      ? `<a href="${esc(order.access_url)}" target="_self" rel="noopener" class="history-join-button">
+      ? `<a href="${esc(historyAccessUrl)}" target="_self" rel="noopener" class="history-join-button">
            <span class="history-join-icon">🔗</span>
            <span>${order.can_join_again?'Gabung Canva Lagi':'Gabung Canva'}</span>
          </a>`
