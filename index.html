@@ -1104,10 +1104,6 @@ let selectedProduct=null,selectedPackage=null,selectedPrice=null,selectedCode=nu
 let historySortOrder='newest';
 let lastCanvaEmail='';
 let accessToken=new URLSearchParams(window.location.search).get('access');
-if(accessToken){
-  const accessLayer=document.getElementById('db-access-page');
-  if(accessLayer) accessLayer.classList.remove('hidden');
-}
 let waitingReturnFromCanva=false;
 let accessRefreshInProgress=false;
 
@@ -1672,192 +1668,54 @@ async function createPaymentBatch(
 }
 
 
-async function waitForPaymentConfirmed(data, maxAttempts=24, intervalMs=3000){
-
-  const emails = Array.isArray(data?.customer_emails)
-    ? data.customer_emails
-        .map(v => String(v || '').trim().toLowerCase())
-        .filter(Boolean)
-    : [];
-
-  const orderCodes = new Set(
-    (Array.isArray(data?.orders) ? data.orders : [])
-      .map(item => String(item?.order_code || '').trim())
-      .filter(Boolean)
-  );
-
-  if(Array.isArray(data?.order_codes)){
-    data.order_codes.forEach(code => {
-      const value = String(code || '').trim();
-      if(value) orderCodes.add(value);
-    });
-  }
-
-  const batchCode = String(
-    data?.batch_code || data?.batchCode || ''
-  ).trim();
-
-  if(!emails.length){
-    throw new Error('Email pembayaran tidak ditemukan.');
-  }
-
-  for(let attempt = 1; attempt <= maxAttempts; attempt++){
-
-    let allPaid = true;
-
-    try{
-
-      for(const email of emails){
-
-        const response = await fetch(
-          PURCHASE_HISTORY_URL,
-          {
-            method:'POST',
-            headers:{
-              'Content-Type':'application/json',
-              'apikey':SUPABASE_KEY,
-              'Authorization':'Bearer ' + SUPABASE_KEY
-            },
-            body:JSON.stringify({email}),
-            cache:'no-store'
-          }
-        );
-
-        const history = await response
-          .json()
-          .catch(() => ({}));
-
-        if(!response.ok){
-          allPaid = false;
-          continue;
-        }
-
-        const orders = Array.isArray(history.orders)
-          ? history.orders
-          : [];
-
-        const matchingOrders = orders.filter(item => {
-          const itemOrderCode = String(
-            item?.order_code || ''
-          ).trim();
-
-          const itemBatchCode = String(
-            item?.batch_code || ''
-          ).trim();
-
-          if(batchCode && itemBatchCode === batchCode){
-            return true;
-          }
-
-          return itemOrderCode && orderCodes.has(itemOrderCode);
-        });
-
-        const paid = matchingOrders.some(
-          item =>
-            String(
-              item?.payment_status || ''
-            ).toUpperCase() === 'PAID'
-        );
-
-        if(!paid){
-          allPaid = false;
-        }
-      }
-
-      if(allPaid){
-        return data;
-      }
-
-    }catch(error){
-      console.warn(
-        'AUTO CHECK PAYMENT:',
-        error
-      );
-      allPaid = false;
-    }
-
-    /*
-     * Jangan reload halaman dan jangan mengganggu
-     * tampilan struk. Cek dilakukan diam-diam.
-     */
-    await new Promise(
-      resolve =>
-        setTimeout(
-          resolve,
-          intervalMs
-        )
-    );
-  }
-
-  throw new Error(
-    'Pembayaran belum terkonfirmasi. Silakan cek kembali beberapa saat lagi.'
-  );
-}
-
-
-function openPaymentBatch(data){
+function openPaymentBatch(
+  data
+){
 
   return new Promise(
-    (resolve,reject) => {
-
-      let settled = false;
-
-      const confirm = () => {
-        waitForPaymentConfirmed(data)
-          .then(result => {
-            if(settled) return;
-            settled = true;
-            resolve(result);
-          })
-          .catch(error => {
-            if(settled) return;
-            settled = true;
-            reject(error);
-          });
-      };
+    (
+      resolve,
+      reject
+    ) => {
 
       window.snap.pay(
         data.snap_token,
         {
-          onSuccess: () => {
-            /*
-             * onSuccess Midtrans belum selalu berarti
-             * webhook database sudah selesai. Jadi tetap
-             * verifikasi PAID di background.
-             */
-            confirm();
-          },
 
-          onPending: () => {
-            /*
-             * Jangan langsung menganggap gagal.
-             * QRIS bisa selesai beberapa saat setelah popup
-             * memberi status pending.
-             */
-            confirm();
-          },
+          onSuccess:
+            () =>
+              resolve(data),
 
-          onError: () => {
-            if(settled) return;
-            settled = true;
-            reject(
-              new Error(
-                'Pembayaran gagal.'
+          onPending:
+            () =>
+              reject(
+                new Error(
+                  'Pembayaran belum selesai.'
+                )
+              ),
+
+          onError:
+            () =>
+              reject(
+                new Error(
+                  'Pembayaran gagal.'
+                )
+              ),
+
+          onClose:
+            () =>
+              reject(
+                new Error(
+                  'Jendela pembayaran ditutup.'
+                )
               )
-            );
-          },
 
-          onClose: () => {
-            /*
-             * Buyer boleh menutup popup setelah membayar.
-             * Sistem tetap mengecek status di background.
-             */
-            confirm();
-          }
         }
       );
+
     }
   );
+
 }
 
 
@@ -2168,30 +2026,6 @@ function showDbResult(data,msg){
 
 function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
 
-function buildCanvaAccessUrl(order){
-  if(!order) return '';
-  const directToken = String(order.access_token || '').trim();
-  if(directToken){
-    return `${window.location.origin}/order/?access=${encodeURIComponent(directToken)}`;
-  }
-  const backendUrl = String(order.access_url || '').trim();
-  if(backendUrl){
-    try{
-      const parsed = new URL(backendUrl, window.location.origin);
-      const token = String(parsed.searchParams.get('access') || '').trim();
-      if(token){
-        return `${window.location.origin}/order/?access=${encodeURIComponent(token)}`;
-      }
-      if(parsed.pathname.toLowerCase().startsWith('/order/')){
-        return parsed.toString();
-      }
-    }catch(error){
-      console.warn('INVALID ACCESS URL:', error);
-    }
-  }
-  return '';
-}
-
 async function waitForAccess(orderCode,email,paymentData){
 
   const rootContainer =
@@ -2314,22 +2148,20 @@ async function waitForAccess(orderCode,email,paymentData){
           ? data.orders
           : [];
 
-      const normalizedOrderCode = String(orderCode || '').trim();
-      const normalizedEmail = safeEmail;
       const order =
-        orders.find(item =>
-          String(item?.order_code || '').trim() === normalizedOrderCode &&
-          String(item?.customer_email || '').trim().toLowerCase() === normalizedEmail
-        ) ||
-        orders.find(item =>
-          String(item?.order_code || '').trim() === normalizedOrderCode
+        orders.find(
+          item =>
+            String(
+              item?.order_code || ''
+            ).trim() ===
+            String(
+              orderCode || ''
+            ).trim()
         );
-
-      const accessUrl = buildCanvaAccessUrl(order);
 
       if(
         order &&
-        accessUrl &&
+        order.access_url &&
         order.can_join !== false
       ){
 
@@ -2347,7 +2179,7 @@ async function waitForAccess(orderCode,email,paymentData){
             buttonId;
 
           button.href =
-            accessUrl;
+            order.access_url;
 
           /*
            * Tidak ada target="_blank".
@@ -2357,12 +2189,7 @@ async function waitForAccess(orderCode,email,paymentData){
             '_self';
 
           button.rel =
-            'noopener noreferrer';
-
-          button.addEventListener('click', event => {
-            event.preventDefault();
-            window.location.href = button.href;
-          });
+            'noopener';
 
           button.className =
             'block w-full text-center ' +
@@ -2383,7 +2210,7 @@ async function waitForAccess(orderCode,email,paymentData){
         }else{
 
           button.href =
-            accessUrl;
+            order.access_url;
 
         }
 
@@ -2486,11 +2313,9 @@ async function loadCanvaHistory(email){
       ? `${dateOnly(order.billing_start_at)} – ${dateOnly(order.billing_end_at)}`
       : '-';
 
-   const historyAccessUrl = buildCanvaAccessUrl(order);
-
    const canJoin=
     Boolean(order.can_join) &&
-    Boolean(historyAccessUrl);
+    Boolean(order.access_url);
 
    /*
     * GREEN = ready
@@ -2500,7 +2325,7 @@ async function loadCanvaHistory(email){
     */
    const joinButton=
     canJoin
-      ? `<a href="${esc(historyAccessUrl)}" target="_self" rel="noopener" class="history-join-button">
+      ? `<a href="${esc(order.access_url)}" target="_self" rel="noopener" class="history-join-button">
            <span class="history-join-icon">🔗</span>
            <span>${order.can_join_again?'Gabung Canva Lagi':'Gabung Canva'}</span>
          </a>`
@@ -2611,109 +2436,49 @@ if(oldestBtn)oldestBtn.addEventListener('click',()=>{historySortOrder='oldest';o
 // ===== ACCESS PAGE =====
 async function loadAccessPage(){
  if(!accessToken)return;
-
- const accessLayer=document.getElementById('db-access-page');
- if(accessLayer)accessLayer.classList.remove('hidden');
-
+ document.getElementById('db-access-page').classList.remove('hidden');
  try{
-  let row=null;
-
-  // Primary source: get-access Edge Function.
-  // This avoids depending on the optional open_access RPC.
-  const response=await fetch(GET_ACCESS_URL,{
-   method:'POST',
-   headers:{
-    'Content-Type':'application/json',
-    'apikey':SUPABASE_KEY,
-    'Authorization':'Bearer '+SUPABASE_KEY
-   },
-   body:JSON.stringify({access_token:accessToken})
-  });
-
-  const data=await response.json().catch(()=>({}));
-
-  if(response.ok && data.status!=='NOT_FOUND'){
-   row={
-    order_code:data.order_code,
-    customer_email:data.customer_email,
-    customer_name:data.customer_name,
-    product_name:data.product_name,
-    duration_months:data.duration_months,
-    payment_status:data.payment_status || 'PAID',
-    access_status:data.status || data.access_status,
-    access_token:accessToken,
-    access_cycle:data.access_cycle,
-    billing_start_at:data.billing_start_at,
-    billing_end_at:data.billing_end_at,
-    last_access_at:data.last_access_at,
-    next_access_at:data.next_access_at,
-    canva_team_name:data.canva_team_name
-   };
-  }
-
-  // Compatibility fallback for older deployments.
-  if(!row){
-   const rpcResult=await supabaseClient.rpc('open_access',{p_access_token:accessToken});
-   if(rpcResult.error)throw rpcResult.error;
-   row=Array.isArray(rpcResult.data)?rpcResult.data[0]:rpcResult.data;
-  }
-
-  if(!row)throw new Error(data.error||'Akses tidak ditemukan.');
-
+  const {data,error}=await supabaseClient.rpc('open_access',{p_access_token:accessToken});
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row)throw new Error('Akses tidak ditemukan.');
   document.getElementById('db-access-order').textContent=row.order_code||'-';
-
-  let packageName='';
+  let packageName = '';
   try{
-   const historyResponse=await fetch(PURCHASE_HISTORY_URL,{
-    method:'POST',
-    headers:{
-     'Content-Type':'application/json',
-     'apikey':SUPABASE_KEY,
-     'Authorization':'Bearer '+SUPABASE_KEY
-    },
-    body:JSON.stringify({email:row.customer_email||''})
-   });
-
-   const historyData=await historyResponse.json().catch(()=>({}));
-   if(historyResponse.ok){
-    const orders=Array.isArray(historyData.orders)?historyData.orders:[];
-    const matched=orders.find(o=>
-      String(o.access_token||'').trim()===String(accessToken||'').trim()
-    )||orders.find(o=>
-      String(o.order_code||'').trim()===String(row.order_code||'').trim()
-    );
-    packageName=matched?.package_name||'';
-   }
-  }catch(_){ }
-
+    const historyResponse = await fetch(PURCHASE_HISTORY_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+SUPABASE_KEY
+      },
+      body:JSON.stringify({email:row.customer_email||''})
+    });
+    const historyData = await historyResponse.json().catch(()=>({}));
+    if(historyResponse.ok){
+      const orders = Array.isArray(historyData.orders) ? historyData.orders : [];
+      // Paling akurat: cocokkan access_token dari halaman akses.
+      // Fallback ke order_code untuk kompatibilitas order lama.
+      const matched = orders.find(o =>
+        String(o.access_token || '').trim() === String(row.access_token || '').trim()
+      ) || orders.find(o =>
+        String(o.order_code || '').trim() === String(row.order_code || '').trim()
+      );
+      packageName = matched?.package_name || '';
+    }
+  }catch(_){}
   if(!packageName){
-   const months=Math.max(1,Number(row.duration_months||1));
-   packageName=months===1?'1 Bulan':months===2?'2 Bulan':'3 Bulan';
+    const months = Math.max(1, Number(row.duration_months || 1));
+    packageName = months === 1 ? '1 Bulan' : months === 2 ? '2 Bulan' : '3 Bulan';
   }
-
-  document.getElementById('db-access-info').innerHTML=
-    `<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br>`+
-    `<strong>Paket:</strong> ${esc(packageName)}<br>`+
-    `<strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
-
-  const badge=document.getElementById('db-access-badge');
-  const title=document.getElementById('db-access-title');
-  const warning=document.getElementById('db-access-warning');
-  const btn=document.getElementById('db-continue-canva');
-  const resetBtn=document.getElementById('db-reset-request');
-  title.textContent='Canva Premium';
-  resetBtn.classList.add('hidden');
-
+  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName)}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
+  const accessTitle = document.getElementById('db-access-title');
+  // Halaman akses selalu memakai judul utama "Canva Premium".
+  // Informasi paket tetap ditampilkan pada baris Paket di bawahnya.
+  accessTitle.textContent = 'Canva Premium';
   const status=String(row.access_status||'').toUpperCase();
-
-  if(status==='EXPIRED'){
-   badge.textContent='MASA AKSES BERAKHIR';
-   title.textContent='Masa akses sudah berakhir';
-   warning.textContent='Billing order ini sudah berakhir.';
-   btn.style.display='none';
-   return;
-  }
-
+  const badge=document.getElementById('db-access-badge');const title=document.getElementById('db-access-title');const warning=document.getElementById('db-access-warning');const btn=document.getElementById('db-continue-canva');
+  if(status==='EXPIRED'){badge.textContent='MASA AKSES BERAKHIR';title.textContent='Masa akses sudah berakhir';warning.textContent='Billing order ini sudah berakhir.';btn.style.display='none';return;}
   if(status==='USED'){
    badge.textContent='AKSES DIGUNAKAN';
    title.textContent='Canva Premium';
@@ -2724,7 +2489,7 @@ async function loadAccessPage(){
 </span>
 ${row.next_access_at?'<div style="margin-top:8px;">Akses berikutnya tersedia: <strong>'+dateTime(row.next_access_at)+'</strong></div>':''}`;
    btn.style.display='none';
-
+   const resetBtn=document.getElementById('db-reset-request');
    const waNumber='85707486749';
    const message=[
     'Halo Admin MYCLIPS, saya ingin mengajukan reset akses Canva.',
@@ -2736,29 +2501,13 @@ ${row.next_access_at?'<div style="margin-top:8px;">Akses berikutnya tersedia: <s
     'Saya salah memasukkan email / mengalami kendala saat menggunakan akses. Mohon akses pada siklus ini di-reset agar saya dapat mencoba kembali.',
     '',
     'Terima kasih.'
-   ].join('\\n');
+   ].join('\n');
    resetBtn.href='https://wa.me/'+waNumber+'?text='+encodeURIComponent(message);
    resetBtn.classList.remove('hidden');
    return;
   }
-
-  badge.textContent='AKSES SIAP';
-  warning.innerHTML='Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
-  btn.style.display='block';
-
- }catch(e){
-  const badge=document.getElementById('db-access-badge');
-  const title=document.getElementById('db-access-title');
-  const warning=document.getElementById('db-access-warning');
-  const btn=document.getElementById('db-continue-canva');
-  if(badge)badge.textContent='AKSES TIDAK TERSEDIA';
-  if(title)title.textContent='Akses Canva';
-  if(warning){
-   warning.textContent=e?.message||'Akses tidak dapat digunakan.';
-   warning.className='bg-red-50 rounded-xl p-4 mt-4 text-sm text-red-700 leading-6';
-  }
-  if(btn)btn.style.display='none';
- }
+  badge.textContent='AKSES SIAP';warning.innerHTML='Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
+ }catch(e){document.getElementById('db-access-title').textContent='Akses tidak dapat digunakan';document.getElementById('db-access-warning').textContent=e.message;document.getElementById('db-continue-canva').style.display='none';}
 }
 
 document.getElementById('db-continue-canva').addEventListener('click',async()=>{
