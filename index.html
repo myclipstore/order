@@ -2665,9 +2665,32 @@ Promise.all([
   loadProductStock()
 ]);
 
+function resetStoreAfterCanvaReturn(){
+  if(!accessToken) return false;
+
+  if(sessionStorage.getItem('myclips_refresh_after_canva') !== '1') return false;
+
+  if(window.__myclipsReturningFromCanva) return true;
+  window.__myclipsReturningFromCanva = true;
+
+  sessionStorage.removeItem('myclips_refresh_after_canva');
+
+  // Kembali ke halaman utama/order tanpa query ?access=...
+  // sehingga overlay Akses Canva ikut hilang dan tampilan toko
+  // kembali seperti semula tanpa perlu user menekan Refresh.
+  const cleanUrl =
+    window.location.origin +
+    window.location.pathname;
+
+  window.location.replace(cleanUrl);
+  return true;
+}
+
 window.addEventListener(
   "pageshow",
   () => {
+
+    if(resetStoreAfterCanvaReturn()) return;
 
     const selectors = [
       "#historyEmail",
@@ -2695,6 +2718,15 @@ window.addEventListener(
 
   }
 );
+
+// Sebagian browser tidak menjalankan pageshow lagi ketika tab
+// hanya kembali aktif. Karena itu visibilitychange ikut memeriksa
+// flag yang sama.
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden){
+    resetStoreAfterCanvaReturn();
+  }
+});
 
 </script>
 </body>
