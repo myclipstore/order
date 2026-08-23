@@ -667,9 +667,19 @@
    </div>
 
    <!-- Canva access page -->
-   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-auto bg-[#FFF0F5]">
-    <div class="min-h-full flex items-center justify-center p-4">
-     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100">
+   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-auto texture-bg relative">
+    <div class="floating-hearts">
+     <span class="heart" style="left: 5%; top: 12%; animation-delay: 0s;">💕</span>
+     <span class="heart" style="left: 16%; top: 68%; animation-delay: 2s;">💗</span>
+     <span class="heart" style="left: 28%; top: 28%; animation-delay: 4s;">💖</span>
+     <span class="heart" style="left: 46%; top: 78%; animation-delay: 1s;">💕</span>
+     <span class="heart" style="left: 64%; top: 18%; animation-delay: 3s;">💗</span>
+     <span class="heart" style="left: 76%; top: 52%; animation-delay: 5s;">💖</span>
+     <span class="heart" style="left: 87%; top: 82%; animation-delay: 2.5s;">💕</span>
+     <span class="heart" style="left: 95%; top: 40%; animation-delay: 4.5s;">💗</span>
+    </div>
+    <div class="min-h-full flex items-center justify-center p-4 relative z-10">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100 relative z-10">
       <div class="text-center mb-5">
        <div class="text-4xl">🎨</div>
        <div id="db-access-badge" class="status-badge status-completed mt-3">AKSES SIAP</div>
@@ -2446,11 +2456,22 @@ async function loadAccessPage(){
     });
     const historyData = await historyResponse.json().catch(()=>({}));
     if(historyResponse.ok){
-      const matched = (historyData.orders||[]).find(o => String(o.order_code||'').trim() === String(row.order_code||'').trim() || String(o.access_url||'').includes(String(row.access_token||'')));
+      const orders = Array.isArray(historyData.orders) ? historyData.orders : [];
+      // Paling akurat: cocokkan access_token dari halaman akses.
+      // Fallback ke order_code untuk kompatibilitas order lama.
+      const matched = orders.find(o =>
+        String(o.access_token || '').trim() === String(row.access_token || '').trim()
+      ) || orders.find(o =>
+        String(o.order_code || '').trim() === String(row.order_code || '').trim()
+      );
       packageName = matched?.package_name || '';
     }
   }catch(_){}
-  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName||'-')}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
+  if(!packageName){
+    const months = Math.max(1, Number(row.duration_months || 1));
+    packageName = months === 1 ? '1 Bulan' : months === 2 ? '2 Bulan' : '3 Bulan';
+  }
+  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName)}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
   const accessTitle = document.getElementById('db-access-title');
   // Halaman akses selalu memakai judul utama "Canva Premium".
   // Informasi paket tetap ditampilkan pada baris Paket di bawahnya.
