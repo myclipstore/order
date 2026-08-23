@@ -2015,6 +2015,20 @@ function showDbResult(data,msg){
 }
 
 function closeDbResult(){document.getElementById('db-checkout-result').classList.add('hidden')}
+function clearCanvaReturnFlags(){
+  try{
+    sessionStorage.removeItem('myclips_refresh_after_canva');
+    sessionStorage.removeItem('myclips_left_access_page');
+  }catch(_){}
+}
+
+function markLeavingAccessForCanva(){
+  try{
+    sessionStorage.setItem('myclips_refresh_after_canva','1');
+    sessionStorage.setItem('myclips_left_access_page','1');
+  }catch(_){}
+}
+
 
 async function waitForAccess(orderCode,email,paymentData){
 
@@ -2181,6 +2195,13 @@ async function waitForAccess(orderCode,email,paymentData){
           button.rel =
             'noopener';
 
+          // Tombol dari struk adalah jalan MASUK ke halaman akses.
+          // Jangan biarkan flag lama dari kunjungan Canva sebelumnya
+          // menyebabkan halaman akses langsung ter-reset ke Products.
+          button.addEventListener('click',()=>{
+            clearCanvaReturnFlags();
+          });
+
           button.className =
             'block w-full text-center ' +
             'bg-gradient-to-r from-green-500 to-emerald-500 ' +
@@ -2201,6 +2222,10 @@ async function waitForAccess(orderCode,email,paymentData){
 
           button.href =
             order.access_url;
+
+          button.onclick = ()=>{
+            clearCanvaReturnFlags();
+          };
 
         }
 
@@ -2426,6 +2451,13 @@ if(oldestBtn)oldestBtn.addEventListener('click',()=>{historySortOrder='oldest';o
 // ===== ACCESS PAGE =====
 async function loadAccessPage(){
  if(!accessToken)return;
+ // Saat memasuki halaman akses dari tombol struk/history, jangan
+ // membawa flag navigasi Canva yang mungkin tersisa dari sesi lama.
+ try{
+   if(sessionStorage.getItem('myclips_left_access_page') !== '1'){
+     sessionStorage.removeItem('myclips_refresh_after_canva');
+   }
+ }catch(_){}
  document.getElementById('db-access-page').classList.remove('hidden');
  try{
   const {data,error}=await supabaseClient.rpc('open_access',{p_access_token:accessToken});
@@ -2618,7 +2650,7 @@ if(continueCanvaButton){
 
       // Kembali dari Canva nanti akan memicu refresh halaman akses
       // melalui pageshow / visibilitychange tanpa mengganggu tab ini.
-      sessionStorage.setItem('myclips_refresh_after_canva','1');
+      markLeavingAccessForCanva();
 
       window.location.href = data.access_url;
 
@@ -2668,21 +2700,23 @@ Promise.all([
 function resetStoreAfterCanvaReturn(){
   if(!accessToken) return false;
 
-  if(sessionStorage.getItem('myclips_refresh_after_canva') !== '1') return false;
+  if(
+    sessionStorage.getItem('myclips_refresh_after_canva') !== '1' ||
+    sessionStorage.getItem('myclips_left_access_page') !== '1'
+  ) return false;
 
   if(window.__myclipsReturningFromCanva) return true;
   window.__myclipsReturningFromCanva = true;
 
+  // Hapus flag SEBELUM reload supaya tidak terjadi loop.
   sessionStorage.removeItem('myclips_refresh_after_canva');
+  sessionStorage.removeItem('myclips_left_access_page');
 
-  // Kembali ke halaman utama/order tanpa query ?access=...
-  // sehingga overlay Akses Canva ikut hilang dan tampilan toko
-  // kembali seperti semula tanpa perlu user menekan Refresh.
-  const cleanUrl =
-    window.location.origin +
-    window.location.pathname;
-
-  window.location.replace(cleanUrl);
+  // Tetap di halaman akses dengan token yang sama.
+  // Setelah consume-access berhasil, database sudah berubah menjadi USED,
+  // sehingga loadAccessPage() akan menampilkan "Akses sudah digunakan"
+  // dan tombol reset WhatsApp.
+  window.location.reload();
   return true;
 }
 
