@@ -2574,6 +2574,67 @@ async function loadAccessPage(){
 
 loadAccessPage();
 
+// ===== CONSUME ACCESS / LANJUT KE CANVA =====
+// Handler ini sengaja dipasang setelah loadAccessPage() supaya
+// tombol tetap bekerja baik untuk paket biasa maupun Paket Grup.
+const continueCanvaButton = document.getElementById('db-continue-canva');
+if(continueCanvaButton){
+  continueCanvaButton.addEventListener('click', async ()=>{
+    const btn = document.getElementById('db-continue-canva');
+    const msg = document.getElementById('db-access-message');
+
+    if(!accessToken){
+      if(msg){
+        msg.className='message err';
+        msg.style.display='block';
+        msg.textContent='Token akses tidak ditemukan.';
+      }
+      return;
+    }
+
+    btn.disabled=true;
+    btn.textContent='Memproses akses...';
+
+    try{
+      const response = await fetch(CONSUME_ACCESS_URL,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':SUPABASE_KEY,
+          'Authorization':'Bearer '+SUPABASE_KEY
+        },
+        body:JSON.stringify({access_token:accessToken})
+      });
+
+      const data = await response.json().catch(()=>({}));
+
+      if(!response.ok || !data.access_url){
+        throw new Error(
+          data.error ||
+          data.message ||
+          'Akses Canva tidak dapat diproses.'
+        );
+      }
+
+      // Kembali dari Canva nanti akan memicu refresh halaman akses
+      // melalui pageshow / visibilitychange tanpa mengganggu tab ini.
+      sessionStorage.setItem('myclips_refresh_after_canva','1');
+
+      window.location.href = data.access_url;
+
+    }catch(error){
+      btn.disabled=false;
+      btn.textContent='Lanjut ke Canva';
+
+      if(msg){
+        msg.className='message err';
+        msg.style.display='block';
+        msg.textContent=error?.message || 'Akses Canva tidak dapat diproses.';
+      }
+    }
+  });
+}
+
 const histEmail=document.getElementById('canva-history-email');
 const histBtn=document.getElementById('canva-history-search');
 
