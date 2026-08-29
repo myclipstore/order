@@ -1,329 +1,15 @@
-Rabu 18.52
-Teks yang ditempel (1)(20260826-115233).txt
-Dokumen
-tolong editin dari ini, soalnya ini yang terbaru
-Teks yang ditempel (1)(20260828-111014).txt
-Dokumen
-oiya sebelum itu, ada revisi untuk index kemarin
-itu kodingannya ya
-
-pada halaman produk,, ku order capcut ku klik, nah langsung muncul sprti itu, itu kan tiba2 ada angka 1 ya di inputan, tapi tombol co nya ga nyala, dan itu inputannya gabisa ubahh angka 1 nya, dan ketika di klik tanda panah ke atas itu ga berubah ke angka 2 loh, ttp angka 1
-
-untuk sekarang revisi ini dulu ya
-kalau diketik, misal beli 2 itu langusng muncul 5 sesuai dengan stook gitu, harusnya kan sesuai dengan yang diinput ya
-
-
-IYA, itu bug dari kode sebelumnya. 😭
-
-Masalahnya: setiap kali kamu mengetik jumlah, fungsi lama langsung melakukan:
-
-qty = Math.min(qty, maxStock)
-
-dan langsung menulis balik nilai ke input. Akibatnya input bisa berubah sendiri ke angka stok maksimum.
-
-Sekarang sudah saya perbaiki dari file terbaru kamu.
-
-Perilaku sekarang
-
-Misalnya stok CapCut = 5:
-
-Jumlah: 1
-
-Ketik 2:
-
-Jumlah: 2 ✅
-Total: harga × 2
-
-Klik ↑:
-
-2 → 3 ✅
-
-Klik ↑ lagi:
-
-3 → 4 ✅
-
-Sampai:
-
-5 ✅
-
-Tidak akan otomatis lompat menjadi 5 hanya karena stok tersedia 5.
-
-Kalau mengetik angka lebih besar dari stok, tombol checkout akan dibuat nonaktif sampai jumlahnya diperbaiki. Nilai input tidak langsung ditimpa saat sedang mengetik; normalisasi dilakukan saat selesai mengedit.
-
-File terbaru
-
-Download index.html — CapCut Quantity FINAL FIX
-
-Ini saya buat langsung dari index.html terbaru yang kamu upload, dan bagian Canva, desain, harga, stok, serta mekanisme lainnya tidak saya ubah.
-
-MYCLIPS-index-capcut-qty-final.html
-HTML
-Teks yang ditempel (1)(20260828-114021).txt
-Dokumen
-Teks yang ditempel (2)(3).txt
-Dokumen
-nah bbagossss, sekarang tolong tambahkan untuk yt premium ya, untuk harga 1 bulannya itu 10k, 2 bulan 19k, oiya html ke-1 itu index
-
-kodinga ke-2 itu admin, nanti juga ditambahkan juga kan ke admin panel
-
-
-sementara history order itu cuma ada canva aja, yg lainya belum
-
-
-kalau ada yang perlu ditambahkan di sql silahkan cepat
-
-SIAAP. Saya sudah tambahkan YouTube Premium ke dua file yang kamu kirim, dan saya tetap mempertahankan mekanisme Canva + CapCut yang sudah ada.
-
-1. index.html — YouTube Premium
-
-Sudah ditambahkan kartu:
-
-▶️ YouTube Premium
-
-1 Bulan   Rp 10K
-2 Bulan   Rp 19K
-
-Keduanya memakai stok dari database, jadi kalau stok 0 otomatis tidak bisa dibeli seperti produk lainnya. Sistem stok dan harga website memang membaca tabel product_stock dan product_prices.
-
-Modal YouTube:
-
-Jumlah: [ 1 ]
-Stok tersedia: X
-
-Email: [ email buyer ]
-
-Total: Rp ...
-
-[ Checkout via WhatsApp ]
-
-Format WA:
-
-*Halo MYCLIPS!*
-Saya ingin memesan:
-━━━━━━━━━━━━━━━━━━
-*Produk:* YouTube Premium
-*Paket:* 1 Bulan
-*Jumlah:* 1
-*Harga Satuan:* Rp 10.000
-*Email:* emailbuyer@gmail.com
-━━━━━━━━━━━━━━━━━━
-*Total Harga:* Rp 10.000
-━━━━━━━━━━━━━━━━━━
-Mohon diproses ya, terima kasih!
-2. admin.html
-
-YouTube juga sudah masuk ke:
-
-Kontrol Stok Produk
-→ YouTube Premium
-   → 1 Bulan
-   → 2 Bulan
-
-dan:
-
-Pengaturan Harga Produk
-→ YouTube Premium
-   → 1 Bulan
-   → 2 Bulan
-
-Jadi harga/stok YouTube bisa kamu kelola dari Admin Panel seperti produk lainnya. Mekanisme Admin memang menyimpan stok lewat update_stock dan harga lewat update_price.
-
-3. SQL
-
-Karena YouTube transaksinya manual via WhatsApp, tidak perlu menambah products/alur pembayaran Canva. Yang perlu ditambahkan adalah baris harga + stok supaya website dan Admin langsung sinkron.
-
-Saya sudah buat migration SQL:
-
-Download SQL — Tambah YouTube Premium
-
-SQL tersebut membuat:
-
-YouTube Premium
-├── 1 Bulan = Rp 10.000
-└── 2 Bulan = Rp 19.000
-
-Stok awal:
-├── 1 Bulan = 0
-└── 2 Bulan = 0
-
-Stok awal 0 sengaja dibuat aman; nanti kamu tinggal isi dari Admin Panel. Pola database yang sekarang memang menggunakan product_prices dan product_stock untuk data tersebut.
-
-File yang dipakai
-
-index.html — YouTube Premium + WhatsApp
-
-admin.html — YouTube masuk stok & harga
-
-SQL — tambah YouTube Premium
-
-History tidak saya ubah — tetap khusus Canva seperti sekarang. CapCut dan YouTube tetap transaksi manual melalui WhatsApp.
-
-SQL-add-YOUTUBE-Premium-v1.sql
-Kode
-index-YOUTUBE-premium-WA-v1.html
-HTML
-admin-YOUTUBE-premium-v1.html
-HTML
-untuk notifikasi ini belum hilang padahal refresh otomatis
-Teks yang ditempel (1)(20260829-105258).txt
-Dokumen
-ini merupakan mega super sql yang kalau untuk buat update web v terbaru, untuk tambhan tadi tolong tambahkan ke mega super sql gar saat update versi enak tinggal 1x run aja
-LAH INI KOK ORDER 1 AJA BISA NAMBH EMAIL? MENDING UNTUK YT GAUSAH DI BERI BERAPA STOK YANG AKAN DIBELI, CUKUP ADA INPUTAN EMAIL AJA TETAPI ADA TULISAN STOK NYA DIBAWAHNYA
-INi say aklik kok jadi canva? gimana sih, tombol silang jg ga berfungsi
-Teks yang ditempel (1)(20260829-115340).txt
-Dokumen
-coba dari ubah dari sini aja
-
-NAH, ini baru masalah sinkronisasi stok yang sebenarnya.
-
-Sebelumnya website hanya membaca stok dari product_stock. Jadi misalnya Admin menunjukkan:
-
-YouTube 1 Bulan = 5
-
-website juga melihat 5. Tapi setelah buyer klik Checkout WhatsApp, website hanya membuka WhatsApp dan tidak mengurangi stok di Supabase. Akibatnya buyer berikutnya masih melihat stok 5 dan bisa checkout terus.
-
-Sekarang saya sudah ubah mekanismenya menjadi atomic stock consumption:
-
-Buyer isi 2 email
-↓
-Klik Checkout WhatsApp
-↓
-Supabase cek stok secara langsung
-↓
-Kalau stok ≥ 2
-↓
-stok berkurang 2
-↓
-Admin langsung menjadi stok 3
-↓
-WhatsApp dibuka
-
-Kalau stok tinggal 1 dan buyer mencoba 2 email:
-
-❌ Stok YouTube tidak mencukupi
-
-Tidak akan membuka WhatsApp dan stok tidak berubah.
-
-Ini jauh lebih aman karena pengurangan stok dilakukan langsung di database, bukan hanya di browser. Fungsi SQL-nya juga dibuat atomic sehingga dua buyer yang checkout hampir bersamaan tidak bisa sama-sama mengambil stok yang sama.
-
-1. Jalankan SQL ini di Supabase
-
-SQL — Atomic Stock YouTube
-
-2. Ganti index.html
-
-index.html — YouTube Stock Sync FINAL
-
-Saya sudah cek JavaScript-nya dan syntax valid.
-
-Alurnya sekarang
-ADMIN
-5 stok
-  ↓
-WEBSITE
-5 stok
-  ↓
-Buyer A pesan 2 email
-  ↓
-DATABASE -2
-  ↓
-ADMIN
-3 stok
-  ↓
-WEBSITE
-3 stok
-
-Jadi tidak ada lagi kasus buyer bisa checkout terus padahal stok Admin sudah habis.
-
-Catatan penting: karena YouTube masih transaksi manual lewat WhatsApp, stok ini dikurangi saat buyer menekan Checkout WhatsApp. Artinya stok dianggap terpesan pada saat checkout, meskipun pembayaran akhirnya masih diproses manual oleh admin.
-
-SQL-consume-manual-stock-youtube-v1.sql
-Kode
-index-MYCLIPS-YOUTUBE-STOCK-SYNC-FINAL.html
-HTML
-ad akendala lagi nih, kok urutan produknya gabisa diedit ya
-
-IYA, ketemu penyebabnya. Bukan tombol ▲/▼-nya yang rusak.
-
-Masalahnya auto-refresh setiap 5 detik memanggil loadProductDisplayOrderAdmin(), sehingga saat kamu menekan ▲ atau ▼, urutan lokal berubah, tetapi beberapa detik kemudian data lama dari database dimuat lagi dan mengembalikan urutan sebelumnya sebelum sempat disimpan.
-
-Sekarang sudah saya perbaiki:
-
-✅ Klik ▲ / ▼ langsung mengubah urutan.
-✅ Urutan tidak akan ditimpa auto-refresh selama belum disimpan.
-✅ Klik Simpan Urutan Produk baru dikirim ke database.
-✅ Setelah berhasil disimpan, auto-refresh boleh membaca urutan terbaru lagi.
-✅ Auto-refresh stok, harga, voucher, order, dll. tetap berjalan.
-✅ Desain panel lainnya tidak saya ubah.
-File terbaru
-
-Download admin.html — V4 Order Fix
-
-Jadi sekarang alurnya:
-
-Canva
-CapCut
-ChatGPT
-YouTube
-        ↓ klik ▼ YouTube
-Canva
-CapCut
-YouTube
-ChatGPT
-        ↓ klik Simpan
-TERSIMPAN ✅
-
-Saya menggunakan admin-YOUTUBE-product-order-v3.html sebagai basis, jadi perubahan sebelumnya tetap dipertahankan. Panel Admin memang sudah memiliki tombol ▲/▼ dan saveProductDisplayOrder; masalahnya adalah state itu ditimpa oleh pemuatan ulang otomatis.
-
-admin-YOUTUBE-product-order-v4-order-edit-fix.html
-HTML
-lah udah diapnel admin tapi di web belum tertata
-
-NAHH, benar. Masalahnya memang Admin Panel sudah menyimpan urutan ke product_display_order, tetapi index.html belum membaca tabel itu untuk menyusun ulang kartu produk. Admin sudah punya mekanisme menyimpan urutan display_order, tetapi website sebelumnya tidak menerapkannya.
-
-Sekarang saya sudah revisi langsung dari index-base.html terbaru yang kamu kirim.
-
-Yang diperbaiki:
-
-✅ Website membaca product_display_order dari Supabase.
-✅ Urutan kartu Canva / CapCut / ChatGPT / YouTube mengikuti urutan Admin.
-✅ Perubahan urutan Admin akan otomatis terbaca website.
-✅ Ada sinkronisasi tiap 5 detik.
-✅ Saat modal sedang terbuka, posisi kartu tidak diganggu.
-✅ Kalau tabel urutan gagal dibaca, website tetap memakai urutan normal dan tidak rusak.
-✅ Saya tidak mengubah alur checkout Canva yang sudah ada.
-
-Database yang menjadi sumber urutan adalah tabel product_display_order, dengan order_position sebagai posisi produk.
-
-File terbaru
-
-Download index.html — urutan produk sekarang sinkron dengan Admin
-
-Jadi sekarang misalnya di Admin kamu atur:
-
-1. YouTube Premium
-2. Canva Premium
-3. ChatGPT Pro
-4. CapCut Premium
-
-website juga akan tampil:
-
-YouTube Premium
-Canva Premium
-ChatGPT Pro
-CapCut Premium
-
-tanpa perlu mengubah kode lagi.
-
-Anda telah mencapai panjang maksimum untuk percakapan ini, tetapi Anda bisa terus berbicara dengan memulai obrolan baru.
-
-Mulai obrolan baru
-index-product-order-synced.html
-HTML
-
 <!doctype html>
 
-<html lang="id" class="h-full"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>MYCLIPS STORE</title> <script src="https://cdn.tailwindcss.com/3.4.17"></script> <script src="/_sdk/element_sdk.js"></script> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"> <style> * { font-family: 'Poppins', sans-serif; }
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MYCLIPS STORE</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Poppins', sans-serif; }
 
 .texture-bg {
   background-color: #FFF0F5;
@@ -680,13 +366,117 @@ overflow-x;
 margin;
 }
 
-</style> <style>body { box-sizing: border-box; }</style> <script src="/_sdk/data_sdk.js" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script> </head> <body class="h-full"> <div class="h-full overflow-auto texture-bg relative"> <div class="floating-hearts"> <span class="heart" style="left: 5%; top: 10%; animation-delay: 0s;">💕</span> <span class="heart" style="left: 15%; top: 60%; animation-delay: 2s;">💗</span> <span class="heart" style="left: 25%; top: 30%; animation-delay: 4s;">💖</span> <span class="heart" style="left: 45%; top: 70%; animation-delay: 1s;">💕</span> <span class="heart" style="left: 65%; top: 20%; animation-delay: 3s;">💗</span> <span class="heart" style="left: 75%; top: 50%; animation-delay: 5s;">💖</span> <span class="heart" style="left: 85%; top: 80%; animation-delay: 2.5s;">💕</span> <span class="heart" style="left: 95%; top: 40%; animation-delay: 4.5s;">💗</span> </div>
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+ </head>
+ <body class="h-full">
+  <div class="h-full overflow-auto texture-bg relative">
+   <div class="floating-hearts">
+    <span class="heart" style="left: 5%; top: 10%; animation-delay: 0s;">💕</span>
+    <span class="heart" style="left: 15%; top: 60%; animation-delay: 2s;">💗</span>
+    <span class="heart" style="left: 25%; top: 30%; animation-delay: 4s;">💖</span>
+    <span class="heart" style="left: 45%; top: 70%; animation-delay: 1s;">💕</span>
+    <span class="heart" style="left: 65%; top: 20%; animation-delay: 3s;">💗</span>
+    <span class="heart" style="left: 75%; top: 50%; animation-delay: 5s;">💖</span>
+    <span class="heart" style="left: 85%; top: 80%; animation-delay: 2.5s;">💕</span>
+    <span class="heart" style="left: 95%; top: 40%; animation-delay: 4.5s;">💗</span>
+   </div>
 
-<div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
-<header class="relative z-10 py-6 px-4 border-b border-pink-200"> <div class="max-w-4xl mx-auto"> <div class="text-center mb-6"> <div class="inline-block"> <h1 id="store-title" class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-pink-400 to-rose-400 bg-clip-text text-transparent drop-shadow-sm">MYCLIPS</h1> <p id="store-tagline" class="text-pink-400 font-medium mt-1 tracking-wide">✨ Premium Apps Store ✨</p> </div> </div> <div class="flex gap-4 justify-center border-b border-pink-100"> <button class="tab-button active px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="products"> 🛍️ Products </button> <button class="tab-button px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="history"> 📋 Order History </button> </div> </div> </header>
+   <header class="relative z-10 py-6 px-4 border-b border-pink-200">
+    <div class="max-w-4xl mx-auto">
+     <div class="text-center mb-6">
+      <div class="inline-block">
+       <h1 id="store-title" class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-pink-400 to-rose-400 bg-clip-text text-transparent drop-shadow-sm">MYCLIPS</h1>
+       <p id="store-tagline" class="text-pink-400 font-medium mt-1 tracking-wide">✨ Premium Apps Store ✨</p>
+      </div>
+     </div>
+     <div class="flex gap-4 justify-center border-b border-pink-100">
+      <button class="tab-button active px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="products"> 🛍️ Products </button>
+      <button class="tab-button px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="history"> 📋 Order History </button>
+     </div>
+    </div>
+   </header>
 
-<main class="relative z-10 px-4 pb-8"> <div class="max-w-4xl mx-auto"> <div id="products-tab" class="tab-content"> <p class="text-gray-500 text-sm mt-3 mb-6 text-center">Dapatkan akses premium dengan harga terjangkau! DIJAMIN GARANSI 100%!</p> <div class="grid md:grid-cols-3 gap-6"> <div class="product-card card-texture rounded-3xl shadow-lg shadow-pink-200/40 overflow-hidden border border-pink-100"> <div class="relative"> <div class="absolute top-3 right-3 z-20"> <div class="info-tooltip"> <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button> <span class="tooltip-text">Edit desain unlimited, template premium, kolaborasi tim</span> </div> </div> <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8"> <span class="text-2xl">🎨</span> <h2 class="font-bold text-lg">Canva Premium</h2> </div> </div> <div class="p-5 space-y-3"> <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-product="Canva Premium" data-package="1 Bulan" data-price="3000" data-needs-email="true"> <div class="flex justify-between items-center"> <div> <p class="font-semibold text-gray-700">1 Bulan</p> <p class="text-xs text-gray-500 mt-1">👤 1 akun</p> </div> <div class="text-right"> <p class="font-bold text-pink-500 text-lg">Rp 3K</p> </div> </div> </div> <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="2 Bulan" data-price="6000" data-needs-email="true"> <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold"> 2X AKSES </div> <div class="flex justify-between items-center"> <div> <p class="font-semibold text-gray-700">2 Bulan</p> <p class="text-xs text-gray-500 mt-1">👤 1 akun</p> </div> <div class="text-right"> <p class="font-bold text-pink-500 text-lg">Rp 6K</p> </div> </div> </div> <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="3 Bulan" data-price="8500" data-needs-email="true"> <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold"> PROMO </div> <div class="flex justify-between items-center"> <div> <p class="font-semibold text-gray-700">3 Bulan</p> <p class="text-xs text-gray-500 mt-1">👤 1 akun</p> </div> <div class="text-right"> <span class="text-gray-400 text-sm strikethrough">Rp 9K</span> <p class="font-bold text-pink-500 text-lg">Rp 8,5K</p> </div> </div> </div> <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="Paket Grup (10 akun)/Bulan" data-price="10000" data-needs-email="true"> <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold"> HEMAT </div> <div class="flex justify-between items-center"> <div> <p class="font-semibold text-gray-700">Paket Grup</p> <p class="text-xs text-gray-500">(10 akun) /bulan • 1 kode order</p> </div> <div class="text-right"> <span class="text-gray-400 text-sm strikethrough">Rp 25K</span> <p class="font-bold text-pink-500 text-lg">Rp 10K</p> </div> </div> </div> </div> </div>
+   <main class="relative z-10 px-4 pb-8">
+    <div class="max-w-4xl mx-auto">
+     <div id="products-tab" class="tab-content">
+      <p class="text-gray-500 text-sm mt-3 mb-6 text-center">Dapatkan akses premium dengan harga terjangkau! DIJAMIN GARANSI 100%!</p>
+      <div class="grid md:grid-cols-3 gap-6">
+       <div class="product-card card-texture rounded-3xl shadow-lg shadow-pink-200/40 overflow-hidden border border-pink-100">
+        <div class="relative">
+         <div class="absolute top-3 right-3 z-20">
+          <div class="info-tooltip">
+           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
+           <span class="tooltip-text">Edit desain unlimited, template premium, kolaborasi tim</span>
+          </div>
+         </div>
+         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
+          <span class="text-2xl">🎨</span>
+          <h2 class="font-bold text-lg">Canva Premium</h2>
+         </div>
+        </div>
+        <div class="p-5 space-y-3">
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-product="Canva Premium" data-package="1 Bulan" data-price="3000" data-needs-email="true">
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">1 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <p class="font-bold text-pink-500 text-lg">Rp 3K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="2 Bulan" data-price="6000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           2X AKSES
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">2 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <p class="font-bold text-pink-500 text-lg">Rp 6K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="3 Bulan" data-price="8500" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           PROMO
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">3 Bulan</p>
+            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 9K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 8,5K</p>
+           </div>
+          </div>
+         </div>
+         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="Paket Grup (10 akun)/Bulan" data-price="10000" data-needs-email="true">
+          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
+           HEMAT
+          </div>
+          <div class="flex justify-between items-center">
+           <div>
+            <p class="font-semibold text-gray-700">Paket Grup</p>
+            <p class="text-xs text-gray-500">(10 akun) /bulan • 1 kode order</p>
+           </div>
+           <div class="text-right">
+            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
+            <p class="font-bold text-pink-500 text-lg">Rp 10K</p>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
 
    <div class="product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100">
     <div class="relative">
@@ -827,9 +617,23 @@ margin;
  </footer>
 </div>
 
-</main>
+   </main>
 
-<div id="email-modal" class="fixed inset-0 z-50 hidden"> <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div> <div class="absolute inset-0 flex items-center justify-center p-4"> <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto"> <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button> <div class="text-center mb-5"> <span class="text-4xl" id="modal-icon">🎨</span> <h3 class="font-bold text-xl text-gray-700 mt-2" id="modal-title">Canva Premium</h3> <p class="text-pink-500 font-semibold" id="modal-package">1 Bulan - Rp 3K</p> </div> <div class="space-y-4"> <div id="capcut-quantity-section" class="hidden space-y-3"> <div id="capcut-qty-container"></div> <p id="capcut-total" class="text-pink-500 font-bold text-sm text-center">Total: <span id="capcut-total-price">Rp 0</span></p> </div>
+   <div id="email-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div class="text-center mb-5">
+       <span class="text-4xl" id="modal-icon">🎨</span>
+       <h3 class="font-bold text-xl text-gray-700 mt-2" id="modal-title">Canva Premium</h3>
+       <p class="text-pink-500 font-semibold" id="modal-package">1 Bulan - Rp 3K</p>
+      </div>
+      <div class="space-y-4">
+       <div id="capcut-quantity-section" class="hidden space-y-3">
+        <div id="capcut-qty-container"></div>
+        <p id="capcut-total" class="text-pink-500 font-bold text-sm text-center">Total: <span id="capcut-total-price">Rp 0</span></p>
+       </div>
 
    <div id="single-email-section">
     
@@ -868,20 +672,96 @@ margin;
  </div>
 </div>
 
-</div>
+   </div>
 
-<div id="info-modal" class="fixed inset-0 z-50 hidden"> <div class="modal-overlay absolute inset-0" onclick="closeInfoModal()"></div> <div class="absolute inset-0 flex items-center justify-center p-4"> <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100"> <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button> <div class="text-center mb-5"> <span class="text-4xl" id="info-modal-icon">🎨</span> <h3 class="font-bold text-xl text-gray-700 mt-3" id="info-modal-title">Canva Premium</h3> </div> <div id="info-modal-content" class="space-y-3 text-gray-600 text-sm"> <div class="bg-pink-50 rounded-xl p-4 space-y-2"> <h4 class="font-bold text-gray-700">✨ Fitur Utama:</h4> <ul id="features-list" class="space-y-1 ml-2"> <li>✓ Fitur 1</li> </ul> </div> </div> </div> </div> </div> </div>
+   <div id="info-modal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeInfoModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100">
+      <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div class="text-center mb-5">
+       <span class="text-4xl" id="info-modal-icon">🎨</span>
+       <h3 class="font-bold text-xl text-gray-700 mt-3" id="info-modal-title">Canva Premium</h3>
+      </div>
+      <div id="info-modal-content" class="space-y-3 text-gray-600 text-sm">
+       <div class="bg-pink-50 rounded-xl p-4 space-y-2">
+        <h4 class="font-bold text-gray-700">✨ Fitur Utama:</h4>
+        <ul id="features-list" class="space-y-1 ml-2">
+         <li>✓ Fitur 1</li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
 
 
 
+   <!-- Canva database checkout result -->
 
-<!-- Canva database checkout result -->
+   <div id="db-checkout-result" class="fixed inset-0 z-[60] hidden">
+    <div class="modal-overlay absolute inset-0" onclick="closeDbResult()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeDbResult()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
+      <div id="db-result-body"></div>
+     </div>
+    </div>
+   </div>
 
-<div id="db-checkout-result" class="fixed inset-0 z-[60] hidden"> <div class="modal-overlay absolute inset-0" onclick="closeDbResult()"></div> <div class="absolute inset-0 flex items-center justify-center p-4"> <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto"> <button onclick="closeDbResult()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button> <div id="db-result-body"></div> </div> </div> </div>
+   <!-- Canva access page -->
 
-<!-- Canva access page -->
-
-<div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-hidden texture-bg relative"> <div class="floating-hearts access-page-hearts"> <span class="heart" style="left: 6%; top: 12%; animation-delay: 0s;">💕</span> <span class="heart" style="left: 18%; top: 72%; animation-delay: 2s;">💗</span> <span class="heart" style="left: 30%; top: 28%; animation-delay: 4s;">💖</span> <span class="heart" style="left: 46%; top: 82%; animation-delay: 1s;">💕</span> <span class="heart" style="left: 62%; top: 16%; animation-delay: 3s;">💗</span> <span class="heart" style="left: 76%; top: 52%; animation-delay: 5s;">💖</span> <span class="heart" style="left: 88%; top: 78%; animation-delay: 2.5s;">💕</span> <span class="heart" style="left: 94%; top: 32%; animation-delay: 4.5s;">💗</span> <span class="heart" style="left: 10%; top: 44%; animation-delay: 6s;">💖</span> <span class="heart" style="left: 70%; top: 68%; animation-delay: 7s;">💕</span> </div> <div class="min-h-full flex items-center justify-center p-4"> <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100"> <div class="text-center mb-5"> <div class="text-4xl">🎨</div> <div id="db-access-badge" class="status-badge status-completed mt-3">AKSES SIAP</div> <h2 id="db-access-title" class="font-bold text-2xl text-gray-700 mt-3">Akses Canva</h2> </div> <div id="db-access-info" class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 leading-6"></div> <div class="bg-white rounded-xl border border-pink-100 p-4 mt-4"> <div class="text-xs text-gray-400 font-semibold mb-2">KODE ORDER</div> <div class="flex items-center gap-2"> <div id="db-access-order" class="flex-1 bg-pink-50 rounded-lg px-3 py-2 font-bold text-gray-700 break-all"></div> <button id="db-copy-order" type="button" class="text-pink-500 hover:text-pink-700 border-2 border-pink-200 rounded-lg w-10 h-10 bg-white">📋</button> </div> </div> <div id="db-access-warning" class="bg-blue-50 rounded-xl p-4 mt-4 text-sm text-blue-800 leading-6"></div> <button id="db-continue-canva" class="w-full btn-checkout text-white font-bold py-3 rounded-xl mt-4">Lanjut ke Canva</button> <button id="db-reset-request" type="button" class="hidden w-full reset-access-button text-white font-bold py-3 rounded-xl mt-4 flex items-center justify-center gap-2"> <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"> <path d="M20.52 3.48A11.84 11.84 0 0 0 12.05 0C5.51 0 .18 5.32.18 11.86c0 2.09.55 4.13 1.59 5.93L.07 24l6.36-1.67a11.9 11.9 0 0 0 5.62 1.43h.01c6.54 0 11.86-5.33 11.86-11.86 0-3.17-1.23-6.15-3.4-8.42Zm-8.47 18.2h-.01a9.83 9.83 0 0 1-5-1.36l-.36-.21-3.77.99 1-3.67-.24-.38a9.82 9.82 0 0 1-1.5-5.19C2.17 6.42 6.6 2 12.05 2c2.64 0 5.12 1.03 6.99 2.9a9.8 9.8 0 0 1 2.9 6.97c0 5.46-4.44 9.81-9.89 9.81Zm5.43-7.35c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.09 3.2 5.07 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35Z"/> </svg> <span>Ajukan Reset Akses ke Admin</span> </button> <div id="db-access-message" class="message mt-3"></div> </div> </div> </div> <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-9AnqX738rqykt-dN"></script> <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <script> const SUPABASE_URL="https://brsycajqrycwmqisurpa.supabase.co"; const SUPABASE_KEY="sb_publishable_L9EWc-OXg2LwgDL1qzcjww_PlVu6Md9"; const CREATE_ORDER_URL=SUPABASE_URL+"/functions/v1/create-order"; const PURCHASE_HISTORY_URL=SUPABASE_URL+"/functions/v1/purchase-history"; const GET_ACCESS_URL=SUPABASE_URL+"/functions/v1/get-access"; const CONSUME_ACCESS_URL=SUPABASE_URL+"/functions/v1/consume-access"; const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-hidden texture-bg relative">
+     <div class="floating-hearts access-page-hearts">
+       <span class="heart" style="left: 6%; top: 12%; animation-delay: 0s;">💕</span>
+       <span class="heart" style="left: 18%; top: 72%; animation-delay: 2s;">💗</span>
+       <span class="heart" style="left: 30%; top: 28%; animation-delay: 4s;">💖</span>
+       <span class="heart" style="left: 46%; top: 82%; animation-delay: 1s;">💕</span>
+       <span class="heart" style="left: 62%; top: 16%; animation-delay: 3s;">💗</span>
+       <span class="heart" style="left: 76%; top: 52%; animation-delay: 5s;">💖</span>
+       <span class="heart" style="left: 88%; top: 78%; animation-delay: 2.5s;">💕</span>
+       <span class="heart" style="left: 94%; top: 32%; animation-delay: 4.5s;">💗</span>
+       <span class="heart" style="left: 10%; top: 44%; animation-delay: 6s;">💖</span>
+       <span class="heart" style="left: 70%; top: 68%; animation-delay: 7s;">💕</span>
+     </div>
+    <div class="min-h-full flex items-center justify-center p-4">
+     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100">
+      <div class="text-center mb-5">
+       <div class="text-4xl">🎨</div>
+       <div id="db-access-badge" class="status-badge status-completed mt-3">AKSES SIAP</div>
+       <h2 id="db-access-title" class="font-bold text-2xl text-gray-700 mt-3">Akses Canva</h2>
+      </div>
+      <div id="db-access-info" class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 leading-6"></div>
+      <div class="bg-white rounded-xl border border-pink-100 p-4 mt-4">
+       <div class="text-xs text-gray-400 font-semibold mb-2">KODE ORDER</div>
+       <div class="flex items-center gap-2">
+        <div id="db-access-order" class="flex-1 bg-pink-50 rounded-lg px-3 py-2 font-bold text-gray-700 break-all"></div>
+        <button id="db-copy-order" type="button" class="text-pink-500 hover:text-pink-700 border-2 border-pink-200 rounded-lg w-10 h-10 bg-white">📋</button>
+       </div>
+      </div>
+      <div id="db-access-warning" class="bg-blue-50 rounded-xl p-4 mt-4 text-sm text-blue-800 leading-6"></div>
+      <button id="db-continue-canva" class="w-full btn-checkout text-white font-bold py-3 rounded-xl mt-4">Lanjut ke Canva</button>
+      <button id="db-reset-request" type="button" class="hidden w-full reset-access-button text-white font-bold py-3 rounded-xl mt-4 flex items-center justify-center gap-2">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M20.52 3.48A11.84 11.84 0 0 0 12.05 0C5.51 0 .18 5.32.18 11.86c0 2.09.55 4.13 1.59 5.93L.07 24l6.36-1.67a11.9 11.9 0 0 0 5.62 1.43h.01c6.54 0 11.86-5.33 11.86-11.86 0-3.17-1.23-6.15-3.4-8.42Zm-8.47 18.2h-.01a9.83 9.83 0 0 1-5-1.36l-.36-.21-3.77.99 1-3.67-.24-.38a9.82 9.82 0 0 1-1.5-5.19C2.17 6.42 6.6 2 12.05 2c2.64 0 5.12 1.03 6.99 2.9a9.8 9.8 0 0 1 2.9 6.97c0 5.46-4.44 9.81-9.89 9.81Zm5.43-7.35c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.09 3.2 5.07 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35Z"/>
+  </svg>
+  <span>Ajukan Reset Akses ke Admin</span>
+</button>
+      <div id="db-access-message" class="message mt-3"></div>
+     </div>
+    </div>
+   </div>
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-9AnqX738rqykt-dN"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://brsycajqrycwmqisurpa.supabase.co";
+const SUPABASE_KEY="sb_publishable_L9EWc-OXg2LwgDL1qzcjww_PlVu6Md9";
+const CREATE_ORDER_URL=SUPABASE_URL+"/functions/v1/create-order";
+const PURCHASE_HISTORY_URL=SUPABASE_URL+"/functions/v1/purchase-history";
+const GET_ACCESS_URL=SUPABASE_URL+"/functions/v1/get-access";
+const CONSUME_ACCESS_URL=SUPABASE_URL+"/functions/v1/consume-access";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 const canvaPackages={
 "1 Bulan":{code:"1",name:"Canva 1 Bulan",months:1,price:3000},
@@ -892,11 +772,14 @@ const canvaPackages={
 /*
 
 PRODUCT STOCK
+
 Dibaca dari tabel public.product_stock.
 
 
-Stok > 0 = bisa dibeli
-Stok = 0 = STOK HABIS + tidak bisa diklik
+
+Stok > 0  = bisa dibeli
+
+Stok = 0  = STOK HABIS + tidak bisa diklik
 */
 const productStock = {};
 // mark packages as loading until database config arrives
@@ -1455,7 +1338,24 @@ if(!container || !checkoutBtn) return;
 const maxStock = getCapCutStock();
 capcutQuantity = 1;
 
-container.innerHTML = <label class="block text-gray-600 text-sm font-medium mb-2">Jumlah</label> <div class="flex items-center gap-2"> <input id="capcut-qty" type="number" min="1" max="${Math.max(1, maxStock)}" value="1" inputmode="numeric" step="1" autocomplete="off" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors" > </div> <p class="text-xs text-gray-500 mt-2"> Stok tersedia: <strong>${maxStock}</strong> </p> ;
+container.innerHTML =     <label class="block text-gray-600 text-sm font-medium mb-2">Jumlah</label>
+    <div class="flex items-center gap-2">
+      <input
+        id="capcut-qty"
+        type="number"
+        min="1"
+        max="${Math.max(1, maxStock)}"
+        value="1"
+        inputmode="numeric"
+        step="1"
+        autocomplete="off"
+        class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors"
+      >
+    </div>
+    <p class="text-xs text-gray-500 mt-2">
+      Stok tersedia: <strong>${maxStock}</strong>
+    </p>
+ ;
 
 const qtyInput = document.getElementById('capcut-qty');
 qtyInput?.addEventListener('input', () => updateCapCutTotal(false));
@@ -1613,8 +1513,11 @@ wrap.className =
 /*
 
 Setiap input diberi NAME + autocomplete section
+
 yang berbeda agar Chrome/Edge/password manager
+
 tidak menganggap semua field email sebagai field
+
 yang sama dan mengisi email pertama ke field kedua.
 */
 wrap.innerHTML = `
@@ -1636,7 +1539,6 @@ oninput="validateSingleEmails()"
 
 
 
-
 <button
 type="button"
 onclick="removeSingleEmailInput(this)"
@@ -1648,10 +1550,10 @@ isFirst
 
 
 
-
  ✕
 
-</button> `;
+   </button>
+ `;
 
 container.appendChild(
 wrap
@@ -1669,7 +1571,9 @@ wrap.querySelector(
 Guard untuk input email multi-field.
 
 
+
 Jika browser/password-manager mencoba menyalin
+
 nilai email aktif ke field lain saat keyboard digunakan,
 
 field lain tidak dibiarkan ikut terisi.
@@ -2019,7 +1923,9 @@ async function checkoutCanva(){
 /*
 
 NAMA PEMBELI SUDAH DIHAPUS DARI FORM.
+
 Tidak ada lagi validasi nama.
+
 Backend akan memakai email pertama sebagai identitas internal.
 */
 const name = '';
@@ -2278,10 +2184,10 @@ const waNumber='6285707486749';
 const message=[
 'Halo Admin MYCLIPS, saya ingin mengajukan reset akses Canva.',
 '',
-'Kode : '+(order.order_code||'-'),
-'Email : '+(order.customer_email||'-'),
+'Kode     : '+(order.order_code||'-'),
+'Email    : '+(order.customer_email||'-'),
 'Tim Cnv : '+(order.canva_team_name||'-'),
-'Akses : '+(Number(order.access_cycle||0))+' / '+(Number(order.duration_months||1)),
+'Akses    : '+(Number(order.access_cycle||0))+' / '+(Number(order.duration_months||1)),
 '',
 'Saya salah akun Canva/mengalami kendala saat menggunakan akses. Mohon di-reset aksesnya, agar saya dapat mencoba kembali.',
 '',
@@ -2332,7 +2238,9 @@ const codeHtml = (isGroup ? groupDisplayCode : codes.length)
 ? (
 isGroup
 ? <span class="break-all font-bold">${esc(groupDisplayCode)}</span>
-: <div class="space-y-1">${codes.map((c,i)=> <div><b>${i+1}.</b> <span class="break-all">${esc(c)}</span></div> ).join('')}</div>
+: <div class="space-y-1">${codes.map((c,i)=>
+              <div><b>${i+1}.</b> <span class="break-all">${esc(c)}</span></div>
+            ).join('')}</div>
 )
 : '<span>-</span>';
 
@@ -2345,15 +2253,23 @@ const initialStatus =
 /*
 
 Untuk paket biasa:
+
 setiap email/order mendapat kartu sendiri:
+
 Email
+
 Tombol Akses Canva
+
 Kode Order
 
 
+
 Untuk Paket Grup:
+
 tombol tetap dibuat per email,
+
 sedangkan satu Kode Order Grup ditampilkan
+
 di bagian bawah seperti desain sebelumnya.
 */
 let accessCardsHtml = '';
@@ -2407,7 +2323,14 @@ String(order?.customer_email||'').trim();
 }
 
 const emailsHtml = isGroup && emailList.length
-? <div class="mt-3 bg-white rounded-xl border border-pink-100 p-3 text-sm"> <b>Email dalam Paket Grup (${emailList.length}):</b> <div class="mt-2 space-y-1"> ${emailList.map((e,i)=> <div>${i+1}. ${esc(e)}</div> ).join('')} </div> </div>
+?       <div class="mt-3 bg-white rounded-xl border border-pink-100 p-3 text-sm">
+        <b>Email dalam Paket Grup (${emailList.length}):</b>
+        <div class="mt-2 space-y-1">
+          ${emailList.map((e,i)=>
+           <div>${i+1}. ${esc(e)}</div>          ).join('')}
+        </div>
+      </div>
+   
 : '';
 
 const groupAccessSlots = isGroup && emailList.length
@@ -2593,7 +2516,9 @@ safeEmail
 /*
 
 Setiap email mempunyai slot sendiri.
+
 Paket biasa: slot sudah dibuat oleh showDbResult().
+
 Paket grup: slot juga dibuat per email.
 */
 let targetContainer = null;
@@ -2621,7 +2546,9 @@ Fallback untuk kompatibilitas jika slot belum ada.
 if(!targetContainer){
 targetContainer =
 document.createElement('div');
+
 targetContainer.className =
+
   'space-y-2 mt-3';
 
 const card =
@@ -2806,6 +2733,7 @@ await new Promise(
 /*
 
 Kalau akses belum siap, biarkan pesan
+
 tetap berada di kartu email masing-masing.
 */
 return false;
@@ -2897,8 +2825,14 @@ Boolean(order.access_url);
 */
 const joinButton=
 canJoin
-? <a href="${esc(order.access_url)}" target="_self" rel="noopener" class="history-join-button"> <span class="history-join-icon">🔗</span> <span>${order.can_join_again?'Gabung Canva Lagi':'Gabung Canva'}</span> </a>
-: <span class="history-join-button history-join-disabled"> <span class="history-join-icon">🔒</span> <span>${access==='EXPIRED'?'Gabung Canva':'Gabung Canva'}</span> </span>;
+? <a href="${esc(order.access_url)}" target="_self" rel="noopener" class="history-join-button">
+           <span class="history-join-icon">🔗</span>
+           <span>${order.can_join_again?'Gabung Canva Lagi':'Gabung Canva'}</span>
+         </a>
+: <span class="history-join-button history-join-disabled">
+           <span class="history-join-icon">🔒</span>
+           <span>${access==='EXPIRED'?'Gabung Canva':'Gabung Canva'}</span>
+         </span>;
 
 const nextAccess=
 order.next_access_display
@@ -3025,8 +2959,11 @@ let isGroup=false;
 /*
 
 SUMBER KEBENARAN PAKET:
+
 purchase-history mencari order berdasarkan access_token.
+
 purchase-history terbaru mengambil package_name dari payment_batches,
+
 sehingga Paket Grup tidak lagi terbaca sebagai 1 Bulan.
 */
 try{
@@ -3074,6 +3011,7 @@ if(!packageName){
 /*
 
 Jangan pernah menebak Paket Grup dari duration_months saja.
+
 Paket Grup juga berdurasi 1 bulan.
 */
 if(!packageName){
@@ -3380,5 +3318,6 @@ resetStoreAfterCanvaReturn();
 }
 });
 
-</script> </body> </html>
-
+</script>
+</body>
+</html>
