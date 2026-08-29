@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYCLIPS STORE</title>
+  <title>MYCLIPS - Premium Apps Store</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1252,65 +1252,28 @@ function getCapCutStock(){
   );
 }
 
-function updateCapCutTotal(normalize=false){
+function updateCapCutTotal(){
   const qtyInput = document.getElementById('capcut-qty');
   const totalEl = document.getElementById('capcut-total-price');
   const checkoutBtn = document.getElementById('checkout-btn');
 
   const maxStock = getCapCutStock();
+  let qty = Number(qtyInput?.value || 1);
 
-  if(!qtyInput){
-    return;
+  if(!Number.isFinite(qty) || qty < 1){
+    qty = 1;
   }
 
-  qtyInput.max = String(Math.max(1, maxStock));
-
-  // Saat user masih mengetik, JANGAN langsung mengganti isi input.
-  // Ini mencegah angka yang baru diketik tertimpa oleh nilai stok.
-  let raw = String(qtyInput.value ?? '').trim();
-
-  if(raw === ''){
-    capcutQuantity = 0;
-    if(totalEl){
-      totalEl.textContent = 'Total: ' + formatPriceShort(0);
-    }
-    if(checkoutBtn){
-      checkoutBtn.disabled = true;
-    }
-    return;
-  }
-
-  let qty = Number(raw);
-
-  if(!Number.isInteger(qty) || qty < 1){
-    capcutQuantity = 0;
-    if(totalEl){
-      totalEl.textContent = 'Total: ' + formatPriceShort(0);
-    }
-    if(checkoutBtn){
-      checkoutBtn.disabled = true;
-    }
-    return;
-  }
-
-  if(qty > maxStock){
-    if(normalize){
-      qty = maxStock;
-      qtyInput.value = String(maxStock);
-    }else{
-      // Jangan mengubah input saat event input sedang berlangsung.
-      capcutQuantity = qty;
-      if(totalEl){
-        totalEl.textContent = formatPriceShort(Number(selectedPrice || 0) * qty);
-      }
-      if(checkoutBtn){
-        checkoutBtn.disabled = true;
-      }
-      return;
-    }
+  if(maxStock > 0){
+    qty = Math.min(qty, maxStock);
   }
 
   capcutQuantity = qty;
+
+  if(qtyInput){
+    qtyInput.value = String(qty);
+    qtyInput.max = String(Math.max(1, maxStock));
+  }
 
   if(totalEl){
     totalEl.textContent = formatPriceShort(Number(selectedPrice || 0) * qty);
@@ -1339,8 +1302,6 @@ function initializeCapCutQuantity(){
         max="${Math.max(1, maxStock)}"
         value="1"
         inputmode="numeric"
-        step="1"
-        autocomplete="off"
         class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors"
       >
     </div>
@@ -1350,17 +1311,10 @@ function initializeCapCutQuantity(){
   `;
 
   const qtyInput = document.getElementById('capcut-qty');
-  qtyInput?.addEventListener('input', () => updateCapCutTotal(false));
-  qtyInput?.addEventListener('change', () => updateCapCutTotal(true));
-  qtyInput?.addEventListener('blur', () => updateCapCutTotal(true));
-  qtyInput?.addEventListener('keydown', event => {
-    if(event.key === 'Enter'){
-      event.preventDefault();
-      updateCapCutTotal(true);
-    }
-  });
+  qtyInput?.addEventListener('input', updateCapCutTotal);
+  qtyInput?.addEventListener('change', updateCapCutTotal);
 
-  updateCapCutTotal(true);
+  updateCapCutTotal();
 }
 
 function openModal(){
@@ -1387,16 +1341,8 @@ function openModal(){
   icon.textContent='🤖';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
   cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');initializeSingleEmails();
  }
- const checkoutBtn = document.getElementById('checkout-btn');
- if(selectedProduct==='Canva Premium'){
-   checkoutBtn.disabled = true;
- } else if(selectedProduct==='CapCut Premium'){
-   // initializeCapCutQuantity() sudah menghitung validitas stok/jumlah.
-   updateCapCutTotal(true);
- } else {
-   checkoutBtn.disabled = true;
- }
- checkoutBtn.textContent=selectedProduct==='Canva Premium'?'Bayar Sekarang':'Checkout via WhatsApp';
+ document.getElementById('checkout-btn').disabled=true;
+ document.getElementById('checkout-btn').textContent=selectedProduct==='Canva Premium'?'Bayar Sekarang':'Checkout via WhatsApp';
  modal.classList.remove('hidden');
 }
 function closeModal(){
