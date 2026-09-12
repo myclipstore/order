@@ -4,38 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MYCLIPS Admin Panel</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
   :root {
-    /* PALET PINK YANG LEBIH SOFT & AESTHETIC */
-    --pink-1: #ff6b9d; /* Bubblegum Pink */
-    --pink-2: #ff8fab; /* Lighter Pink */
-    --pink-dark: #d81b60;
+    /* MENGGUNAKAN PALET WARNA PERSIS DARI INDEX.HTML */
+    --pink-1: #ff3d8f;
+    --pink-2: #ff7cae;
+    --pink-dark: #e0227a;
     --pink-light: #ffe4ef;
     
-    /* BACKGROUNDS */
-    --bg-color: #fff0f5; /* Lavender Blush (Background Utama) */
-    --sidebar-bg: #fff5f8; /* Soft Pink untuk Sidebar (Tidak Putih Polos) */
+    /* Background super soft persis index.html */
+    --bg-color: #fef6f9; 
+    --sidebar-bg: #ffffff;
     
-    --text-main: #3d4250;
-    --text-muted: #7b809a;
+    /* Warna Text */
+    --text-main: #231c28;
+    --text-muted: #8d8393;
     
-    /* SHADOWS DENGAN TINTA PINK */
-    --card-shadow: 0 8px 25px rgba(255, 107, 157, 0.08);
-    --btn-shadow: 0 6px 15px rgba(255, 107, 157, 0.25);
+    /* Shadow Pink Lembut */
+    --card-shadow: 0 10px 35px rgba(255, 61, 143, 0.08);
+    --btn-shadow: 0 10px 25px rgba(255, 61, 143, 0.35);
     
-    --transition: all 0.3s ease;
+    --transition: all 0.35s cubic-bezier(.4,0,.2,1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
   
   body { 
     background-color: var(--bg-color); 
-    background-image: radial-gradient(circle at 20% 50%, rgba(255,182,193,.35) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 20%, rgba(255,192,203,.40) 0%, transparent 40%);
-    background-attachment: fixed;
     color: var(--text-main); 
     font-size: 14px; 
   }
@@ -46,8 +44,8 @@
   .hidden { display: none !important; }
   a { text-decoration: none; color: inherit; }
   
-  /* PAGE SECTIONS (Untuk sistem Tab Navigasi) */
-  .page-section { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  /* PAGE SECTIONS */
+  .page-section { display: none; animation: fadeIn 0.4s var(--transition); }
   .page-section.active { display: block; }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(15px); }
@@ -60,29 +58,29 @@
   .sidebar {
     width: 260px; 
     background: var(--sidebar-bg); 
-    border-right: 1px solid #fce8f0;
-    box-shadow: 4px 0 20px rgba(255, 107, 157, 0.05);
+    border-right: 1px solid #ffe0ec;
+    box-shadow: 4px 0 25px rgba(255, 61, 143, 0.04);
     position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
     display: flex; flex-direction: column;
   }
   .sidebar-header {
-    padding: 26px 24px; text-align: center; border-bottom: 1px dashed #f9d5e3;
+    padding: 28px 24px; text-align: center; border-bottom: 1px dashed #ffe0ec;
   }
   .sidebar-header .brand {
-    font-size: 24px; font-weight: 800; 
-    background: linear-gradient(135deg, var(--pink-1), #ff4f8b);
+    font-size: 26px; font-weight: 800; 
+    background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     letter-spacing: 0.5px;
   }
-  .sidebar-nav { padding: 24px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .sidebar-nav { padding: 24px 18px; display: flex; flex-direction: column; gap: 8px; }
   
   /* KAPSUL MENU SIDEBAR */
   .sidebar-nav a {
-    display: flex; align-items: center; gap: 14px; padding: 13px 18px; 
-    border-radius: 14px; /* Bentuk kapsul yang halus */
-    color: #6a5a62; font-weight: 600; transition: var(--transition); cursor: pointer;
+    display: flex; align-items: center; gap: 14px; padding: 12px 18px; 
+    border-radius: 50px; /* Bentuk kapsul persis index.html */
+    color: var(--text-main); font-weight: 600; transition: var(--transition); cursor: pointer;
   }
-  .sidebar-nav a i { width: 20px; text-align: center; font-size: 16px; color: #a89aa1; transition: var(--transition); }
+  .sidebar-nav a i { width: 20px; text-align: center; font-size: 15px; color: var(--text-muted); transition: var(--transition); }
   
   .sidebar-nav a:hover:not(.active) {
     background: var(--pink-light); color: var(--pink-1);
@@ -91,7 +89,7 @@
   
   /* ACTIVE STATE KAPSUL HALUS */
   .sidebar-nav a.active {
-    background: linear-gradient(135deg, var(--pink-1), #ff9bbd); 
+    background: linear-gradient(135deg, var(--pink-1), var(--pink-2)); 
     color: #fff;
     box-shadow: var(--btn-shadow);
   }
@@ -105,47 +103,47 @@
   /* TOP NAVBAR */
   .top-nav {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 35px; background: rgba(255, 245, 249, 0.75);
+    padding: 16px 36px; background: rgba(255, 255, 255, 0.85);
     position: sticky; top: 0; z-index: 90; backdrop-filter: blur(16px); 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid #ffe0ec;
   }
   .nav-title { font-size: 20px; font-weight: 800; color: var(--text-main); }
   .nav-right { display: flex; align-items: center; gap: 20px; }
   
   /* SEARCH BAR */
   .search-box {
-    display: flex; align-items: center; background: #fff; padding: 10px 20px;
-    border-radius: 50px; box-shadow: 0 4px 15px rgba(255, 107, 157, 0.06); border: 1px solid #fce8f0;
+    display: flex; align-items: center; background: #fff; padding: 10px 18px;
+    border-radius: 50px; border: 1.5px solid #f5d9e5;
     transition: var(--transition);
   }
-  .search-box:focus-within { border-color: var(--pink-2); box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.15); }
-  .search-box input { border: none; outline: none; background: transparent; padding: 2px 6px; width: 280px; font-size: 13px; font-family: 'Poppins'; }
-  .search-box i { color: var(--pink-2); }
+  .search-box:focus-within { border-color: var(--pink-1); box-shadow: 0 0 0 4px rgba(255, 61, 143, 0.1); }
+  .search-box input { border: none; outline: none; background: transparent; width: 260px; font-size: 13px; font-family: 'Poppins'; color: var(--text-main); }
+  .search-box i { color: var(--text-muted); margin-right: 8px;}
 
-  .content-pad { padding: 0 35px 50px; }
+  .content-pad { padding: 0 36px 50px; }
 
-  /* CARDS */
+  /* CARDS - Putih Bersih (Solid) */
   .card {
-    background: rgba(255, 255, 255, 0.85); border-radius: 20px; 
+    background: #ffffff; border-radius: 20px; 
     box-shadow: var(--card-shadow); border: 1px solid #fff;
-    padding: 28px; margin-bottom: 24px; position: relative; backdrop-filter: blur(12px);
+    padding: 28px; margin-bottom: 24px; position: relative;
   }
-  .card-header { margin-bottom: 22px; }
-  .section-title { font-size: 19px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+  .card-header { margin-bottom: 24px; }
+  .section-title { font-size: 22px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
   .section-subtitle { color: var(--text-muted); font-size: 13px; }
 
   /* KPI DASHBOARD */
   .dashboard-grid {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; margin-bottom: 30px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 30px;
   }
   .kpi-card {
-    background: rgba(255, 255, 255, 0.85); border-radius: 20px; box-shadow: var(--card-shadow); border: 1px solid #fff;
-    padding: 22px; position: relative; overflow: hidden; display: flex; flex-direction: column; backdrop-filter: blur(12px);
+    background: #ffffff; border-radius: 20px; box-shadow: var(--card-shadow); border: 1px solid #fff;
+    padding: 22px; position: relative; overflow: hidden; display: flex; flex-direction: column;
   }
   .kpi-icon-wrap {
     width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
     font-size: 20px; color: #fff; position: absolute; top: -8px; right: 20px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
   }
   .kpi-card:nth-child(1) .kpi-icon-wrap { background: linear-gradient(135deg, #4facfe, #00f2fe); }
   .kpi-card:nth-child(2) .kpi-icon-wrap { background: linear-gradient(135deg, #43e97b, #38f9d7); }
@@ -159,64 +157,59 @@
   /* AUTO REFRESH BAR */
   .auto-bar {
     display: flex; justify-content: space-between; align-items: center;
-    background: rgba(255, 255, 255, 0.7); padding: 14px 22px; border-radius: 14px; 
-    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.05);
-    margin-bottom: 26px; font-size: 13px; border: 1px solid #fff; backdrop-filter: blur(10px);
+    background: #ffffff; padding: 14px 22px; border-radius: 14px; 
+    box-shadow: var(--card-shadow);
+    margin-bottom: 26px; font-size: 13px; border: 1px solid #fff;
   }
   .live-dot {
-    display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981;
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); animation: pulseLive 1.5s infinite; margin-right: 10px;
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #2fbe6e;
+    box-shadow: 0 0 0 0 rgba(47, 190, 110, 0.4); animation: pulseLive 1.5s infinite; margin-right: 10px;
   }
-  @keyframes pulseLive { 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+  @keyframes pulseLive { 70% { box-shadow: 0 0 0 6px rgba(47, 190, 110, 0); } 100% { box-shadow: 0 0 0 0 rgba(47, 190, 110, 0); } }
 
   /* FORMS & BUTTONS */
-  label { display: block; font-weight: 600; font-size: 13px; margin: 12px 0 6px; color: #5a4b52; }
+  label { display: block; font-weight: 600; font-size: 13px; margin: 12px 0 6px; color: var(--text-main); }
   input, select {
-    width: 100%; padding: 12px 16px; border: 1.5px solid #f0dde4; border-radius: 12px; font-size: 13.5px;
+    width: 100%; padding: 12px 16px; border: 1.5px solid #f5d9e5; border-radius: 12px; font-size: 13.5px;
     transition: var(--transition); background: #fff; font-family: 'Poppins', sans-serif; color: var(--text-main);
   }
-  input:focus, select:focus { border-color: var(--pink-1); box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.12); }
+  input:focus, select:focus { border-color: var(--pink-1); box-shadow: 0 0 0 4px rgba(255, 61, 143, 0.1); outline: none; }
   
   button {
-    border: none; border-radius: 12px; background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
-    color: #fff; padding: 12px 22px; font-weight: 700; font-size: 13px; cursor: pointer;
+    border: none; border-radius: 50px; background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
+    color: #fff; padding: 12px 24px; font-weight: 700; font-size: 13px; cursor: pointer;
     box-shadow: var(--btn-shadow); transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;
   }
-  button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 107, 157, 0.35); }
+  button:hover { transform: translateY(-4px); box-shadow: 0 16px 35px rgba(255, 61, 143, 0.5); }
   button:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
   
-  button.dark { background: #374151; box-shadow: 0 6px 15px rgba(55, 65, 81, 0.2); }
-  button.dark:hover { background: #1f2937; }
-  button.green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25); }
-  button.red { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.25); }
-  button.small { padding: 8px 14px; font-size: 11.5px; }
+  button.dark { background: #fff; border: 1.5px solid #f5d9e5; color: var(--text-main); box-shadow: none; }
+  button.dark:hover { border-color: var(--pink-1); color: var(--pink-1); box-shadow: 0 4px 15px rgba(255, 61, 143, 0.1); }
+  button.green { background: linear-gradient(135deg, #2fbe6e, #4ade80); box-shadow: 0 8px 18px rgba(47, 190, 110, 0.3); }
+  button.green:hover { box-shadow: 0 12px 25px rgba(47, 190, 110, 0.45); }
+  button.red { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 8px 18px rgba(239, 68, 68, 0.3); }
+  button.small { padding: 8px 16px; font-size: 12px; }
 
   /* VOUCHER GRID */
   .voucher-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 150px auto; gap: 15px; align-items: end; }
 
-  /* TABLES — soft, not loud pink */
-  .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 14px; border: 1px solid #f3e8ee; }
+  /* TABLES - KINI LEBIH BERSIH & SOFT */
+  .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 16px; }
   .table { width: 100%; border-collapse: collapse; min-width: 950px; }
   .table th { 
-    background: #faf7f9; 
-    color: #c45a7a; 
-    font-size: 11px; font-weight: 700; text-transform: uppercase; 
-    padding: 14px 18px; text-align: left; 
-    border-bottom: 1px solid #f0e4ea;
+    background: #fff; border-bottom: 2px solid var(--pink-light);
+    color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; 
+    padding: 16px 18px; text-align: left; 
   }
   .table td { 
-    padding: 16px 18px; 
-    border-bottom: 1px solid #f7f0f3; 
-    font-size: 13px; vertical-align: top; 
-    background: #fff;
+    padding: 16px 18px; border-bottom: 1px dashed #f0dde6; 
+    font-size: 13px; vertical-align: top; background: #fff; transition: var(--transition);
   }
-  .table tbody tr:hover td {
-    background: #fffbfd;
-  }
+  .table tbody tr:hover td { background: var(--pink-light); }
   .orders-table { min-width: 1500px; }
   
   /* STATUS BADGES */
-  .status { display: inline-block; padding: 5px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; }
+  .status { display: inline-block; padding: 5px 12px; border-radius: 50px; font-size: 10.5px; font-weight: 800; letter-spacing: 0.5px; }
   .paid, .ready { background: #dcfce7; color: #166534; }
   .pending { background: #fef3c7; color: #92400e; }
   .used { background: #f3e8ff; color: #6d28d9; }
@@ -225,19 +218,21 @@
 
   /* ACCORDIONS (STOCK & PRICE) */
   .product-accordion { display: flex; flex-direction: column; gap: 14px; margin-top: 15px; }
-  .product-panel { border: 1px solid #fce8f0; border-radius: 16px; background: #fff; overflow: hidden; box-shadow: 0 4px 15px rgba(255, 107, 157, 0.05); }
+  .product-panel { border: 1px solid #f5d9e5; border-radius: 16px; background: #fff; overflow: hidden; box-shadow: var(--card-shadow); transition: var(--transition); }
+  .product-panel:hover { border-color: var(--pink-2); }
   .product-panel summary {
-    padding: 18px 20px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-    background: linear-gradient(180deg, #fff, #fffafc); list-style: none; user-select: none; color: var(--text-main);
+    padding: 18px 22px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    background: #fff; list-style: none; user-select: none; color: var(--text-main); font-size: 15px;
   }
   .product-panel summary::-webkit-details-marker { display: none; }
   .product-panel summary:after { content: "\f078"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--pink-1); transition: 0.3s; }
   .product-panel[open] summary:after { transform: rotate(180deg); }
-  .product-panel-body { padding: 20px; border-top: 1px solid #fce8f0; background: #fffafc; }
+  .product-panel-body { padding: 22px; border-top: 1px dashed #f0dde6; background: #fff; }
   .product-panel-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
   
-  .stock-item, .price-item { border: 1px solid #fce8f0; border-radius: 14px; padding: 16px; background: #fff; }
-  .stock-item-title, .price-item-title { font-weight: 700; margin-bottom: 12px; font-size: 13px; color: var(--pink-dark); }
+  .stock-item, .price-item { border: 1.5px solid #f5d9e5; border-radius: 16px; padding: 18px; background: #fff; transition: var(--transition); }
+  .stock-item:hover, .price-item:hover { border-color: var(--pink-1); box-shadow: 0 6px 15px rgba(255,61,143,0.08); transform: translateY(-2px); }
+  .stock-item-title, .price-item-title { font-weight: 700; margin-bottom: 12px; font-size: 13px; color: var(--text-main); }
   .stock-badge { display: inline-block; margin-top: 12px; padding: 5px 10px; border-radius: 8px; font-size: 10.5px; font-weight: 800; }
   .stock-badge.ready { background: #dcfce7; color: #166534; }
   .stock-badge.empty { background: #fee2e2; color: #991b1b; }
@@ -247,28 +242,14 @@
   .message.ok { background: #dcfce7; color: #166534; border-left: 4px solid #166534; display: block; }
   .message.err { background: #fee2e2; color: #991b1b; border-left: 4px solid #991b1b; display: block; }
   .info-box { background: #eff6ff; color: #1e40af; padding: 16px; border-radius: 12px; font-size: 13.5px; margin-top: 15px; border-left: 4px solid #3b82f6; }
-  .note { background: #fff7ed; color: #9a3412; padding: 14px 18px; border-radius: 12px; font-size: 13px; margin-bottom: 22px; border-left: 4px solid #f97316; }
+  .note { background: #fffceb; color: #7a6a3a; padding: 14px 18px; border-radius: 12px; font-size: 13px; margin-bottom: 22px; border-left: 4px solid #f59e0b; }
 
-  /* FILTER BUTTONS — Softer */
+  /* FILTER BUTTONS */
   .toolbar { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; flex-wrap: wrap; gap: 12px; }
   .toolbar-left, .toolbar-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .filterBtn { 
-    background: #fff; 
-    border: 1px solid #eee4e8; 
-    color: #8a7a82; 
-    box-shadow: none; 
-  }
-  .filterBtn:hover { 
-    background: #fff8fb; 
-    color: #d46b8c; 
-    border-color: #f5d6e2; 
-  }
-  .filterBtn.active { 
-    background: linear-gradient(135deg, #ff7aa8, #ff9bbd) !important; 
-    color: #fff !important; 
-    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.22) !important; 
-    border-color: transparent !important; 
-  }
+  .filterBtn { background: #fff; border: 1.5px solid #f5d9e5; color: var(--text-main); box-shadow: none; border-radius: 50px; padding: 10px 22px; }
+  .filterBtn:hover { background: var(--pink-light); color: var(--pink-1); border-color: var(--pink-1); }
+  .filterBtn.active { background: linear-gradient(135deg, var(--pink-1), var(--pink-2)) !important; color: #fff !important; box-shadow: var(--btn-shadow) !important; border-color: transparent !important; }
 
   /* LOGIN PAGE (FULL SCREEN) */
   #loginScreen {
@@ -276,8 +257,8 @@
     display: flex; align-items: center; justify-content: center; z-index: 2000;
   }
   .login-card {
-    background: rgba(255,255,255,0.9); width: 100%; max-width: 420px; padding: 45px 40px; border-radius: 24px;
-    box-shadow: 0 25px 50px rgba(255, 107, 157, 0.15); text-align: center; border: 1px solid #fff; backdrop-filter: blur(10px);
+    background: #ffffff; width: 100%; max-width: 420px; padding: 45px 40px; border-radius: 28px;
+    box-shadow: var(--card-shadow); text-align: center; border: 1px solid #fff;
   }
   .login-card i { font-size: 55px; color: var(--pink-1); margin-bottom: 20px; display: block; }
 
@@ -302,8 +283,8 @@
      ===================================================== -->
 <div id="loginScreen">
   <div class="login-card" id="loginCard">
-    <i class="fa-solid fa-lock"></i>
-    <div class="section-title" style="font-size: 22px;">Login Admin</div>
+    <i class="fa-solid fa-heart" style="background: linear-gradient(135deg, var(--pink-1), var(--pink-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+    <div class="section-title" style="font-size: 26px; font-weight:800;">Admin Panel</div>
     <div class="section-subtitle" style="margin-bottom: 25px;">Masukkan Admin Key MYCLIPS</div>
     <div style="text-align: left;">
       <label>Admin Key</label>
@@ -318,7 +299,7 @@
 
 
 <!-- =====================================================
-     MAIN APP WRAPPER (Sembunyi sebelum login)
+     MAIN APP WRAPPER 
      ===================================================== -->
 <div id="app" class="wrapper hidden">
 
@@ -326,7 +307,7 @@
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="brand">MYCLIPS</div>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; font-weight:700; letter-spacing: 0.5px;">ADMIN DASHBOARD</div>
+      <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px; font-weight:700; letter-spacing: 0.5px;">ADMIN DASHBOARD</div>
     </div>
     <nav class="sidebar-nav">
       <a class="nav-item active" data-target="page-dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
@@ -349,7 +330,7 @@
           <i class="fa-solid fa-magnifying-glass"></i>
           <input id="search" placeholder="Cari order, nama, email...">
         </div>
-        <button id="logoutBtn" class="dark small" style="border-radius: 50px; padding: 8px 16px;"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        <button id="logoutBtn" class="dark small" style="border-radius: 50px; padding: 10px 20px;"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
       </div>
     </header>
 
@@ -368,7 +349,7 @@
       
       <!-- GLOBAL MESSAGES -->
       <div id="appMessage" class="message"></div>
-      <div class="note"><b>Perhatian:</b> Admin Key digunakan untuk koneksi aman ke server database Supabase.</div>
+      <div class="note"><b>✨ Perhatian:</b> Admin Key digunakan untuk koneksi aman ke server database Supabase.</div>
 
       <!-- ==============================================
            HALAMAN 1: DASHBOARD
@@ -415,11 +396,11 @@
 
           <div class="toolbar">
             <div class="toolbar-left">
-              <button id="deleteSelectedBtn" class="red" disabled style="border-radius:50px;"><i class="fa-solid fa-trash"></i> Hapus</button>
-              <button class="filterBtn active" data-filter="ALL" style="border-radius:50px;">Semua</button>
-              <button class="filterBtn" data-filter="PAID" style="border-radius:50px;">PAID</button>
-              <button class="filterBtn" data-filter="PENDING" style="border-radius:50px;">PENDING</button>
-              <button class="filterBtn" data-filter="EXPIRED" style="border-radius:50px;">EXPIRED</button>
+              <button id="deleteSelectedBtn" class="red" disabled><i class="fa-solid fa-trash"></i> Hapus</button>
+              <button class="filterBtn active" data-filter="ALL">Semua</button>
+              <button class="filterBtn" data-filter="PAID">PAID</button>
+              <button class="filterBtn" data-filter="PENDING">PENDING</button>
+              <button class="filterBtn" data-filter="EXPIRED">EXPIRED</button>
             </div>
             <div class="toolbar-right">
               <select id="sortOrder" style="border-radius:50px; padding: 10px 16px;">
@@ -587,7 +568,7 @@ navItems.forEach(item => {
 });
 
 /* =====================================================
-   CONFIG & VARIABLES
+   CONFIG & VARIABLES 
    ===================================================== */
 const SUPABASE_URL = "https://refyjnsdseyxoqlifvry.supabase.co";
 const ADMIN_API_URL = SUPABASE_URL + "/functions/v1/admin-api";
@@ -731,7 +712,7 @@ async function saveTeam(){
 }
 
 /* =====================================================
-   PRICES & STOCK 
+   PRICES & STOCK (PRODUCT ACCORDION)
    ===================================================== */
 async function loadPrices(){
   const data = await api("list_prices");
