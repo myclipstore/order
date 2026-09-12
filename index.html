@@ -1,3276 +1,1635 @@
-<!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MYCLIPS STORE</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Poppins', sans-serif; }
-    
-    .texture-bg {
-      background-color: #FFF0F5;
-      background-image: 
-        radial-gradient(circle at 20% 50%, rgba(255, 182, 193, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 192, 203, 0.4) 0%, transparent 40%),
-        radial-gradient(circle at 40% 80%, rgba(255, 174, 185, 0.25) 0%, transparent 45%),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    }
-    
-    .card-texture {
-      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,245,250,0.9) 100%);
-      backdrop-filter: blur(10px);
-    }
-    
-    .price-tag {
-      background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
-    }
-    
-    .btn-checkout {
-      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-checkout:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
-    }
-    
-    .product-card {
-      transition: all 0.3s ease;
-    }
-    
-    .product-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .package-option {
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-    
-    .package-option:hover {
-      border-color: #FF6B9D;
-      background: rgba(255, 107, 157, 0.05);
-    }
-    
-    .package-option.selected {
-      border-color: #FF6B9D;
-      background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(255, 143, 171, 0.1) 100%);
-    }
-    
-    .modal-overlay {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-    }
-    
-    .strikethrough {
-      text-decoration: line-through;
-      opacity: 0.6;
-    }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MYCLIPS - Premium Apps Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --pink-1:#ff3d8f;
+    --pink-2:#ff7cae;
+    --pink-dark:#e0227a;
+    --pink-light:#ffe4ef;
+    --bg:#fef6f9;
+    --dark:#231c28;
+    --gray:#8d8393;
+    --shadow:0 10px 35px rgba(255,61,143,0.12);
+    --shadow-lg:0 25px 60px rgba(255,61,143,0.2);
+    --radius:20px;
+    --ease:cubic-bezier(.4,0,.2,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html, body{max-width:100%;overflow-x:hidden;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--dark);}
+  a{text-decoration:none;color:inherit;}
+  ul{list-style:none;}
+  .script-font{font-family:'Caveat',cursive;}
+  ::selection{background:var(--pink-1);color:#fff;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--pink-light);}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(var(--pink-1),var(--pink-2));border-radius:10px;}
 
-    .payment-access-status {
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      color: #b45309;
-      font-size: 13px;
-      line-height: 1.45;
-      font-weight: 500;
-    }
+  /* PRELOADER */
+  .preloader{
+    position:fixed;inset:0;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transition:opacity .6s var(--ease), visibility .6s var(--ease);
+  }
+  .preloader.hide{opacity:0;visibility:hidden;}
+  .preloader-heart{width:70px;height:70px;animation:heartbeat 1.1s ease-in-out infinite;}
+  .preloader-heart i{font-size:70px;color:#fff;}
+  .preloader-text{color:#fff;font-weight:800;font-size:22px;margin-top:20px;letter-spacing:2px;}
+  .preloader-bar{width:180px;height:4px;background:rgba(255,255,255,.3);border-radius:10px;margin-top:20px;overflow:hidden;}
+  .preloader-bar-fill{height:100%;background:#fff;width:0%;border-radius:10px;animation:loadBar 1.4s var(--ease) forwards;}
+  @keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+  @keyframes loadBar{0%{width:0%;}100%{width:100%;}}
 
-    .payment-access-status.hidden {
-      display: none;
-    }
-    
-    .discount-badge {
-      background: linear-gradient(135deg, #FF4757 0%, #FF6B81 100%);
-    }
-    
-    .floating-hearts {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    
-    .heart {
-      position: absolute;
-      font-size: 20px;
-      opacity: 0.1;
-      animation: float 15s infinite ease-in-out;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(10deg); }
-    }
-    
-    .toast {
-      animation: slideIn 0.3s ease;
-    }
-    
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
+  .scroll-progress{
+    position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--pink-1),var(--pink-2));
+    z-index:9998;width:0%;transition:width .1s;
+  }
 
-    .tab-button {
-      transition: all 0.3s ease;
-    }
+  /* REVEAL ANIMATION */
+  .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s var(--ease),transform .8s var(--ease);}
+  .reveal.active{opacity:1;transform:translateY(0);}
+  .reveal-scale{opacity:0;transform:scale(.9);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+  .reveal-scale.active{opacity:1;transform:scale(1);}
+  .delay-1{transition-delay:.1s;}
+  .delay-2{transition-delay:.2s;}
+  .delay-3{transition-delay:.3s;}
+  .delay-4{transition-delay:.4s;}
 
-    .tab-button.active {
-      background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
-      color: white;
-    }
+  /* NAVBAR */
+  .navbar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:20px 36px;background:rgba(255,255,255,.8);backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);position:fixed;top:0;left:0;right:0;z-index:1000;
+    transition:all .4s var(--ease);border-bottom:1px solid transparent;
+  }
+  .navbar.scrolled{
+    padding:12px 36px;background:rgba(255,255,255,.94);box-shadow:0 4px 25px rgba(255,61,143,.1);
+    border-bottom:1px solid #ffe0ec;
+  }
+  .logo-text h1{
+    font-size:22px;font-weight:800;letter-spacing:.5px;
+    background:linear-gradient(135deg,var(--pink-1),var(--pink-2));-webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;background-clip:text;transition:font-size .4s var(--ease);
+  }
+  .navbar.scrolled .logo-text h1{font-size:19px;}
+  .nav-links{display:flex;gap:8px;}
+  .nav-links li a{
+    display:flex;align-items:center;gap:7px;font-weight:600;font-size:14px;
+    color:var(--dark);cursor:pointer;padding:10px 16px;border-radius:50px;transition:.3s var(--ease);
+  }
+  .nav-links li a:hover{color:var(--pink-1);background:var(--pink-light);}
+  .nav-links li a i{font-size:12px;}
+  .menu-toggle{
+    display:none;font-size:20px;color:var(--pink-1);cursor:pointer;background:var(--pink-light);
+    border:none;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;
+  }
+  .mobile-nav{
+    display:none;position:fixed;top:70px;left:16px;right:16px;background:#fff;border-radius:20px;
+    flex-direction:column;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,0.15);z-index:999;
+    opacity:0;transform:translateY(-10px);transition:.3s var(--ease);
+  }
+  .mobile-nav.show{display:flex;opacity:1;transform:translateY(0);}
+  .mobile-nav a{
+    padding:15px 16px;font-weight:600;font-size:14.5px;border-radius:14px;
+    display:flex;align-items:center;gap:12px;color:var(--dark);cursor:pointer;transition:.2s;
+  }
+  .mobile-nav a:hover{background:var(--pink-light);color:var(--pink-1);}
+  .mobile-nav a i{color:var(--pink-1);width:18px;}
 
-    .tab-button:not(.active) {
-      background: transparent;
-      color: #999;
-    }
+  /* BUTTONS */
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:15px 30px;border-radius:50px;
+    font-weight:600;font-size:14px;cursor:pointer;border:none;transition:.35s var(--ease);
+    position:relative;overflow:hidden;
+  }
+  .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);
+    animation:rippleEffect .6s ease-out;pointer-events:none;}
+  @keyframes rippleEffect{to{transform:scale(4);opacity:0;}}
+  .btn-primary{background:linear-gradient(135deg,var(--pink-1),var(--pink-2));color:#fff;
+    box-shadow:0 10px 25px rgba(255,61,143,.35);}
+  .btn-primary:hover{transform:translateY(-4px);box-shadow:0 16px 35px rgba(255,61,143,.5);}
+  .btn-outline{background:#fff;color:var(--dark);border:1.5px solid #f5d9e5;}
+  .btn-outline:hover{border-color:var(--pink-1);color:var(--pink-1);transform:translateY(-4px);}
 
-    .order-item {
-      animation: fadeIn 0.3s ease;
-    }
+  /* HERO */
+  .hero{
+    background:linear-gradient(-45deg,#ffeef4,#ffe3ee,#fff0f6,#ffe8f2);
+    background-size:400% 400%;animation:gradientMove 15s ease infinite;
+    padding:150px 40px 70px;position:relative;overflow:hidden;
+  }
+  @keyframes gradientMove{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+  .hero-grid{
+    max-width:1280px;margin:0 auto;display:grid;
+    grid-template-columns:1fr 1fr;gap:30px;align-items:center;position:relative;z-index:3;
+  }
+  .hero-tag{
+    display:inline-flex;align-items:center;gap:6px;background:#fff;
+    padding:9px 18px;border-radius:50px;font-size:12.5px;font-weight:600;
+    color:var(--pink-dark);margin-bottom:18px;box-shadow:0 6px 15px rgba(0,0,0,.06);
+    animation:fadeInDown .8s var(--ease);
+  }
+  @keyframes fadeInDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+  .hero-text h1{font-size:60px;font-weight:800;color:var(--pink-1);line-height:1;letter-spacing:-1.5px;
+    animation:fadeInUp .8s var(--ease) .1s backwards;}
+  .hero-text h2{font-size:32px;font-weight:700;color:var(--pink-1);margin:8px 0 18px;
+    animation:fadeInUp .8s var(--ease) .2s backwards;}
+  .hero-text p{color:var(--gray);font-size:15px;line-height:1.8;margin-bottom:28px;max-width:460px;
+    animation:fadeInUp .8s var(--ease) .3s backwards;}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(25px);}to{opacity:1;transform:translateY(0);}}
+  .hero-btns{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap;animation:fadeInUp .8s var(--ease) .4s backwards;}
+  .hero-badges{display:flex;gap:10px;flex-wrap:wrap;animation:fadeInUp .8s var(--ease) .5s backwards;}
+  .badge-pill{
+    display:flex;align-items:center;gap:6px;background:#fff;
+    padding:10px 18px;border-radius:50px;font-size:12.5px;font-weight:600;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);color:var(--dark);transition:.3s;cursor:default;
+  }
+  .badge-pill:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(255,61,143,.15);}
+  .badge-pill i{color:var(--pink-1);font-size:12px;}
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+  .hero-illustration{position:relative;height:430px;animation:fadeIn 1s var(--ease) .3s backwards;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .heart-bg{position:absolute;color:var(--pink-2);opacity:.4;animation:floatSlow 4s ease-in-out infinite;}
+  @keyframes floatSlow{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(10deg);}}
+  .script-note{
+    position:absolute;top:-10px;right:10px;font-family:'Caveat',cursive;font-weight:700;
+    color:#e85f9a;font-size:21px;line-height:1.15;text-align:right;transform:rotate(-3deg);
+    animation:floatSlow 5s ease-in-out infinite;
+  }
+  .laptop-wrap{position:absolute;top:50px;left:38%;z-index:3;animation:floatSlow 5s ease-in-out infinite;}
+  .laptop{width:320px;height:200px;background:#3a3a42;border-radius:14px 14px 4px 4px;padding:10px;
+    box-shadow:0 35px 60px rgba(0,0,0,0.25);}
+  .laptop-screen{width:100%;height:100%;border-radius:6px;
+    background:linear-gradient(160deg,#ff6fa8,#ff3d8f);position:relative;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center;padding:22px;color:#fff;}
+  .laptop-screen::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.25) 50%,transparent 70%);
+    animation:shine 3.5s ease-in-out infinite;
+  }
+  @keyframes shine{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+  .laptop-screen h3{font-family:'Caveat',cursive;font-weight:700;font-size:26px;line-height:1.3;position:relative;z-index:2;}
+  .laptop-base{width:360px;height:12px;background:#c9c9d0;margin:0 auto;border-radius:0 0 8px 8px;
+    transform:perspective(150px) rotateX(-8deg);}
 
-    .status-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
+  .speech-bubble{
+    position:absolute;top:15px;right:60px;background:#fff;border-radius:18px;
+    padding:15px 22px;box-shadow:0 15px 35px rgba(0,0,0,.12);font-size:13px;font-weight:600;
+    text-align:center;z-index:5;animation:bubblePop .6s var(--ease) .8s backwards, floatSlow 4.5s ease-in-out 1.4s infinite;
+  }
+  @keyframes bubblePop{0%{opacity:0;transform:scale(.5);}70%{transform:scale(1.08);}100%{opacity:1;transform:scale(1);}}
+  .speech-bubble small{display:block;font-weight:400;color:var(--gray);font-size:11.5px;}
+  .speech-bubble b{font-size:21px;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 
-    .status-pending {
-      background: rgba(255, 193, 7, 0.2);
-      color: #F57C00;
-    }
+  .vase-flower{position:absolute;left:20%;top:80px;z-index:2;animation:floatSlow 6s ease-in-out infinite;}
+  .vase{width:60px;height:70px;background:linear-gradient(180deg,#fff,#ffe8f0);
+    border-radius:6px 6px 20px 20px;margin:70px auto 0;box-shadow:0 12px 25px rgba(0,0,0,.1);}
+  .tulip{font-size:44px;position:absolute;top:0;filter:drop-shadow(0 8px 10px rgba(0,0,0,.08));}
+  .tulip:nth-child(1){left:-10px;animation:sway 3s ease-in-out infinite;}
+  .tulip:nth-child(2){left:15px;top:-15px;animation:sway 3.4s ease-in-out infinite .3s;}
+  .tulip:nth-child(3){left:38px;animation:sway 2.8s ease-in-out infinite .6s;}
+  @keyframes sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
 
-    .status-completed {
-      background: rgba(76, 175, 80, 0.2);
-      color: #2E7D32;
-    }
+  .sticky-note{
+    position:absolute;bottom:80px;right:20px;background:#fffceb;padding:15px 17px;width:135px;
+    box-shadow:0 15px 30px rgba(0,0,0,.12);font-family:'Caveat',cursive;font-size:16.5px;font-weight:600;
+    color:#7a6a3a;line-height:1.3;transform:rotate(5deg);z-index:6;
+    animation:fadeIn 1s var(--ease) 1s backwards, floatSlow 5s ease-in-out 1.5s infinite;
+  }
+  .books{position:absolute;bottom:20px;right:-20px;z-index:4;animation:fadeIn 1s var(--ease) 1.2s backwards;}
+  .book-tag{
+    background:linear-gradient(90deg,#fff,#ffeef5);padding:9px 20px 9px 24px;margin-bottom:5px;
+    font-size:12px;font-weight:700;color:var(--pink-dark);box-shadow:-6px 6px 14px rgba(0,0,0,.08);
+    clip-path:polygon(10% 0,100% 0,100% 100%,10% 100%,0 50%);transition:.3s;
+  }
+  .book-tag:hover{transform:translateX(-8px);}
 
-    .info-tooltip {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
+  /* STATS */
+  .stats{max-width:1160px;margin:-45px auto 60px;padding:0 20px;position:relative;z-index:10;}
+  .stats-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-lg);
+    display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden;}
+  .stat-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    padding:32px 20px;border-right:1px solid #f7e6ee;transition:.3s;}
+  .stat-item:hover{background:var(--pink-light);}
+  .stat-item:last-child{border-right:none;}
+  .stat-num{font-size:34px;font-weight:800;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat-label{font-size:12.5px;color:var(--gray);font-weight:600;}
 
-    .info-tooltip:hover .tooltip-text {
-      opacity: 1;
-      visibility: visible;
-    }
+  /* SECTION TITLE */
+  .section-title{text-align:center;margin-bottom:48px;}
+  .section-title h2{font-size:30px;font-weight:800;margin-bottom:10px;color:var(--dark);font-family:'Poppins',sans-serif;}
+  .section-title p{color:var(--gray);font-size:14.5px;}
+  .underline-deco{width:60px;height:4px;background:linear-gradient(90deg,var(--pink-1),var(--pink-2));
+    border-radius:10px;margin:14px auto 0;}
 
-    .tooltip-text {
-      position: absolute;
-      bottom: auto;
-      top: -80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      z-index: 50;
-    }
+  /* CARA ORDER */
+  .cara-order{background:linear-gradient(180deg,#ffe9f1,#ffdcea);padding:80px 40px;position:relative;overflow:hidden;}
+  .deco-left{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:90px;opacity:.9;
+    animation:floatSlow 6s ease-in-out infinite;}
+  .deco-right{position:absolute;right:30px;top:38%;background:#fffdf5;padding:20px 22px;
+    box-shadow:0 15px 30px rgba(0,0,0,.1);font-family:'Caveat',cursive;font-size:19px;
+    font-weight:700;color:#7a5a45;text-align:center;line-height:1.3;transform:rotate(4deg);
+    animation:floatSlow 5s ease-in-out infinite;}
+  .steps-row{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:3;}
+  .step-card{background:#fff;border-radius:18px;padding:30px 18px 22px;text-align:center;
+    box-shadow:var(--shadow);position:relative;transition:.4s var(--ease);cursor:default;}
+  .step-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-lg);}
+  .step-num{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+    position:absolute;top:-20px;left:50%;transform:translateX(-50%);box-shadow:0 8px 18px rgba(255,61,143,.4);transition:.4s;}
+  .step-card:hover .step-num{transform:translateX(-50%) rotate(360deg) scale(1.1);}
+  .step-num-text{font-size:24px;font-weight:800;color:#ffd3e6;margin:16px 0 8px;}
+  .step-card i.step-icon{font-size:22px;color:var(--pink-1);margin-bottom:10px;display:block;transition:.3s;}
+  .step-card:hover i.step-icon{transform:scale(1.2);}
+  .step-card h4{font-size:14px;margin-bottom:6px;font-weight:700;}
+  .step-card p{font-size:12px;color:var(--gray);line-height:1.5;}
+  .step-arrow{position:absolute;top:50%;right:-20px;transform:translateY(-50%);color:var(--pink-1);
+    font-size:18px;animation:arrowMove 1.5s ease-in-out infinite;}
+  @keyframes arrowMove{0%,100%{transform:translateY(-50%) translateX(0);}50%{transform:translateY(-50%) translateX(5px);}}
 
-    .tooltip-text::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 4px solid transparent;
-      border-top-color: rgba(0, 0, 0, 0.9);
-    }
+  /* PRODUCTS GRID & FILTERS */
+  .filter-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:32px;}
+  .filter-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+  .filter-tab{padding:10px 22px;border-radius:50px;font-size:13px;font-weight:600;
+    background:#fff;color:var(--dark);cursor:pointer;border:1px solid #f2dde6;transition:.3s var(--ease);user-select:none;}
+  .filter-tab:hover{border-color:var(--pink-1);color:var(--pink-1);}
+  .filter-tab.active{background:linear-gradient(135deg,var(--pink-1),var(--pink-2));color:#fff;border-color:transparent;
+    box-shadow:0 8px 18px rgba(255,61,143,.3);}
+  .search-box{display:flex;align-items:center;gap:8px;background:#fff;padding:11px 18px;
+    border-radius:50px;border:1px solid #f2dde6;min-width:230px;transition:.3s;}
+  .search-box:focus-within{border-color:var(--pink-1);box-shadow:0 0 0 4px rgba(255,61,143,.1);}
+  .search-box input{border:none;outline:none;font-size:13px;width:100%;font-family:'Poppins';}
+  .search-box i{color:var(--gray);font-size:13px;flex-shrink:0;}
 
-    .sort-btn.active {
-      background: linear-gradient(135deg, #FF6B9D 0%, #FF8FAB 100%);
-      color: white;
-      border-color: #FF6B9D;
-    }
+  .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .product-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px;position:relative;display:flex;flex-direction:column;border:1px solid #f8ecf1;
+    transition:.35s var(--ease);}
+  .product-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+  .header-badge{position:absolute;top:16px;right:16px;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    color:#fff;padding:6px 14px;border-radius:50px;font-size:9.5px;font-weight:700;animation:pulseBadge 2s ease-in-out infinite;}
+  @keyframes pulseBadge{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
   
-.reset-access-button{
-  background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);
-  transition:all .3s ease;
-  box-shadow:0 6px 18px rgba(220,38,38,.20);
-  text-decoration:none;
-}
-.reset-access-button:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 25px rgba(220,38,38,.35);
-}
-.reset-access-button svg{
-  flex:0 0 auto;
-}
-.reset-access-button span{
-  line-height:1;
-}
+  .product-top{display:flex;gap:13px;align-items:flex-start;margin-bottom:18px;padding-right:70px;}
+  .product-logo{width:52px;height:52px;border-radius:15px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 6px 15px rgba(0,0,0,.1);transition:.4s var(--ease);}
+  .product-card:hover .product-logo{transform:rotate(-8deg) scale(1.08);}
+  
+  .logo-canva{background:linear-gradient(135deg,#00c4cc,#7d2ae8);color:#fff;}
+  .logo-yt{background:#ff0000;color:#fff;}
+  .logo-cc{background:#000;color:#fff;}
+  .logo-gpt{background:linear-gradient(135deg,#10a37f,#1a7f64);color:#fff;}
+  
+  .product-top h3{font-size:15.5px;font-weight:700;margin-bottom:3px;}
+  .product-top p{font-size:11.5px;color:var(--gray);line-height:1.4;}
 
-.history-team-box{
-  margin-top:10px;
-  padding:11px 12px;
-  border:1px solid #f5d7e1;
-  border-radius:13px;
-  background:linear-gradient(135deg,#fff7fa 0%,#fff 100%);
-}
-.history-team-label{
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.07em;
-  color:#a17a89;
-  margin-bottom:4px;
-}
-.history-team-name{
-  font-size:13px;
-  font-weight:800;
-  color:#374151;
-}
-.history-join-button,
-.history-reset-button{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  width:100%;
-  margin-top:10px;
-  padding:12px 14px;
-  border-radius:12px;
-  color:#fff;
-  font-weight:800;
-  text-decoration:none;
-  text-align:center;
-  transition:all .25s ease;
-}
-.history-join-button{
-  background:linear-gradient(135deg,#25D366 0%,#128C7E 100%);
-  box-shadow:0 6px 18px rgba(37,211,102,.20);
-}
-.history-join-button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 22px rgba(37,211,102,.28);
-}
-.history-reset-button{
-  background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);
-  box-shadow:0 6px 18px rgba(220,38,38,.18);
-}
-.history-reset-button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 22px rgba(220,38,38,.28);
-}
-.history-join-icon{font-size:16px}
-.history-note{
-  margin-top:8px;
-  padding:8px 10px;
-  background:#eef6ff;
-  color:#2451b2;
-  border-radius:10px;
-  font-size:12px;
-}
+  .price-list{margin-bottom:16px;flex:1;}
+  .price-item{display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0;border-bottom:1px dashed #f0dde6;font-size:13px;transition:.2s;}
+  .price-item:hover{padding-left:6px;}
+  .price-item:last-child{border-bottom:none;}
+  .price-left{display:flex;align-items:center;gap:6px;}
+  .price-left i{color:var(--pink-1);font-size:6px;}
+  .price-left div b{display:block;font-size:13.5px;font-weight:600;}
+  .price-left div span{font-size:10.5px;color:var(--gray);}
+  .price-right{display:flex;align-items:center;gap:7px;}
+  .price-right b{color:var(--pink-1);font-size:14.5px;font-weight:700;}
+  .strikethrough{text-decoration:line-through;color:#aaa;font-size:11px;font-weight:400;}
 
-.history-join-disabled{
-  background:#e5e7eb !important;
-  color:#9ca3af !important;
-  box-shadow:none !important;
-  cursor:not-allowed !important;
-  pointer-events:none !important;
-  transform:none !important;
-}
+  .tag-mini{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px;color:#fff;white-space:nowrap;}
+  .tag-hemat{background:#ff3d8f;}
+  .tag-promo{background:#ff8fb8;}
+  .tag-best{background:#ffa53d;}
 
-    .package-option.out-of-stock{
-      opacity:.58;
-      cursor:not-allowed !important;
-      filter:grayscale(.12);
-      position:relative;
-      pointer-events:none;
+  .stock-row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;gap:10px;}
+  .stock-status{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#2fbe6e;font-weight:600;white-space:nowrap;}
+  .stock-status i{font-size:7px;animation:blink 1.5s ease-in-out infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+  
+  .buy-btn{background:linear-gradient(135deg,var(--pink-1),var(--pink-2));color:#fff;
+    padding:11px 22px;border-radius:50px;font-size:12.5px;font-weight:700;
+    display:flex;align-items:center;gap:6px;border:none;cursor:pointer;
+    box-shadow:0 8px 18px rgba(255,61,143,.3);transition:.3s var(--ease);position:relative;overflow:hidden;white-space:nowrap;}
+  .buy-btn:hover{transform:scale(1.05);box-shadow:0 12px 25px rgba(255,61,143,.45);}
+
+  .package-option.out-of-stock{
+    opacity:.55;cursor:not-allowed !important;pointer-events:none;filter:grayscale(.3);
+  }
+  .package-option.out-of-stock .price-right b{
+    color:#999 !important;
+  }
+
+  /* TESTIMONI */
+  .testimoni{padding:80px 40px;}
+  .testi-grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .testi-card{background:#fff;border:1px solid #f5e5ea;border-radius:18px;padding:26px;
+    transition:.4s var(--ease);position:relative;overflow:hidden;}
+  .testi-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:transparent;}
+  .testi-card::before{content:'\201C';position:absolute;top:5px;right:20px;font-size:70px;
+    font-family:'Poppins',sans-serif;color:var(--pink-light);z-index:0;line-height:1;}
+  .testi-top{display:flex;align-items:center;gap:13px;margin-bottom:12px;position:relative;z-index:1;}
+  .avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;}
+  .testi-top h4{font-size:14.5px;font-weight:700;}
+  .stars{color:#ffb63d;font-size:12px;}
+  .testi-card p{font-size:13.5px;color:var(--gray);line-height:1.65;font-style:italic;position:relative;z-index:1;}
+
+  /* FAQ */
+  .faq{padding:20px 40px 90px;}
+  .faq-header{display:flex;justify-content:space-between;align-items:flex-end;max-width:1160px;
+    margin:0 auto 32px;flex-wrap:wrap;gap:14px;}
+  .faq-list{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .faq-item{background:#fff;border:1px solid #f5e5ea;border-radius:16px;padding:20px 22px;transition:.3s;}
+  .faq-item:hover{border-color:var(--pink-2);box-shadow:0 10px 25px rgba(255,61,143,.08);}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;font-weight:700;cursor:pointer;}
+  .faq-q-left{display:flex;align-items:center;gap:9px;}
+  .faq-q i.q-icon{color:var(--pink-1);font-size:15px;}
+  .faq-q i.chev{transition:.35s var(--ease);color:var(--pink-1);font-size:11px;}
+  .faq-item.closed .chev{transform:rotate(180deg);}
+  .faq-answer{max-height:200px;overflow:hidden;transition:.4s var(--ease);font-size:12.5px;color:var(--gray);line-height:1.65;margin-top:12px;}
+  .faq-item.closed .faq-answer{max-height:0;margin-top:0;}
+
+  /* FOOTER */
+  footer{background:linear-gradient(180deg,#fef2f7,#ffe4ef);padding:50px 20px;border-top:1px solid #ffe0ec;text-align:center;}
+  footer h3{font-size:17px;font-weight:700;color:var(--dark);margin-bottom:18px;}
+  .footer-social{display:flex;gap:16px;justify-content:center;margin-bottom:28px;}
+  .footer-social a{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:19px;box-shadow:0 8px 20px rgba(0,0,0,.12);transition:.35s var(--ease);}
+  .footer-social a:hover{transform:translateY(-6px) scale(1.1);}
+  .sc-ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+  .sc-wa{background:#25D366;}
+  .footer-bottom{font-size:12px;color:var(--gray);border-top:1px solid #ffcfe1;padding-top:20px;max-width:500px;margin:0 auto;}
+  .footer-bottom .made{color:var(--pink-1);font-style:italic;display:block;margin-top:6px;}
+
+  /* BASE MODAL STYLES */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(30,15,25,0.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    z-index:2000;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;
+    opacity:0;pointer-events:none;transition:.4s var(--ease);overflow-y:auto;overflow-x:hidden;
+  }
+  .modal-overlay.show{opacity:1;pointer-events:auto;}
+  .modal-box{
+    background:var(--bg);border-radius:28px;max-width:1100px;width:100%;padding:40px 34px;
+    position:relative;transform:translateY(-40px) scale(.95);transition:.4s var(--ease);
+    box-shadow:0 40px 80px rgba(0,0,0,.35);margin:auto 0;overflow-x:hidden;
+  }
+  .modal-overlay.show .modal-box{transform:translateY(0) scale(1);}
+  .modal-close{position:absolute;top:22px;right:22px;width:40px;height:40px;border-radius:50%;
+    background:#fff;border:1px solid #f0dde4;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:15px;color:var(--dark);z-index:5;box-shadow:0 6px 15px rgba(0,0,0,.1);transition:.3s;}
+  .modal-close:hover{background:var(--pink-1);color:#fff;transform:rotate(90deg);}
+  body.modal-open{overflow:hidden;}
+
+  /* ORDER MODAL SPECIFIC */
+  .order-modal-box{max-width:620px;padding:36px 28px 30px;}
+  .order-header{display:flex;gap:16px;align-items:center;margin-bottom:20px;padding-bottom:18px;border-bottom:1px dashed #f0d5e2;}
+  .order-product-logo{width:56px;height:56px;border-radius:16px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 8px 18px rgba(0,0,0,.1);}
+  .order-header h3{font-size:17.5px;font-weight:700;margin-bottom:3px;}
+  .order-header p{font-size:12px;color:var(--gray);}
+
+  .order-section{margin-bottom:20px;}
+  .order-section h4{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:10px;color:var(--dark);}
+  .order-section h4 i{color:var(--pink-1);}
+
+  .order-packages{display:flex;flex-direction:column;gap:9px;}
+  .package-option{display:block;cursor:pointer;}
+  .package-option input{display:none;}
+  .package-info{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;
+    border:1.5px solid #f2dde6;border-radius:14px;transition:.25s var(--ease);background:#fff;}
+  .package-option:hover .package-info{border-color:var(--pink-2);}
+  .package-option.selected .package-info{border-color:var(--pink-1);background:var(--pink-light);box-shadow:0 6px 15px rgba(255,61,143,.12);}
+  .package-left b{display:block;font-size:13px;font-weight:600;}
+  .package-left span{font-size:11px;color:var(--gray);}
+  .package-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .package-right b{color:var(--pink-1);font-size:14px;font-weight:700;}
+
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+  .form-group label{font-size:12px;font-weight:600;color:var(--dark);}
+  .form-group input{
+    border:1.5px solid #f2dde6;border-radius:12px;padding:12px 14px;font-size:13px;
+    font-family:'Poppins';outline:none;transition:.25s;background:#fff;color:var(--dark);width:100%;
+  }
+  .form-group input:focus{border-color:var(--pink-1);box-shadow:0 0 0 4px rgba(255,61,143,.1);}
+  .form-group input.error{border-color:#ff4d4d;box-shadow:0 0 0 4px rgba(255,77,77,.1);}
+  .form-error-msg{font-size:11px;color:#ff4d4d;font-weight:600;display:none;margin-top:2px;}
+  .form-error-msg.show{display:block;}
+
+  .multi-email-list{display:flex;flex-direction:column;gap:8px;}
+  .email-input-wrap{display:flex;align-items:center;gap:8px;}
+  .remove-email-btn{color:#ff4d79;background:none;border:none;font-size:16px;cursor:pointer;padding:4px 8px;font-weight:bold;}
+  .add-email-btn{background:none;border:none;color:var(--pink-1);font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:4px;}
+
+  .order-summary{background:#fff;border:1.5px dashed #f0c7dc;border-radius:16px;padding:14px 16px;margin-bottom:18px;}
+  .summary-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:5px 0;color:var(--gray);gap:10px;}
+  .summary-row b{color:var(--dark);font-weight:600;text-align:right;}
+  .summary-row.total{border-top:1px dashed #f0c7dc;margin-top:6px;padding-top:10px;font-size:14px;}
+  .summary-row.total b{color:var(--pink-1);font-size:18px;font-weight:800;}
+
+  .order-submit-btn{width:100%;justify-content:center;font-size:14px;padding:15px;}
+
+  /* HISTORY MODAL */
+  .history-modal-box{max-width:720px;padding:36px 28px;}
+  .history-search-bar{display:flex;gap:10px;margin-bottom:20px;}
+  .history-search-bar input{
+    flex:1;border:1.5px solid #f2dde6;border-radius:50px;padding:12px 20px;font-size:13px;
+    font-family:'Poppins';outline:none;background:#fff;
+  }
+  .history-search-bar input:focus{border-color:var(--pink-1);box-shadow:0 0 0 4px rgba(255,61,143,.1);}
+  .history-search-bar button{padding:12px 24px;border-radius:50px;}
+
+  .sort-row{display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px;}
+  .sort-btn{padding:6px 14px;border-radius:30px;font-size:11.5px;font-weight:700;background:#fff;border:1px solid #f2dde6;cursor:pointer;color:var(--gray);}
+  .sort-btn.active{background:var(--pink-light);color:var(--pink-1);border-color:var(--pink-1);}
+
+  .order-item-card{
+    background:#fff;border-radius:16px;border:1px solid #f5e5ea;padding:18px;margin-bottom:14px;
+    box-shadow:0 6px 18px rgba(255,61,143,0.06);transition:.3s;
+  }
+  .order-item-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(255,61,143,0.12);}
+  .order-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+  .order-badges{display:flex;gap:6px;}
+  .status-badge{padding:4px 10px;border-radius:30px;font-size:10px;font-weight:700;letter-spacing:.3px;}
+  .status-paid{background:#e8f9ee;color:#2fbe6e;}
+  .status-pending{background:#fff8e6;color:#f59e0b;}
+  .status-ready{background:#e8f9ee;color:#2fbe6e;}
+  .status-used{background:#f3f4f6;color:#6b7280;}
+  .status-expired{background:#fee2e2;color:#ef4444;}
+
+  .team-box{background:var(--pink-light);padding:10px 14px;border-radius:12px;margin:10px 0;}
+  .team-box span{font-size:10px;color:var(--pink-dark);font-weight:700;display:block;}
+  .team-box b{font-size:13px;color:var(--dark);}
+
+  .history-join-btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;
+    border-radius:12px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-weight:700;
+    font-size:13px;margin-top:12px;box-shadow:0 6px 15px rgba(37,211,102,.25);
+  }
+  .history-join-btn.disabled{background:#e5e7eb;color:#9ca3af;cursor:not-allowed;box-shadow:none;}
+
+  /* RECEIPT / SUCCESS MODAL */
+  .receipt-modal-box{max-width:580px;padding:36px 28px;text-align:center;}
+  .receipt-icon{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#2fbe6e,#4ade80);
+    display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto 16px;
+    box-shadow:0 12px 25px rgba(47,190,110,.3);}
+  .payment-access-status{background:#fff7ed;border:1px solid #fed7aa;color:#b45309;padding:10px 14px;
+    border-radius:12px;font-size:12px;font-weight:600;margin:14px 0;}
+  .payment-access-status.hidden{display:none;}
+  .access-link-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#2fbe6e,#4ade80);
+    color:#fff;font-weight:700;padding:12px 20px;border-radius:14px;font-size:13.5px;margin-top:10px;
+    box-shadow:0 8px 20px rgba(47,190,110,.25);transition:.2s;
+  }
+  .access-link-btn:hover{transform:translateY(-2px);}
+
+  /* ACCESS PORTAL VIEW (FOR TOKEN LINK) */
+  .access-portal-page{
+    position:fixed;inset:0;background:var(--bg);z-index:3000;display:none;
+    align-items:center;justify-content:center;padding:20px;
+  }
+  .access-portal-page.show{display:flex;}
+  .access-portal-card{
+    background:#fff;border-radius:28px;box-width:100%;max-width:540px;width:100%;padding:36px 30px;
+    box-shadow:var(--shadow-lg);border:1px solid #ffe0ec;text-align:center;
+  }
+
+  /* TOAST */
+  .toast{position:fixed;bottom:30px;right:30px;background:#fff;padding:16px 22px;border-radius:16px;
+    box-shadow:0 20px 45px rgba(0,0,0,.2);display:flex;align-items:center;gap:14px;z-index:4000;
+    transform:translateX(120%);transition:.5s var(--ease);max-width:340px;border:1px solid #f8ecf1;}
+  .toast.show{transform:translateX(0);}
+  .toast-icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--pink-1),var(--pink-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0;}
+  .toast-text b{font-size:13px;display:block;}
+  .toast-text span{font-size:11.5px;color:var(--gray);}
+
+  .back-to-top{position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:50%;
+    background:linear-gradient(135deg,var(--pink-1),var(--pink-2));color:#fff;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(255,61,143,.4);
+    cursor:pointer;z-index:998;opacity:0;pointer-events:none;transform:translateY(20px);transition:.4s var(--ease);}
+  .back-to-top.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+  .back-to-top:hover{transform:translateY(-5px);}
+
+  @media(max-width:1024px){
+    .hero-grid{grid-template-columns:1fr;gap:20px;}
+    .hero-text{text-align:center;}
+    .hero-text p{margin:0 auto 26px;}
+    .hero-btns,.hero-badges{justify-content:center;}
+    .stats-card{grid-template-columns:repeat(2,1fr);}
+    .stat-item:nth-child(2n){border-right:none;}
+    .stat-item:nth-child(n+3){border-top:1px solid #f7e6ee;}
+    .steps-row{grid-template-columns:repeat(2,1fr);gap:30px 16px;}
+    .step-arrow{display:none;}
+    .deco-left{font-size:60px;opacity:.5;}
+    .deco-right{display:none;}
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .faq-list{grid-template-columns:repeat(2,1fr);}
+    .product-grid{grid-template-columns:repeat(2,1fr);}
+  }
+
+  @media(max-width:768px){
+    .navbar{padding:16px 20px;}
+    .navbar.scrolled{padding:10px 20px;}
+    .nav-links{display:none;}
+    .menu-toggle{display:flex;}
+    .logo-text h1{font-size:19px;}
+
+    .hero{padding:110px 20px 40px;}
+    .hero-text h1{font-size:38px;}
+    .hero-text h2{font-size:21px;}
+    .hero-text p{font-size:13.5px;}
+    .hero-btns{flex-direction:column;align-items:stretch;}
+    .hero-btns .btn{justify-content:center;}
+
+    .hero-illustration{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      height:auto;gap:18px;padding:16px 0 0;position:relative;
     }
+    .script-note,.vase-flower,.books{display:none;}
+    .speech-bubble{position:static;transform:none;margin:0 auto;animation:fadeIn .6s var(--ease) .2s backwards;}
+    .laptop-wrap{position:static;transform:none;animation:fadeIn .6s var(--ease) .4s backwards;}
+    .laptop{width:230px;height:145px;margin:0 auto;}
+    .laptop-screen h3{font-size:18px;}
+    .laptop-base{width:260px;}
+    .sticky-note{position:static;transform:rotate(-3deg);margin:0 auto;animation:fadeIn .6s var(--ease) .6s backwards;}
 
-    .package-option.out-of-stock::after{
-      content:'STOK HABIS';
-      position:absolute;
-      top:8px;
-      right:8px;
-      background:#9ca3af;
-      color:#fff;
-      font-size:10px;
-      font-weight:800;
-      padding:4px 8px;
-      border-radius:999px;
-      letter-spacing:.02em;
-      z-index:5;
-    }
+    .stats{margin:20px auto 40px;}
+    .stats-card{grid-template-columns:1fr;}
+    .stat-item{border-right:none!important;border-bottom:1px solid #f7e6ee;padding:22px;}
+    .stat-item:nth-child(n+3){border-top:none;}
+    .stat-item:last-child{border-bottom:none;}
 
-    .package-option.out-of-stock:hover{
-      transform:none !important;
-      box-shadow:none !important;
-      border-color:#e5e7eb !important;
-    }
+    .section-title h2{font-size:25px;}
+    .section-title p{font-size:13px;padding:0 20px;}
 
+    .cara-order{padding:50px 18px;}
+    .deco-left,.deco-right{display:none;}
+    .steps-row{grid-template-columns:1fr;gap:18px;max-width:400px;margin:0 auto;}
+    .step-card{padding:24px 18px;text-align:left;display:flex;align-items:flex-start;gap:16px;}
+    .step-card:hover{transform:translateY(-4px);}
+    .step-num{position:static;transform:none;flex-shrink:0;}
+    .step-card:hover .step-num{transform:rotate(360deg) scale(1.1);}
+    .step-num-text{display:none;}
 
-.package-option.stock-loading{opacity:.72;cursor:wait !important;pointer-events:none;}
+    .testimoni{padding:50px 18px;}
+    .testi-grid{grid-template-columns:1fr;gap:16px;}
 
-.access-page-hearts{
-  z-index: 0;
-  pointer-events: none;
-}
+    .faq{padding:0 18px 60px;}
+    .faq-header{flex-direction:column;align-items:center;text-align:center;}
+    .faq-header .section-title{text-align:center;}
+    .faq-list{grid-template-columns:1fr;gap:16px;}
 
-#db-access-page{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100vh;
-  height:100dvh;
-  overflow:hidden;
-  z-index:70;
-}
-
-#db-access-page > .min-h-full{
-  position:relative;
-  z-index:1;
-  width:100%;
-  height:100%;
-  min-height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:1rem;
-  box-sizing:border-box;
-  overflow:hidden;
-}
-
-#db-access-page .card-texture{
-  position:relative;
-  z-index:2;
-  width:min(560px, calc(100vw - 2rem));
-  max-height:calc(100vh - 2rem);
-  max-height:calc(100dvh - 2rem);
-  overflow-y:auto;
-  overflow-x:hidden;
-  margin:auto;
-}
-
+    .modal-box{padding:60px 16px 26px;border-radius:22px;width:calc(100% - 20px);}
+    .filter-row{flex-direction:column;align-items:stretch;}
+    .filter-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;}
+    .filter-tabs::-webkit-scrollbar{display:none;}
+    .filter-tab{flex-shrink:0;}
+    .search-box{width:100%;min-width:unset;}
+    .product-grid{grid-template-columns:1fr;gap:16px;}
+    
+    .toast{right:16px;left:16px;bottom:16px;max-width:none;}
+    .back-to-top{left:16px;bottom:16px;width:44px;height:44px;}
+  }
 </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
- </head>
- <body class="h-full">
-  <div class="h-full overflow-auto texture-bg relative">
-   <div class="floating-hearts">
-    <span class="heart" style="left: 5%; top: 10%; animation-delay: 0s;">💕</span>
-    <span class="heart" style="left: 15%; top: 60%; animation-delay: 2s;">💗</span>
-    <span class="heart" style="left: 25%; top: 30%; animation-delay: 4s;">💖</span>
-    <span class="heart" style="left: 45%; top: 70%; animation-delay: 1s;">💕</span>
-    <span class="heart" style="left: 65%; top: 20%; animation-delay: 3s;">💗</span>
-    <span class="heart" style="left: 75%; top: 50%; animation-delay: 5s;">💖</span>
-    <span class="heart" style="left: 85%; top: 80%; animation-delay: 2.5s;">💕</span>
-    <span class="heart" style="left: 95%; top: 40%; animation-delay: 4.5s;">💗</span>
-   </div>
+</head>
+<body>
 
-   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+<div class="preloader" id="preloader">
+  <div class="preloader-heart"><i class="fa-solid fa-heart"></i></div>
+  <div class="preloader-text">MYCLIPS</div>
+  <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+</div>
 
-   <header class="relative z-10 py-6 px-4 border-b border-pink-200">
-    <div class="max-w-4xl mx-auto">
-     <div class="text-center mb-6">
-      <div class="inline-block">
-       <h1 id="store-title" class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-pink-400 to-rose-400 bg-clip-text text-transparent drop-shadow-sm">MYCLIPS</h1>
-       <p id="store-tagline" class="text-pink-400 font-medium mt-1 tracking-wide">✨ Premium Apps Store ✨</p>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="navbar" id="navbar">
+  <div class="logo-text"><h1>MYCLIPS</h1></div>
+  <ul class="nav-links">
+    <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
+    <li><a class="open-product-modal"><i class="fa-solid fa-bag-shopping"></i> Produk</a></li>
+    <li><a href="#cara-order"><i class="fa-solid fa-file-lines"></i> Cara Order</a></li>
+    <li><a href="#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a></li>
+    <li><a class="open-history-modal"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Pesanan</a></li>
+  </ul>
+  <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#"><i class="fa-solid fa-house"></i> Home</a>
+  <a class="open-product-modal"><i class="fa-solid fa-bag-shopping"></i> Produk</a>
+  <a href="#cara-order"><i class="fa-solid fa-file-lines"></i> Cara Order</a>
+  <a href="#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+  <a class="open-history-modal"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Pesanan</a>
+</div>
+
+<section class="hero">
+  <i class="fa-solid fa-heart heart-bg" style="top:100px;left:30px;font-size:22px;"></i>
+  <i class="fa-solid fa-heart heart-bg" style="bottom:60px;left:80px;font-size:16px;animation-delay:1s;"></i>
+
+  <div class="hero-grid">
+    <div class="hero-text">
+      <span class="hero-tag">✨ Solusi Hemat untuk Akses Premium</span>
+      <h1>MYCLIPS</h1>
+      <h2>✨ Premium Apps Store ✨</h2>
+      <p>Dapatkan akses aplikasi premium dengan harga terjangkau. Aman, cepat, dan bergaransi 100%!</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary open-product-modal"><i class="fa-solid fa-bag-shopping"></i> Lihat Produk <i class="fa-solid fa-arrow-right"></i></button>
+        <button class="btn btn-outline open-history-modal"><i class="fa-solid fa-clock-rotate-left"></i> Cek Riwayat Pesanan</button>
       </div>
-     </div>
-     <div class="flex gap-4 justify-center border-b border-pink-100">
-      <button class="tab-button active px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="products"> 🛍️ Products </button>
-      <button class="tab-button px-6 py-3 font-semibold rounded-t-xl transition-all" data-tab="history"> 📋 Order History </button>
-     </div>
+      <div class="hero-badges">
+        <span class="badge-pill"><i class="fa-solid fa-shield-halved"></i> Aman & Terpercaya</span>
+        <span class="badge-pill"><i class="fa-solid fa-bolt"></i> Proses Cepat</span>
+        <span class="badge-pill"><i class="fa-solid fa-award"></i> Garansi 100%</span>
+        <span class="badge-pill"><i class="fa-solid fa-coins"></i> Harga Terjangkau</span>
+      </div>
     </div>
-   </header>
 
-   <main class="relative z-10 px-4 pb-8">
-    <div class="max-w-4xl mx-auto">
-     <div id="products-tab" class="tab-content">
-      <p class="text-gray-500 text-sm mt-3 mb-6 text-center">Dapatkan akses premium dengan harga terjangkau! DIJAMIN GARANSI 100%!</p>
-      <div class="grid md:grid-cols-3 gap-6">
-       <div class="product-card card-texture rounded-3xl shadow-lg shadow-pink-200/40 overflow-hidden border border-pink-100">
-        <div class="relative">
-         <div class="absolute top-3 right-3 z-20">
-          <div class="info-tooltip">
-           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
-           <span class="tooltip-text">Edit desain unlimited, template premium, kolaborasi tim</span>
-          </div>
-         </div>
-         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
-          <span class="text-2xl">🎨</span>
-          <h2 class="font-bold text-lg">Canva Premium</h2>
-         </div>
+    <div class="hero-illustration">
+      <div class="script-note">Small Purchase<br>Big Possibilities ♡</div>
+      <div class="speech-bubble">Akses Premium<br>Mulai dari<br><b>Rp 3.000</b> ♡</div>
+      <div class="vase-flower">
+        <div style="position:relative;">
+          <span class="tulip">🌷</span><span class="tulip">🌷</span><span class="tulip">🌷</span>
         </div>
-        <div class="p-5 space-y-3">
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-product="Canva Premium" data-package="1 Bulan" data-price="3000" data-needs-email="true">
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">1 Bulan</p>
-            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
-           </div>
-           <div class="text-right">
-            <p class="font-bold text-pink-500 text-lg">Rp 3K</p>
-           </div>
-          </div>
-         </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="2 Bulan" data-price="6000" data-needs-email="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           2X AKSES
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">2 Bulan</p>
-            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
-           </div>
-           <div class="text-right">
-            <p class="font-bold text-pink-500 text-lg">Rp 6K</p>
-           </div>
-          </div>
-         </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="3 Bulan" data-price="8500" data-needs-email="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           PROMO
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">3 Bulan</p>
-            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
-           </div>
-           <div class="text-right">
-            <span class="text-gray-400 text-sm strikethrough">Rp 9K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 8,5K</p>
-           </div>
-          </div>
-         </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="Canva Premium" data-package="Paket Grup (10 akun)/Bulan" data-price="10000" data-needs-email="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           HEMAT
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">Paket Grup</p>
-            <p class="text-xs text-gray-500">(10 akun) /bulan • 1 kode order</p>
-           </div>
-           <div class="text-right">
-            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 10K</p>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-
-       <div class="product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100">
-        <div class="relative">
-         <div class="absolute top-3 right-3 z-20">
-          <div class="info-tooltip">
-           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
-           <span class="tooltip-text">Edit video tanpa watermark, effect premium, export 4K</span>
-          </div>
-         </div>
-         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
-          <span class="text-2xl">🎬</span>
-          <h2 class="font-bold text-lg">CapCut Premium</h2>
-         </div>
-        </div>
-        <div class="p-5 space-y-3">
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3" data-product="CapCut Premium" data-package="7 Hari" data-price="6000" data-is-capcut="true">
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">7 Hari</p>
-            <p class="text-xs text-gray-500 mt-1">🔒 Privat (Bukan Sharing)</p>
-           </div>
-           <div class="text-right">
-            <p class="font-bold text-pink-500 text-lg">Rp 6K</p>
-           </div>
-          </div>
-         </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="CapCut Premium" data-package="14 Hari" data-price="11000" data-is-capcut="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           PROMO
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">14 Hari</p>
-            <p class="text-xs text-gray-500 mt-1">🔒 Privat (Bukan Sharing)</p>
-           </div>
-           <div class="text-right">
-            <span class="text-gray-400 text-sm strikethrough">Rp 12K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 11K</p>
-           </div>
-          </div>
-         </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="CapCut Premium" data-package="1 Bulan" data-price="20000" data-is-capcut="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           BEST
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">1 Bulan</p>
-            <p class="text-xs text-gray-500 mt-1">🔒 Privat (Bukan Sharing)</p>
-           </div>
-           <div class="text-right">
-            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 20K</p>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-
-       <div class="product-card card-texture rounded-3xl shadow-xl shadow-pink-200/50 overflow-hidden border border-pink-100">
-        <div class="relative">
-         <div class="absolute top-3 right-3 z-20">
-          <div class="info-tooltip">
-           <button class="text-pink-500 hover:bg-pink-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold border-2 border-pink-300 bg-white"> i </button>
-           <span class="tooltip-text">GPT-5 Turbo, Thinking mode, priority support</span>
-          </div>
-         </div>
-         <div class="price-tag text-white text-center py-3 flex items-center justify-center gap-2 pr-8">
-          <span class="text-2xl">🤖</span>
-          <h2 class="font-bold text-lg">ChatGPT Pro</h2>
-         </div>
-        </div>
-        <div class="px-5 pt-3 pb-1">
-          <p class="text-xs text-center text-gray-500 bg-pink-50 rounded-lg py-1">Include: GPT Pro, Thinking, Instan</p>
-        </div>
-        <div class="p-5 pt-3 space-y-3">
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="ChatGPT Pro" data-package="15 Hari" data-price="10000" data-needs-email="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           PROMO
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">15 Hari</p>
-            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
-           </div>
-           <div class="text-right">
-            <span class="text-gray-400 text-sm strikethrough">Rp 15K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 10K</p>
-           </div>
-          </div>
-         </div>
-         <div class="package-option rounded-xl border-2 border-pink-200 p-3 relative" data-product="ChatGPT Pro" data-package="30 Hari" data-price="15000" data-needs-email="true">
-          <div class="discount-badge absolute -top-2 -right-2 text-white text-xs px-2 py-1 rounded-full font-bold">
-           BEST
-          </div>
-          <div class="flex justify-between items-center">
-           <div>
-            <p class="font-semibold text-gray-700">30 Hari</p>
-            <p class="text-xs text-gray-500 mt-1">👤 1 akun</p>
-           </div>
-           <div class="text-right">
-            <span class="text-gray-400 text-sm strikethrough">Rp 25K</span>
-            <p class="font-bold text-pink-500 text-lg">Rp 15K</p>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
+        <div class="vase"></div>
       </div>
-     </div>
-
-     <div id="history-tab" class="tab-content hidden">
-      <div class="mt-6">
-       <div class="flex flex-col sm:flex-row gap-2 mb-4">
-        <input id="canva-history-email" type="email" value="" placeholder="Email Canva untuk melihat riwayat" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none">
-        <button id="canva-history-search" class="px-5 py-3 rounded-xl font-semibold text-white" style="background:linear-gradient(135deg,#FF6B9D 0%,#FF8FAB 100%);">Cek Riwayat</button>
-       </div>
-       <div class="flex justify-end mb-4 gap-2">
-        <button id="sort-newest-btn" class="sort-btn active px-4 py-2 rounded-xl border border-pink-200 bg-white text-pink-500 font-semibold text-sm hover:bg-pink-50 transition">
-          ⬇️ Terbaru
-        </button>
-        <button id="sort-oldest-btn" class="sort-btn px-4 py-2 rounded-xl border border-pink-200 bg-white text-pink-500 font-semibold text-sm hover:bg-pink-50 transition">
-          ⬆️ Terlama
-        </button>
-       </div>
-       <div id="history-container" class="space-y-4">
-        <div class="text-center py-12">
-         <p class="text-gray-400 text-lg">📭 Belum ada pesanan</p>
-         <p class="text-gray-300 text-sm mt-2">Mulai pesan sekarang untuk melihat history!</p>
-        </div>
-       </div>
+      <div class="laptop-wrap">
+        <div class="laptop"><div class="laptop-screen"><h3>Good Apps<br>Better You ♡</h3></div></div>
+        <div class="laptop-base"></div>
       </div>
-     </div>
-
-     <footer class="mt-10 text-center">
-      <p class="text-gray-400 text-sm">💕 Terima kasih telah berbelanja di MYCLIPS 💕</p>
-      <p class="text-gray-400 text-xs mt-1">Fast response via WhatsApp</p>
-     </footer>
+      <div class="sticky-note">Premium Access Brighter Tomorrow ♡</div>
+      <div class="books">
+        <div class="book-tag">Better Tools</div>
+        <div class="book-tag">Brighter Ideas</div>
+        <div class="book-tag">Happier You ♡</div>
+      </div>
     </div>
-   </main>
-
-   <div id="email-modal" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
-      <div class="text-center mb-5">
-       <span class="text-4xl" id="modal-icon">🎨</span>
-       <h3 class="font-bold text-xl text-gray-700 mt-2" id="modal-title">Canva Premium</h3>
-       <p class="text-pink-500 font-semibold" id="modal-package">1 Bulan - Rp 3K</p>
-      </div>
-      <div class="space-y-4">
-       <div id="capcut-quantity-section" class="hidden space-y-3">
-        <div id="capcut-qty-container"></div>
-        <p id="capcut-total" class="text-pink-500 font-bold text-sm text-center">Total: <span id="capcut-total-price">Rp 0</span></p>
-       </div>
-
-       <div id="single-email-section">
-        
-        <label class="block text-gray-600 text-sm font-medium mb-2">Alamat Email</label>
-        <div id="single-emails-container" class="space-y-2">
-         <div class="flex gap-2 items-center">
-          <input type="email" name="canva_email_1" id="canva-email-1" autocomplete="section-canva-1 email" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="email" data-form-type="other" data-lpignore="true" data-1p-ignore="true" class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input" placeholder="contoh@gmail.com" oninput="validateSingleEmails()">
-          <button type="button" onclick="removeSingleEmailInput(this)" class="text-pink-400 hover:text-pink-600 text-lg font-bold hidden">✕</button>
-         </div>
-        </div>
-        <button type="button" onclick="addSingleEmailInput()" class="text-xs text-pink-500 hover:text-pink-600 font-medium mt-2">+ Tambah Email</button>
-        <p id="single-email-error" class="text-red-500 text-xs mt-2 hidden"></p>
-        <p id="single-email-success" class="text-green-500 text-xs mt-2 hidden"></p>
-        <p id="price-total" class="text-pink-500 font-bold text-sm mt-3 text-center hidden">Total: <span id="total-price">Rp 3K</span></p>
-        <div id="canva-voucher-wrap" class="mt-4">
-         <label class="block text-gray-600 text-sm font-medium mb-2">Kode Voucher <span class="text-gray-400">(opsional)</span></label>
-         <input id="canva-voucher" type="text" class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors uppercase" placeholder="Masukkan kode voucher">
-        </div>
-       </div>
-
-       <div id="group-email-section" class="hidden">
-        <label class="block text-gray-600 text-sm font-medium mb-3">Email Akun (Maksimal 10 email)</label>
-        <div id="group-emails-container" class="space-y-2 max-h-48 overflow-y-auto pb-2"></div>
-        <button type="button" onclick="addGroupEmailInput()" class="text-xs text-pink-500 hover:text-pink-600 font-medium mt-2">+ Tambah Email</button>
-        <p id="group-email-error" class="text-red-500 text-xs mt-2 hidden"></p>
-        <p id="group-email-success" class="text-green-500 text-xs mt-2 hidden"></p>
-       </div>
-
-       <button id="checkout-btn" onclick="processCheckout()" class="w-full btn-checkout text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none" disabled>
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-        </svg>
-        Checkout via WhatsApp
-       </button>
-      </div>
-     </div>
-    </div>
-   </div>
-
-   <div id="info-modal" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0" onclick="closeInfoModal()"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100">
-      <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
-      <div class="text-center mb-5">
-       <span class="text-4xl" id="info-modal-icon">🎨</span>
-       <h3 class="font-bold text-xl text-gray-700 mt-3" id="info-modal-title">Canva Premium</h3>
-      </div>
-      <div id="info-modal-content" class="space-y-3 text-gray-600 text-sm">
-       <div class="bg-pink-50 rounded-xl p-4 space-y-2">
-        <h4 class="font-bold text-gray-700">✨ Fitur Utama:</h4>
-        <ul id="features-list" class="space-y-1 ml-2">
-         <li>✓ Fitur 1</li>
-        </ul>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
   </div>
+</section>
 
+<div class="stats reveal-scale">
+  <div class="stats-card">
+    <div class="stat-item"><div class="stat-num" data-target="5000">0</div><div class="stat-label">Pesanan Selesai</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="98">0</div><div class="stat-label">% Kepuasan Pelanggan</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="15">0</div><div class="stat-label">Produk Tersedia</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="24">0</div><div class="stat-label">Jam Respon Cepat</div></div>
+  </div>
+</div>
 
-
-   <!-- Canva database checkout result -->
-   <div id="db-checkout-result" class="fixed inset-0 z-[60] hidden">
-    <div class="modal-overlay absolute inset-0" onclick="closeDbResult()"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-md p-6 relative z-10 border border-pink-100 max-h-[90vh] overflow-y-auto">
-      <button onclick="closeDbResult()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl">✕</button>
-      <div id="db-result-body"></div>
-     </div>
+<section class="cara-order" id="cara-order">
+  <div class="deco-left">💐</div>
+  <div class="deco-right script-font">Thank you<br>for choosing<br>MYCLIPS ♡</div>
+  <div class="section-title reveal">
+    <h2>Cara Order 💗</h2>
+    <p>Hanya 4 langkah, pesanan kamu langsung diproses.</p>
+    <div class="underline-deco"></div>
+  </div>
+  <div class="steps-row">
+    <div class="step-card reveal delay-1">
+      <div class="step-num">01</div>
+      <div><div class="step-num-text">01</div><i class="fa-solid fa-cart-shopping step-icon"></i><h4>Pilih Produk</h4><p>Pilih aplikasi & paket yang kamu inginkan.</p></div>
+      <i class="fa-solid fa-arrow-right step-arrow"></i>
     </div>
-   </div>
-
-   <!-- Canva access page -->
-   <div id="db-access-page" class="fixed inset-0 z-[70] hidden overflow-hidden texture-bg relative">
-     <div class="floating-hearts access-page-hearts">
-       <span class="heart" style="left: 6%; top: 12%; animation-delay: 0s;">💕</span>
-       <span class="heart" style="left: 18%; top: 72%; animation-delay: 2s;">💗</span>
-       <span class="heart" style="left: 30%; top: 28%; animation-delay: 4s;">💖</span>
-       <span class="heart" style="left: 46%; top: 82%; animation-delay: 1s;">💕</span>
-       <span class="heart" style="left: 62%; top: 16%; animation-delay: 3s;">💗</span>
-       <span class="heart" style="left: 76%; top: 52%; animation-delay: 5s;">💖</span>
-       <span class="heart" style="left: 88%; top: 78%; animation-delay: 2.5s;">💕</span>
-       <span class="heart" style="left: 94%; top: 32%; animation-delay: 4.5s;">💗</span>
-       <span class="heart" style="left: 10%; top: 44%; animation-delay: 6s;">💖</span>
-       <span class="heart" style="left: 70%; top: 68%; animation-delay: 7s;">💕</span>
-     </div>
-    <div class="min-h-full flex items-center justify-center p-4">
-     <div class="card-texture rounded-3xl shadow-2xl w-full max-w-xl p-6 border border-pink-100">
-      <div class="text-center mb-5">
-       <div class="text-4xl">🎨</div>
-       <div id="db-access-badge" class="status-badge status-completed mt-3">AKSES SIAP</div>
-       <h2 id="db-access-title" class="font-bold text-2xl text-gray-700 mt-3">Akses Canva</h2>
-      </div>
-      <div id="db-access-info" class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 leading-6"></div>
-      <div class="bg-white rounded-xl border border-pink-100 p-4 mt-4">
-       <div class="text-xs text-gray-400 font-semibold mb-2">KODE ORDER</div>
-       <div class="flex items-center gap-2">
-        <div id="db-access-order" class="flex-1 bg-pink-50 rounded-lg px-3 py-2 font-bold text-gray-700 break-all"></div>
-        <button id="db-copy-order" type="button" class="text-pink-500 hover:text-pink-700 border-2 border-pink-200 rounded-lg w-10 h-10 bg-white">📋</button>
-       </div>
-      </div>
-      <div id="db-access-warning" class="bg-blue-50 rounded-xl p-4 mt-4 text-sm text-blue-800 leading-6"></div>
-      <button id="db-continue-canva" class="w-full btn-checkout text-white font-bold py-3 rounded-xl mt-4">Lanjut ke Canva</button>
-      <button id="db-reset-request" type="button" class="hidden w-full reset-access-button text-white font-bold py-3 rounded-xl mt-4 flex items-center justify-center gap-2">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M20.52 3.48A11.84 11.84 0 0 0 12.05 0C5.51 0 .18 5.32.18 11.86c0 2.09.55 4.13 1.59 5.93L.07 24l6.36-1.67a11.9 11.9 0 0 0 5.62 1.43h.01c6.54 0 11.86-5.33 11.86-11.86 0-3.17-1.23-6.15-3.4-8.42Zm-8.47 18.2h-.01a9.83 9.83 0 0 1-5-1.36l-.36-.21-3.77.99 1-3.67-.24-.38a9.82 9.82 0 0 1-1.5-5.19C2.17 6.42 6.6 2 12.05 2c2.64 0 5.12 1.03 6.99 2.9a9.8 9.8 0 0 1 2.9 6.97c0 5.46-4.44 9.81-9.89 9.81Zm5.43-7.35c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.87 1.22 3.07c.15.2 2.09 3.2 5.07 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2.01-1.41.25-.69.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35Z"/>
-  </svg>
-  <span>Ajukan Reset Akses ke Admin</span>
-</button>
-      <div id="db-access-message" class="message mt-3"></div>
-     </div>
+    <div class="step-card reveal delay-2">
+      <div class="step-num">02</div>
+      <div><div class="step-num-text">02</div><i class="fa-solid fa-credit-card step-icon"></i><h4>Lakukan Pembayaran</h4><p>Bayar via QRIS otomatis atau WhatsApp.</p></div>
+      <i class="fa-solid fa-arrow-right step-arrow"></i>
     </div>
-   </div>
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-9AnqX738rqykt-dN"></script>
+    <div class="step-card reveal delay-3">
+      <div class="step-num">03</div>
+      <div><div class="step-num-text">03</div><i class="fa-solid fa-paper-plane step-icon"></i><h4>Konfirmasi Otomatis</h4><p>Sistem memverifikasi pembayaran Anda.</p></div>
+      <i class="fa-solid fa-arrow-right step-arrow"></i>
+    </div>
+    <div class="step-card reveal delay-4">
+      <div class="step-num">04</div>
+      <div><div class="step-num-text">04</div><i class="fa-solid fa-box-open step-icon"></i><h4>Akses Diterima</h4><p>Link gabung/akun langsung siap digunakan!</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="testimoni">
+  <div class="section-title reveal">
+    <h2>Testimoni 💗</h2>
+    <p>Kepercayaan kamu adalah semangat kami!</p>
+    <div class="underline-deco"></div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal delay-1"><div class="testi-top"><div class="avatar"><i class="fa-solid fa-user"></i></div><div><h4>Aulia S.</h4><div class="stars">★★★★★</div></div></div><p>"Prosesnya cepat banget, akun langsung aktif. Recommended!"</p></div>
+    <div class="testi-card reveal delay-2"><div class="testi-top"><div class="avatar"><i class="fa-solid fa-user"></i></div><div><h4>Rizky D.</h4><div class="stars">★★★★★</div></div></div><p>"Harganya murah, pelayanannya ramah. Pasti bakal order lagi!"</p></div>
+    <div class="testi-card reveal delay-3"><div class="testi-top"><div class="avatar"><i class="fa-solid fa-user"></i></div><div><h4>Nadya K.</h4><div class="stars">★★★★★</div></div></div><p>"Aman dan terpercaya, udah langganan di sini. Sukses terus MYCLIPS!"</p></div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="faq-header">
+    <div class="section-title reveal" style="text-align:left;margin-bottom:0;">
+      <h2>FAQ 💗</h2>
+    </div>
+    <button class="btn btn-outline">Lihat Semua FAQ <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item reveal delay-1"><div class="faq-q"><span class="faq-q-left"><i class="fa-solid fa-shield q-icon"></i>Apakah produk aman & legal?</span><i class="fa-solid fa-chevron-down chev"></i></div><div class="faq-answer">Ya, setiap produk memiliki garansi 100% full sesuai masa aktif paket yang dipilih.</div></div>
+    <div class="faq-item reveal delay-2"><div class="faq-q"><span class="faq-q-left"><i class="fa-solid fa-clock q-icon"></i>Berapa lama pesanan diproses?</span><i class="fa-solid fa-chevron-down chev"></i></div><div class="faq-answer">Untuk Canva diproses instan otomatis setelah QRIS dibayar. Produk manual dikirim beberapa menit via WhatsApp.</div></div>
+    <div class="faq-item reveal delay-3"><div class="faq-q"><span class="faq-q-left"><i class="fa-solid fa-rotate-left q-icon"></i>Apakah ada garansi jika kendala?</span><i class="fa-solid fa-chevron-down chev"></i></div><div class="faq-answer">Ya! Anda bisa menggunakan tombol Reset Akses di menu riwayat untuk terhubung ke admin jika ada kendala.</div></div>
+  </div>
+</section>
+
+<footer>
+  <h3>Mau info menarik? Ikuti media sosial kami!</h3>
+  <div class="footer-social">
+    <a href="#" class="sc-ig"><i class="fa-brands fa-instagram"></i></a>
+    <a href="#" class="sc-wa"><i class="fa-brands fa-whatsapp"></i></a>
+  </div>
+  <div class="footer-bottom">
+    © 2025 MYCLIPS. All rights reserved.
+    <span class="made">Made with 💗 for you</span>
+  </div>
+</footer>
+
+<!-- MODAL KATALOG PRODUK -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal-box">
+    <button class="modal-close" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+    <div class="section-title">
+      <h2>Produk Kami 💗</h2>
+      <p>Berbagai aplikasi premium dengan harga terbaik. Pilih kebutuhanmu sekarang!</p>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-tabs">
+        <div class="filter-tab active" data-cat="semua">Semua</div>
+        <div class="filter-tab" data-cat="design">Design</div>
+        <div class="filter-tab" data-cat="streaming">Streaming</div>
+        <div class="filter-tab" data-cat="ai">AI</div>
+        <div class="filter-tab" data-cat="editing">Editing</div>
+      </div>
+      <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input id="searchInput" placeholder="Cari produk..."></div>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- CANVA -->
+      <div class="product-card" data-cat="design" data-name="canva premium" data-product-name="Canva Premium">
+        <span class="header-badge">BEST SELLER</span>
+        <div class="product-top">
+          <div class="product-logo logo-canva"><i class="fa-brands fa-canva"></i></div>
+          <div><h3>Canva Premium</h3><p>Desain lebih mudah, template & fitur pro tanpa batas.</p></div>
+        </div>
+        <div class="price-list">
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>1 Bulan</b><span>1 akun</span></div></div><div class="price-right"><b class="price-val">Rp 3.000</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>2 Bulan</b><span>1 akun</span></div></div><div class="price-right"><span class="tag-mini tag-hemat">HEMAT</span><b class="price-val">Rp 6.000</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>3 Bulan</b><span>1 akun</span></div></div><div class="price-right"><span class="strikethrough">Rp 9.000</span><span class="tag-mini tag-promo">PROMO</span><b class="price-val">Rp 8.500</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>Paket Grup (10 akun)/Bulan</b><span>10 akun • 1 kode</span></div></div><div class="price-right"><span class="strikethrough">Rp 25.000</span><b class="price-val">Rp 10.000</b></div></div>
+        </div>
+        <div class="stock-row"><span class="stock-status"><i class="fa-solid fa-circle"></i> Stok Tersedia</span><button class="buy-btn">Beli Sekarang <i class="fa-solid fa-arrow-right"></i></button></div>
+      </div>
+
+      <!-- CAPCUT -->
+      <div class="product-card" data-cat="editing" data-name="capcut premium" data-product-name="CapCut Premium">
+        <span class="header-badge">PROMO</span>
+        <div class="product-top">
+          <div class="product-logo logo-cc"><i class="fa-solid fa-scissors"></i></div>
+          <div><h3>CapCut Premium</h3><p>Edit video tanpa watermark, efek & filter pro 4K.</p></div>
+        </div>
+        <div class="price-list">
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>7 Hari</b><span>Privat</span></div></div><div class="price-right"><b class="price-val">Rp 6.000</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>14 Hari</b><span>Privat</span></div></div><div class="price-right"><span class="strikethrough">Rp 12.000</span><span class="tag-mini tag-promo">PROMO</span><b class="price-val">Rp 11.000</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>1 Bulan</b><span>Privat</span></div></div><div class="price-right"><span class="strikethrough">Rp 25.000</span><span class="tag-mini tag-best">BEST</span><b class="price-val">Rp 20.000</b></div></div>
+        </div>
+        <div class="stock-row"><span class="stock-status"><i class="fa-solid fa-circle"></i> Stok Tersedia</span><button class="buy-btn">Beli Sekarang <i class="fa-solid fa-arrow-right"></i></button></div>
+      </div>
+
+      <!-- CHATGPT PRO -->
+      <div class="product-card" data-cat="ai" data-name="chatgpt pro" data-product-name="ChatGPT Pro">
+        <span class="header-badge">AI SMART</span>
+        <div class="product-top">
+          <div class="product-logo logo-gpt"><i class="fa-solid fa-robot"></i></div>
+          <div><h3>ChatGPT Pro</h3><p>Fitur AI tercanggih, Thinking Mode & respon prioritas.</p></div>
+        </div>
+        <div class="price-list">
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>15 Hari</b><span>1 akun</span></div></div><div class="price-right"><span class="strikethrough">Rp 15.000</span><b class="price-val">Rp 10.000</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>30 Hari</b><span>1 akun</span></div></div><div class="price-right"><span class="strikethrough">Rp 25.000</span><span class="tag-mini tag-best">BEST</span><b class="price-val">Rp 15.000</b></div></div>
+        </div>
+        <div class="stock-row"><span class="stock-status"><i class="fa-solid fa-circle"></i> Stok Tersedia</span><button class="buy-btn">Beli Sekarang <i class="fa-solid fa-arrow-right"></i></button></div>
+      </div>
+
+      <!-- YOUTUBE -->
+      <div class="product-card" data-cat="streaming" data-name="youtube premium" data-product-name="YouTube Premium">
+        <span class="header-badge">POPULAR</span>
+        <div class="product-top">
+          <div class="product-logo logo-yt"><i class="fa-brands fa-youtube"></i></div>
+          <div><h3>YouTube Premium</h3><p>Bebas iklan, putar di latar belakang + YT Music.</p></div>
+        </div>
+        <div class="price-list">
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>1 Bulan</b><span>1 akun</span></div></div><div class="price-right"><b class="price-val">Rp 10.000</b></div></div>
+          <div class="price-item"><div class="price-left"><i class="fa-solid fa-circle"></i><div><b>2 Bulan</b><span>1 akun</span></div></div><div class="price-right"><span class="strikethrough">Rp 20.000</span><span class="tag-mini tag-hemat">HEMAT</span><b class="price-val">Rp 19.000</b></div></div>
+        </div>
+        <div class="stock-row"><span class="stock-status"><i class="fa-solid fa-circle"></i> Stok Tersedia</span><button class="buy-btn">Beli Sekarang <i class="fa-solid fa-arrow-right"></i></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ORDER / CHECKOUT -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-box order-modal-box">
+    <button class="modal-close" id="closeOrderModal"><i class="fa-solid fa-xmark"></i></button>
+
+    <div id="orderFormView">
+      <div class="order-header">
+        <div class="order-product-logo" id="orderProductLogo"></div>
+        <div>
+          <h3 id="orderProductName">Nama Produk</h3>
+          <p id="orderProductDesc">Deskripsi produk</p>
+        </div>
+      </div>
+
+      <div class="order-section">
+        <h4><i class="fa-solid fa-box"></i> Pilih Paket</h4>
+        <div class="order-packages" id="orderPackages"></div>
+      </div>
+
+      <!-- SECTION EMAIL (Canva / YouTube / ChatGPT) -->
+      <div class="order-section" id="emailInputSection">
+        <h4><i class="fa-solid fa-envelope"></i> Alamat Email Canva / Akun <span style="color:var(--pink-1);">*</span></h4>
+        <div class="multi-email-list" id="multiEmailContainer"></div>
+        <button type="button" class="add-email-btn" id="addEmailBtn"><i class="fa-solid fa-plus"></i> Tambah Email Lain (Maks 10)</button>
+        <span class="form-error-msg" id="orderEmailErr">Email belum valid</span>
+      </div>
+
+      <!-- SECTION QUANTITY (CapCut) -->
+      <div class="order-section" id="quantitySection" style="display:none;">
+        <h4><i class="fa-solid fa-arrow-up-1-9"></i> Jumlah Pesanan</h4>
+        <div class="form-group">
+          <input type="number" id="capcutQtyInput" min="1" value="1" style="font-weight:700;font-size:15px;">
+          <span style="font-size:11px;color:var(--gray);" id="capcutStockText">Stok tersedia: 0</span>
+        </div>
+      </div>
+
+      <!-- SECTION VOUCHER (Canva Only) -->
+      <div class="order-section" id="voucherSection">
+        <h4><i class="fa-solid fa-ticket"></i> Kode Voucher <span style="font-size:11px;color:var(--gray);font-weight:normal;">(opsional)</span></h4>
+        <div class="form-group">
+          <input type="text" id="orderVoucher" placeholder="KODE VOUCHER" style="text-transform:uppercase;">
+        </div>
+      </div>
+
+      <div class="order-summary">
+        <div class="summary-row"><span>Produk</span><b id="summaryProduct">-</b></div>
+        <div class="summary-row"><span>Paket</span><b id="summaryPackage">-</b></div>
+        <div class="summary-row"><span>Jumlah / Akun</span><b id="summaryQty">1</b></div>
+        <div class="summary-row total"><span>Total Bayar</span><b id="summaryTotal">Rp 0</b></div>
+      </div>
+
+      <button class="btn btn-primary order-submit-btn" id="orderSubmitBtn">
+        <i class="fa-solid fa-bolt"></i> Bayar Sekarang
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RIWAYAT PESANAN -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal-box history-modal-box">
+    <button class="modal-close" id="closeHistoryModal"><i class="fa-solid fa-xmark"></i></button>
+    <div class="section-title" style="margin-bottom:24px;">
+      <h2>Riwayat Pesanan 💗</h2>
+      <p>Cek status pesanan dan dapatkan link akses Canva Anda</p>
+    </div>
+
+    <div class="history-search-bar">
+      <input type="email" id="historyEmailInput" placeholder="Masukkan Email Canva Anda...">
+      <button class="btn btn-primary" id="historySearchBtn"><i class="fa-solid fa-magnifying-glass"></i> Cek</button>
+    </div>
+
+    <div class="sort-row">
+      <button class="sort-btn active" id="sortNewestBtn"><i class="fa-solid fa-arrow-down-wide-short"></i> Terbaru</button>
+      <button class="sort-btn" id="sortOldestBtn"><i class="fa-solid fa-arrow-up-wide-short"></i> Terlama</button>
+    </div>
+
+    <div id="historyContainer">
+      <div style="text-align:center;padding:40px 10px;color:var(--gray);">
+        <i class="fa-solid fa-inbox" style="font-size:40px;color:#f3c3d5;margin-bottom:12px;display:block;"></i>
+        Masukkan email pembelian Anda untuk melihat riwayat order.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL STRUK PEMBAYARAN CANVA / RESULT -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal-box receipt-modal-box">
+    <button class="modal-close" id="closeReceiptModal"><i class="fa-solid fa-xmark"></i></button>
+    <div class="receipt-icon"><i class="fa-solid fa-check"></i></div>
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:4px;">Pembayaran Berhasil!</h3>
+    <p style="font-size:13px;color:var(--gray);" id="receiptSubTitle">Canva Premium siap digunakan</p>
+
+    <div class="payment-access-status" id="receiptAccessStatus">
+      <i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan link akses Canva...
+    </div>
+
+    <div id="receiptAccessLinks" style="margin:16px 0;"></div>
+
+    <div class="order-summary" style="text-align:left;margin-top:16px;" id="receiptSummaryBody"></div>
+    <button class="btn btn-primary order-submit-btn" id="doneReceiptBtn"><i class="fa-solid fa-check"></i> Selesai</button>
+  </div>
+</div>
+
+<!-- HALAMAN KHUSUS PORTAL AKSES TOKEN (?access=TOKEN) -->
+<div class="access-portal-page" id="accessPortalPage">
+  <div class="access-portal-card">
+    <div style="font-size:45px;margin-bottom:10px;">🎨</div>
+    <span class="status-badge status-ready" id="portalBadge">AKSES SIAP</span>
+    <h2 style="font-size:22px;font-weight:800;margin:12px 0 6px;" id="portalTitle">Canva Premium</h2>
+    <div id="portalInfoText" style="font-size:12.5px;color:var(--gray);line-height:1.6;margin-bottom:16px;background:var(--pink-light);padding:14px;border-radius:14px;"></div>
+    
+    <div style="background:#f9f9fb;border:1px solid #f0dde6;border-radius:14px;padding:12px 16px;text-align:left;margin-bottom:16px;">
+      <span style="font-size:10px;font-weight:700;color:var(--gray);display:block;">KODE ORDER</span>
+      <b style="font-size:14px;color:var(--dark);" id="portalOrderCode">-</b>
+    </div>
+
+    <div id="portalWarning" style="font-size:12px;color:#2563eb;background:#eff6ff;padding:12px;border-radius:12px;margin-bottom:16px;text-align:left;line-height:1.5;"></div>
+
+    <button class="btn btn-primary order-submit-btn" id="portalContinueBtn" style="background:linear-gradient(135deg,#25D366,#128C7E);">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> Lanjut ke Canva
+    </button>
+    <a href="#" id="portalResetBtn" target="_blank" class="btn btn-outline order-submit-btn" style="color:#ef4444;border-color:#fca5a5;margin-top:10px;display:none;">
+      <i class="fa-brands fa-whatsapp"></i> Ajukan Reset Akses ke Admin
+    </a>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-icon"><i class="fa-solid fa-check"></i></div>
+  <div class="toast-text"><b id="toastTitle">Berhasil!</b><span id="toastMsg">Notifikasi</span></div>
+</div>
+
+<div class="back-to-top" id="backToTop"><i class="fa-solid fa-arrow-up"></i></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL="https://refyjnsdseyxoqlifvry.supabase.co";
-const SUPABASE_KEY="sb_publishable_Aqr9CqWzs-JT0un_Yf4s3Q_FkoGlYt_";
-const CREATE_ORDER_URL=SUPABASE_URL+"/functions/v1/create-order";
-const PURCHASE_HISTORY_URL=SUPABASE_URL+"/functions/v1/purchase-history";
-const GET_ACCESS_URL=SUPABASE_URL+"/functions/v1/get-access";
-const CONSUME_ACCESS_URL=SUPABASE_URL+"/functions/v1/consume-access";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  // SUPABASE CONFIGURATION
+  const SUPABASE_URL = "https://refyjnsdseyxoqlifvry.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_Aqr9CqWzs-JT0un_Yf4s3Q_FkoGlYt_";
+  const CREATE_ORDER_URL = SUPABASE_URL + "/functions/v1/create-order";
+  const PURCHASE_HISTORY_URL = SUPABASE_URL + "/functions/v1/purchase-history";
+  const CONSUME_ACCESS_URL = SUPABASE_URL + "/functions/v1/consume-access";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const canvaPackages={
-  "1 Bulan":{code:"1",name:"Canva 1 Bulan",months:1,price:3000},
-  "2 Bulan":{code:"2",name:"Canva 2 Bulan",months:2,price:6000},
-  "3 Bulan":{code:"3",name:"Canva 3 Bulan",months:3,price:8500}
-};
+  const productStock = {};
+  const productPrices = {};
+  let currentSelectedProduct = null;
+  let currentSelectedPackage = null;
+  let currentSelectedPrice = 0;
+  let historySortOrder = 'newest';
+  let userHistoryEmail = localStorage.getItem('myclips_canva_email') || '';
 
-/*
- * PRODUCT STOCK
- * Dibaca dari tabel public.product_stock.
- *
- * Stok > 0  = bisa dibeli
- * Stok = 0  = STOK HABIS + tidak bisa diklik
- */
-const productStock = {};
-// mark packages as loading until database config arrives
-document
-  .querySelectorAll(".package-option")
-  .forEach(el => el.classList.add("stock-loading"));
+  // PREVENT SCROLL MEMORY / RESET TO TOP
+  if (history.scrollRestoration) history.scrollRestoration = 'manual';
+  window.addEventListener('beforeunload', () => window.scrollTo(0, 0));
 
-const productPrices = {};
-
-function formatPriceShort(value){
-  const n = Number(value || 0);
-  if(n < 1000){
-    return `Rp ${n.toLocaleString('id-ID')}`;
-  }
-  const k = n / 1000;
-  const label = Number.isInteger(k)
-    ? String(k)
-    : String(k).replace('.', ',');
-  return `Rp ${label}K`;
-}
-
-function getProductPrice(product, packageName){
-  return Number(
-    productPrices?.[product]?.[packageName] ?? 0
-  );
-}
-
-async function loadProductPrices(){
-  try{
-
-    const response =
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/product_prices" +
-        "?select=product_name,package_name,price,active",
-        {
-          headers:{
-            "apikey":
-              SUPABASE_KEY,
-
-            "Authorization":
-              "Bearer " +
-              SUPABASE_KEY,
-
-            "Accept":
-              "application/json"
-          },
-          cache:"no-store"
-        }
-      );
-
-    if(!response.ok){
-      throw new Error(
-        "Gagal membaca harga produk."
-      );
+  window.addEventListener('load', ()=>{
+    window.scrollTo(0, 0);
+    if (window.location.hash) {
+      history.replaceState("", document.title, window.location.pathname + window.location.search);
     }
-
-    const rows =
-      await response
-        .json();
-
-    Object.keys(productPrices)
-      .forEach(
-        key =>
-          delete productPrices[key]
-      );
-
-    (rows || [])
-      .forEach(
-        row => {
-
-          const product =
-            String(
-              row.product_name ||
-              ""
-            ).trim();
-
-          const packageName =
-            String(
-              row.package_name ||
-              ""
-            ).trim();
-
-          if(
-            !product ||
-            !packageName ||
-            row.active === false
-          ){
-            return;
-          }
-
-          if(
-            !productPrices[product]
-          ){
-            productPrices[product] = {};
-          }
-
-          productPrices[product][packageName] =
-            Number(
-              row.price ||
-              0
-            );
-
-        }
-      );
-
-    applyProductPriceState();
-    applyDynamicStrikePrices();
-
-  }catch(error){
-
-    console.error(
-      "PRODUCT PRICE ERROR:",
-      error
-    );
-
-  }
-}
-
-
-function applyDynamicStrikePrices(){
-  const getPrice = (product, packageName) => {
-    const value = getProductPrice(product, packageName);
-    return value > 0 ? value : 0;
-  };
-
-  // Canva Paket Grup = 10 x harga Canva 1 Bulan.
-  const canvaMonthly = getPrice('Canva Premium', '1 Bulan');
-  const canvaGroup = document.querySelector(
-    '.package-option[data-product="Canva Premium"][data-package="Paket Grup (10 akun)/Bulan"]'
-  );
-  if(canvaGroup && canvaMonthly > 0){
-    const strike = canvaGroup.querySelector('.strikethrough');
-    if(strike){
-      strike.textContent = formatPriceShort(canvaMonthly * 10);
-    }
-  }
-
-  // CapCut: 14 Hari = 2 x 7 Hari; 1 Bulan = 4 x 7 Hari.
-  const capcut7 = getPrice('CapCut Premium', '7 Hari');
-  const capcut14 = document.querySelector(
-    '.package-option[data-product="CapCut Premium"][data-package="14 Hari"]'
-  );
-  const capcutMonth = document.querySelector(
-    '.package-option[data-product="CapCut Premium"][data-package="1 Bulan"]'
-  );
-  if(capcut7 > 0){
-    const strike14 = capcut14?.querySelector('.strikethrough');
-    const strikeMonth = capcutMonth?.querySelector('.strikethrough');
-    if(strike14) strike14.textContent = formatPriceShort(capcut7 * 2);
-    if(strikeMonth) strikeMonth.textContent = formatPriceShort(capcut7 * 4);
-  }
-
-  // ChatGPT: 15 Hari = 2 x harga 15 Hari; 30 Hari = 4 x harga 15 Hari.
-  const chat15 = getPrice('ChatGPT Pro', '15 Hari');
-  const chat15Option = document.querySelector(
-    '.package-option[data-product="ChatGPT Pro"][data-package="15 Hari"]'
-  );
-  const chat30Option = document.querySelector(
-    '.package-option[data-product="ChatGPT Pro"][data-package="30 Hari"]'
-  );
-  if(chat15 > 0){
-    const strike15 = chat15Option?.querySelector('.strikethrough');
-    const strike30 = chat30Option?.querySelector('.strikethrough');
-    if(strike15) strike15.textContent = formatPriceShort(chat15 * 2);
-    if(strike30) strike30.textContent = formatPriceShort(chat15 * 4);
-  }
-}
-
-async function loadProductStock(){
-  try{
-
-    const response =
-      await fetch(
-        SUPABASE_URL +
-        "/rest/v1/product_stock" +
-        "?select=product_name,package_name,stock,active",
-        {
-          headers:{
-            "apikey":
-              SUPABASE_KEY,
-
-            "Authorization":
-              "Bearer " +
-              SUPABASE_KEY,
-
-            "Accept":
-              "application/json"
-          },
-          cache:"no-store"
-        }
-      );
-
-    if(!response.ok){
-      throw new Error(
-        "Gagal membaca stok produk."
-      );
-    }
-
-    const rows =
-      await response
-        .json();
-
-    Object.keys(productStock)
-      .forEach(
-        key =>
-          delete productStock[key]
-      );
-
-    (rows || [])
-      .forEach(
-        row => {
-
-          const product =
-            String(
-              row.product_name ||
-              ""
-            ).trim();
-
-          const packageName =
-            String(
-              row.package_name ||
-              ""
-            ).trim();
-
-          if(
-            !product ||
-            !packageName
-          ){
-            return;
-          }
-
-          if(
-            !productStock[product]
-          ){
-            productStock[product] = {};
-          }
-
-          productStock[product][packageName] =
-            row.active === false
-              ? 0
-              : Number(
-                  row.stock ||
-                  0
-                );
-
-        }
-      );
-
-    applyProductStockState();
-
-  }catch(error){
-
-    console.error(
-      "PRODUCT STOCK ERROR:",
-      error
-    );
-
-    /* FAIL-CLOSED: bila stok gagal dibaca,
-       semua paket sementara dianggap habis. */
-    Object.keys(productStock).forEach(
-      key => delete productStock[key]
-    );
-
-    applyProductStockState();
-  }
-}
-
-
-function applyProductPriceState(){
-
-  document
-    .querySelectorAll(
-      ".package-option"
-    )
-    .forEach(
-      option => {
-
-        const product =
-          option.dataset.product ||
-          "";
-
-        const packageName =
-          option.dataset.package ||
-          "";
-
-        const price =
-          getProductPrice(
-            product,
-            packageName
-          );
-
-        if(
-          price <= 0
-        ){
-          return;
-        }
-
-        option.dataset.price =
-          String(
-            price
-          );
-
-        const priceNodes =
-          option.querySelectorAll(
-            "p.font-bold.text-pink-500.text-lg"
-          );
-
-        if(
-          priceNodes.length
-        ){
-
-          const target =
-            priceNodes[
-              priceNodes.length - 1
-            ];
-
-          target.textContent =
-            formatPriceShort(
-              price
-            );
-
-        }
-
-      }
-    );
-
-}
-
-function applyProductStockState(){
-  const options = document.querySelectorAll('.package-option');
-
-  options.forEach(option => {
-    const product = String(option.dataset.product || '').trim();
-    const packageName = String(option.dataset.package || '').trim();
-
-    option.classList.remove('stock-loading');
-
-    const productExists = Object.prototype.hasOwnProperty.call(productStock, product);
-    const packageExists = productExists && Object.prototype.hasOwnProperty.call(productStock[product] || {}, packageName);
-
-    if(!packageExists){
-      // FAIL-CLOSED: paket yang tidak ditemukan di database dianggap habis.
-      option.classList.add('out-of-stock');
-      option.setAttribute('aria-disabled','true');
-      option.dataset.stock = '0';
-      return;
-    }
-
-    const stock = getStockValue(product, packageName);
-    option.dataset.stock = String(stock);
-
-    if(stock <= 0){
-      option.classList.add('out-of-stock');
-      option.setAttribute('aria-disabled','true');
-    }else{
-      option.classList.remove('out-of-stock');
-      option.removeAttribute('aria-disabled');
-    }
-  });
-}
-
-function getStockValue(product, packageName){
-  return Number(
-    productStock?.[product]?.[packageName] ?? 0
-  );
-}
-
-function isPackageOutOfStock(product, packageName){
-  return getStockValue(product, packageName) <= 0;
-}
-
-let selectedProduct=null,selectedPackage=null,selectedPrice=null,selectedCode=null;
-let historySortOrder='newest';
-let lastCanvaEmail='';
-let accessToken=new URLSearchParams(window.location.search).get('access');
-
-function buildCurrentAccessUrl(token){
-  const url = new URL(window.location.href);
-  url.search = '';
-  url.hash = '';
-  url.searchParams.set('access', String(token || ''));
-  return url.href;
-}
-
-let waitingReturnFromCanva=false;
-let accessRefreshInProgress=false;
-
-const fmt=n=>new Intl.NumberFormat('id-ID').format(Number(n||0));
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-function showToast(message,type='info'){
- const c=document.getElementById('toast-container');
- if(!c)return;
- const el=document.createElement('div');
- el.className='toast rounded-xl px-4 py-3 shadow-lg text-sm font-semibold bg-white border border-pink-100 text-gray-700';
- el.textContent=message;c.appendChild(el);setTimeout(()=>el.remove(),3200);
-}
-function setMessage(text,ok=false){
- const el=document.getElementById('message'); if(!el)return;
- el.className='message '+(ok?'ok':'err');el.textContent=text;el.style.display='block';
-}
-function dateTime(v){const d=new Date(v);return Number.isNaN(d.getTime())?'-':d.toLocaleString('id-ID')}
-function dateOnly(v){const d=new Date(v);return Number.isNaN(d.getTime())?'-':d.toLocaleDateString('id-ID')}
-
-// ===== TABS =====
-document.querySelectorAll('.tab-button').forEach(btn=>btn.addEventListener('click',()=>{
- document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
- document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
- btn.classList.add('active');
- document.getElementById(btn.dataset.tab+'-tab').classList.remove('hidden');
- if(btn.dataset.tab==='history'){ loadCanvaHistory(lastCanvaEmail); }
-}));
-
-// ===== PACKAGE SELECTION: only Canva is connected to DB =====
-document.querySelectorAll('.package-option').forEach(option=>option.addEventListener('click',function(){
- const productName=this.dataset.product||'';
- const packageName=this.dataset.package||'';
-
- const stockKnown =
-   Object.prototype.hasOwnProperty.call(
-     productStock,
-     productName
-   ) &&
-   Object.prototype.hasOwnProperty.call(
-     productStock[productName] || {},
-     packageName
-   );
-
- if(
-   !stockKnown ||
-   isPackageOutOfStock(
-     productName,
-     packageName
-   )
- ){
-   showToast(
-     'Stok paket ini sedang habis.',
-     'error'
-   );
-   return;
- }
-
- selectedProduct=this.dataset.product;
- selectedPackage=this.dataset.package;
- selectedPrice=this.dataset.price;
-
- document.querySelectorAll('.package-option').forEach(p=>p.classList.remove('selected'));
- this.classList.add('selected');
-
- openModal();
-}));
-
-// Existing info tooltip behavior
-document.querySelectorAll('.info-tooltip button').forEach(button=>button.addEventListener('click',function(e){
- e.stopPropagation();e.preventDefault();
- const card=this.closest('.product-card');
- const title=card?.querySelector('.price-tag h2')?.textContent?.trim();
- const info={
-  'Canva Premium':['🎨',['Edit desain unlimited','Template premium','Kolaborasi tim','Brand kit management','Resize designs dengan mudah']],
-  'CapCut Premium':['🎬',['Edit video tanpa watermark','Effect dan filter premium','Export video 4K','Template video profesional','Music library lengkap']],
-  'ChatGPT Pro':['🤖',['Fitur AI premium','Mode berpikir lanjutan','Prioritas dukungan','Upload file','Workspace'] ]
- }[title];
- if(!info)return;
- document.getElementById('info-modal-icon').textContent=info[0];
- document.getElementById('info-modal-title').textContent=title;
- document.getElementById('info-modal-content').innerHTML='<div class="bg-pink-50 rounded-xl p-4 space-y-2"><h4 class="font-bold text-gray-700">✨ Fitur Utama:</h4><ul class="space-y-1 ml-2 text-sm">'+info[1].map(x=>'<li>✓ '+esc(x)+'</li>').join('')+'</ul></div>';
- document.getElementById('info-modal').classList.remove('hidden');
-}));
-function closeInfoModal(){document.getElementById('info-modal').classList.add('hidden')}
-
-let capcutQuantity = 1;
-
-function getCapCutStock(){
-  return Math.max(
-    0,
-    Number(
-      productStock?.['CapCut Premium']?.[selectedPackage] ?? 0
-    )
-  );
-}
-
-function updateCapCutTotal(normalize=false){
-  const qtyInput = document.getElementById('capcut-qty');
-  const totalEl = document.getElementById('capcut-total-price');
-  const checkoutBtn = document.getElementById('checkout-btn');
-
-  const maxStock = getCapCutStock();
-
-  if(!qtyInput){
-    return;
-  }
-
-  qtyInput.max = String(Math.max(1, maxStock));
-
-  // Saat user masih mengetik, JANGAN langsung mengganti isi input.
-  // Ini mencegah angka yang baru diketik tertimpa oleh nilai stok.
-  let raw = String(qtyInput.value ?? '').trim();
-
-  if(raw === ''){
-    capcutQuantity = 0;
-    if(totalEl){
-      totalEl.textContent = 'Total: ' + formatPriceShort(0);
-    }
-    if(checkoutBtn){
-      checkoutBtn.disabled = true;
-    }
-    return;
-  }
-
-  let qty = Number(raw);
-
-  if(!Number.isInteger(qty) || qty < 1){
-    capcutQuantity = 0;
-    if(totalEl){
-      totalEl.textContent = 'Total: ' + formatPriceShort(0);
-    }
-    if(checkoutBtn){
-      checkoutBtn.disabled = true;
-    }
-    return;
-  }
-
-  if(qty > maxStock){
-    if(normalize){
-      qty = maxStock;
-      qtyInput.value = String(maxStock);
-    }else{
-      // Jangan mengubah input saat event input sedang berlangsung.
-      capcutQuantity = qty;
-      if(totalEl){
-        totalEl.textContent = formatPriceShort(Number(selectedPrice || 0) * qty);
-      }
-      if(checkoutBtn){
-        checkoutBtn.disabled = true;
-      }
-      return;
-    }
-  }
-
-  capcutQuantity = qty;
-
-  if(totalEl){
-    totalEl.textContent = formatPriceShort(Number(selectedPrice || 0) * qty);
-  }
-
-  if(checkoutBtn){
-    checkoutBtn.disabled = !(maxStock > 0 && selectedPrice && qty >= 1 && qty <= maxStock);
-  }
-}
-
-function initializeCapCutQuantity(){
-  const container = document.getElementById('capcut-qty-container');
-  const checkoutBtn = document.getElementById('checkout-btn');
-  if(!container || !checkoutBtn) return;
-
-  const maxStock = getCapCutStock();
-  capcutQuantity = 1;
-
-  container.innerHTML = `
-    <label class="block text-gray-600 text-sm font-medium mb-2">Jumlah</label>
-    <div class="flex items-center gap-2">
-      <input
-        id="capcut-qty"
-        type="number"
-        min="1"
-        max="${Math.max(1, maxStock)}"
-        value="1"
-        inputmode="numeric"
-        step="1"
-        autocomplete="off"
-        class="w-full px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors"
-      >
-    </div>
-    <p class="text-xs text-gray-500 mt-2">
-      Stok tersedia: <strong>${maxStock}</strong>
-    </p>
-  `;
-
-  const qtyInput = document.getElementById('capcut-qty');
-  qtyInput?.addEventListener('input', () => updateCapCutTotal(false));
-  qtyInput?.addEventListener('change', () => updateCapCutTotal(true));
-  qtyInput?.addEventListener('blur', () => updateCapCutTotal(true));
-  qtyInput?.addEventListener('keydown', event => {
-    if(event.key === 'Enter'){
-      event.preventDefault();
-      updateCapCutTotal(true);
+    setTimeout(()=> document.getElementById('preloader').classList.add('hide'), 800);
+    
+    // Check if ?access= token exists in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access');
+    if (accessToken) {
+      loadAccessPortal(accessToken);
     }
   });
 
-  updateCapCutTotal(true);
-}
-
-function openModal(){
- const modal=document.getElementById('email-modal');
- const icon=document.getElementById('modal-icon');
- const title=document.getElementById('modal-title');
- const packageInfo=document.getElementById('modal-package');
- const single=document.getElementById('single-email-section');
- const group=document.getElementById('group-email-section');
- const cap=document.getElementById('capcut-quantity-section');
-
- if(selectedProduct==='Canva Premium'){
-  icon.textContent='🎨';title.textContent=getCanvaDisplayTitle(selectedPackage);
-  packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
-  cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');
-  initializeCanvaEmail();
-  document.getElementById('canva-voucher-wrap').classList.remove('hidden');
-  document.getElementById('price-total').classList.add('hidden');
- } else if(selectedProduct==='CapCut Premium'){
-  icon.textContent='🎬';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
-  cap.classList.remove('hidden');single.classList.add('hidden');group.classList.add('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');
-  initializeCapCutQuantity();
- } else {
-  icon.textContent='🤖';title.textContent=selectedProduct;packageInfo.textContent=`${selectedPackage} - ${formatPriceShort(selectedPrice)}`;
-  cap.classList.add('hidden');group.classList.add('hidden');single.classList.remove('hidden');document.getElementById('canva-voucher-wrap').classList.add('hidden');initializeSingleEmails();
- }
- const checkoutBtn = document.getElementById('checkout-btn');
- if(selectedProduct==='Canva Premium'){
-   checkoutBtn.disabled = true;
- } else if(selectedProduct==='CapCut Premium'){
-   // initializeCapCutQuantity() sudah menghitung validitas stok/jumlah.
-   updateCapCutTotal(true);
- } else {
-   checkoutBtn.disabled = true;
- }
- checkoutBtn.textContent=selectedProduct==='Canva Premium'?'Bayar Sekarang':'Checkout via WhatsApp';
- modal.classList.remove('hidden');
-}
-function closeModal(){
- document.getElementById('email-modal').classList.add('hidden');
-
- document.querySelectorAll('.package-option').forEach(function(p){
-   p.classList.remove('selected');
- });
-
- const emailEl=document.querySelector('#single-emails-container .single-email-input');
- const voucherEl=document.getElementById('canva-voucher');
-
- if(emailEl) emailEl.value='';
- if(voucherEl) voucherEl.value='';
-
- const err=document.getElementById('single-email-error');
- const ok=document.getElementById('single-email-success');
-
- if(err) err.classList.add('hidden');
- if(ok) ok.classList.add('hidden');
-
- document
-   .querySelectorAll(
-     '#single-emails-container .single-email-input'
-   )
-   .forEach(
-     input => {
-       input.value = '';
-       input.removeAttribute('value');
-     }
-   );
-
- const price=document.getElementById('price-total');
-
- if(price) price.classList.add('hidden');
-
- selectedProduct=null;
- selectedPackage=null;
- selectedPrice=null;
- capcutQuantity=1;
- needsEmail=false;
- isCapCut=false;
-}
-
-function initializeCanvaEmail(){
- const container=document.getElementById('single-emails-container');
- container.innerHTML='';
-
- addSingleEmailInput(true);
-
- validateSingleEmails();
-}
-
-function initializeSingleEmails(){
- const c=document.getElementById('single-emails-container');
- c.innerHTML='';
-
- addSingleEmailInput(true);
-
- validateSingleEmails();
-}
-
-function addSingleEmailInput(isFirst=false){
-
- const container =
-   document.getElementById(
-     'single-emails-container'
-   );
-
- if(!container){
-   return;
- }
-
- const currentCount =
-   container.querySelectorAll(
-     '.single-email-input'
-   ).length;
-
- const maxEmails =
-   10;
-
- if(
-   currentCount >=
-   maxEmails
- ){
-
-   showToast(
-     'Maksimal 10 email dalam satu proses.',
-     'error'
-   );
-
-   return;
- }
-
- const emailIndex =
-   currentCount + 1;
-
- const wrap =
-   document.createElement(
-     'div'
-   );
-
- wrap.className =
-   'flex gap-2 items-center';
-
- /*
-  * Setiap input diberi NAME + autocomplete section
-  * yang berbeda agar Chrome/Edge/password manager
-  * tidak menganggap semua field email sebagai field
-  * yang sama dan mengisi email pertama ke field kedua.
-  */
- wrap.innerHTML = `
-   <input
-     type="email"
-     name="canva_email_${emailIndex}"
-     id="canva-email-${emailIndex}"
-     class="flex-1 px-4 py-3 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none transition-colors single-email-input"
-     placeholder="contoh@gmail.com"
-     autocomplete="section-canva-${emailIndex} email"
-     autocorrect="off"
-     autocapitalize="none"
-     spellcheck="false"
-     inputmode="email"
-     data-form-type="other"
-     data-lpignore="true"
-     data-1p-ignore="true"
-     oninput="validateSingleEmails()"
-   >
-   <button
-     type="button"
-     onclick="removeSingleEmailInput(this)"
-     class="text-pink-400 hover:text-pink-600 text-lg font-bold ${
-       isFirst
-         ? 'hidden'
-         : ''
-     }"
-   >
-     ✕
-   </button>
- `;
-
- container.appendChild(
-   wrap
- );
-
- const newInput =
-   wrap.querySelector(
-     '.single-email-input'
-   );
-
-
-}
-
-/*
- * Guard untuk input email multi-field.
- *
- * Jika browser/password-manager mencoba menyalin
- * nilai email aktif ke field lain saat keyboard digunakan,
- * field lain tidak dibiarkan ikut terisi.
- */
-document.addEventListener(
-  "focusin",
-  event => {
-
-    const input =
-      event.target?.closest(
-        "#single-emails-container .single-email-input"
-      );
-
-    if(
-      !input
-    ){
-      return;
-    }
-
-    document
-      .querySelectorAll(
-        "#single-emails-container .single-email-input"
-      )
-      .forEach(
-        other => {
-
-          if(
-            other !== input &&
-            other.dataset.autoFilledMirror === "1"
-          ){
-
-            other.value = "";
-
-            delete other.dataset
-              .autoFilledMirror;
-
-          }
-
-        }
-      );
-
-  }
-);
-
-
-function removeSingleEmailInput(
- button
-){
-
- const wrap =
-   button?.closest(
-     '.flex'
-   );
-
- if(
-   wrap
- ){
-
-   wrap.remove();
-
- }
-
- validateSingleEmails();
-
-}
-
-function validateSingleEmails(){
-
- const inputs =
-   Array.from(
-     document.querySelectorAll(
-       '#single-emails-container .single-email-input'
-     )
-   );
-
- const emails =
-   inputs
-     .map(
-       input =>
-         input.value
-           .trim()
-           .toLowerCase()
-     )
-     .filter(Boolean);
-
- const pattern =
-   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
- const validFormat =
-   emails.length > 0 &&
-   emails.every(
-     email =>
-       pattern.test(
-         email
-       )
-   );
-
- const unique =
-   new Set(
-     emails
-   ).size ===
-   emails.length;
-
- const duplicate =
-   emails.length >
-     0 &&
-   !unique;
-
- const errorEl =
-   document.getElementById(
-     'single-email-error'
-   );
-
- const successEl =
-   document.getElementById(
-     'single-email-success'
-   );
-
- if(
-   duplicate
- ){
-
-   if(errorEl){
-     errorEl.textContent =
-       'Email tidak boleh sama.';
-     errorEl.classList.remove(
-       'hidden'
-     );
-   }
-
-   if(successEl){
-     successEl.classList.add(
-       'hidden'
-     );
-   }
-
- }
- else if(
-   emails.length >
-     0 &&
-   !validFormat
- ){
-
-   if(errorEl){
-     errorEl.textContent =
-       'Ada email yang belum valid.';
-     errorEl.classList.remove(
-       'hidden'
-     );
-   }
-
-   if(successEl){
-     successEl.classList.add(
-       'hidden'
-     );
-   }
-
- }
- else{
-
-   if(errorEl){
-     errorEl.classList.add(
-       'hidden'
-     );
-   }
-
-   if(successEl){
-
-     successEl.textContent =
-       emails.length > 1
-         ? `✅ ${emails.length} email valid. Masing-masing akan dibuatkan order terpisah.`
-         : '✅ Email valid!';
-
-     successEl.classList.toggle(
-       'hidden',
-       !validFormat ||
-       !unique
-     );
-
-   }
-
- }
-
- const checkout =
-   document.getElementById(
-     'checkout-btn'
-   );
-
- if(
-   checkout
- ){
-
-   checkout.disabled =
-     !validFormat ||
-     !unique;
-
- }
-
-}
-
-function initializeGroupEmails(){
- initializeCanvaEmail();
-}
-
-function addGroupEmailInput(){
- addSingleEmailInput(false);
-}
-
-function removeGroupEmailInput(
- button
-){
- removeSingleEmailInput(
-   button
- );
-}
-
-function validateGroupEmails(){
- validateSingleEmails();
-}
-
-
-/* =====================================================
-   CANVA MULTI-EMAIL CHECKOUT
-   ===================================================== */
-
-async function createPaymentBatch(
-  emails,
-  pkg,
-  name,
-  voucher
-){
-
-  const response =
-    await fetch(
-      CREATE_ORDER_URL,
-      {
-        method:
-          'POST',
-
-        headers:{
-          'Content-Type':
-            'application/json',
-
-          'apikey':
-            SUPABASE_KEY,
-
-          'Authorization':
-            'Bearer ' +
-            SUPABASE_KEY
-        },
-
-        body:
-          JSON.stringify({
-
-            package_code:
-              pkg,
-
-            customer_name:
-              name,
-
-            customer_emails:
-              emails,
-
-            voucher_code:
-              voucher ||
-              undefined
-
-          })
+  // SCROLL PROGRESS & NAVBAR
+  window.addEventListener('scroll', ()=>{
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('scrollProgress').style.width = (scrollTop/docHeight*100) + '%';
+    const navbar = document.getElementById('navbar');
+    scrollTop > 50 ? navbar.classList.add('scrolled') : navbar.classList.remove('scrolled');
+    const backToTop = document.getElementById('backToTop');
+    scrollTop > 400 ? backToTop.classList.add('show') : backToTop.classList.remove('show');
+  });
+  document.getElementById('backToTop').addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+
+  // REVEAL ANIMATIONS
+  const revealElements = document.querySelectorAll('.reveal, .reveal-scale');
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.classList.add('active'); });
+  }, {threshold:0.15});
+  revealElements.forEach(el=> revealObserver.observe(el));
+
+  // STAT COUNTERS
+  const statNums = document.querySelectorAll('.stat-num');
+  const counterObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = +el.dataset.target;
+        let count = 0;
+        const increment = target/60;
+        const timer = setInterval(()=>{
+          count += increment;
+          if(count >= target){ el.textContent = target.toLocaleString('id-ID'); clearInterval(timer); }
+          else{ el.textContent = Math.floor(count).toLocaleString('id-ID'); }
+        }, 20);
+        counterObserver.unobserve(el);
       }
-    );
+    });
+  }, {threshold:0.5});
+  statNums.forEach(el=> counterObserver.observe(el));
 
-
-  const data =
-    await response
-      .json()
-      .catch(
-        () => ({})
-      );
-
-
-  if(
-    !response.ok ||
-    !data.ok
-  ){
-
-    throw new Error(
-      data.error ||
-      'Gagal membuat pembayaran.'
-    );
-
+  // TOAST
+  const toast = document.getElementById('toast');
+  function showToast(title, msg){
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 3500);
   }
 
-
-  return data;
-
-}
-
-
-function openPaymentBatch(
-  data
-){
-
-  return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
-
-      window.snap.pay(
-        data.snap_token,
-        {
-
-          onSuccess:
-            () =>
-              resolve(data),
-
-          onPending:
-            () =>
-              reject(
-                new Error(
-                  'Pembayaran belum selesai.'
-                )
-              ),
-
-          onError:
-            () =>
-              reject(
-                new Error(
-                  'Pembayaran gagal.'
-                )
-              ),
-
-          onClose:
-            () =>
-              reject(
-                new Error(
-                  'Jendela pembayaran ditutup.'
-                )
-              )
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-async function checkoutCanva(){
-
-  /*
-   * NAMA PEMBELI SUDAH DIHAPUS DARI FORM.
-   * Tidak ada lagi validasi nama.
-   * Backend akan memakai email pertama sebagai identitas internal.
-   */
-  const name = '';
-
-  const emailInputs = Array.from(
-    document.querySelectorAll(
-      '#single-emails-container .single-email-input'
-    )
-  );
-
-  const emails = emailInputs
-    .map(input => input.value.trim().toLowerCase())
-    .filter(Boolean);
-
-  const voucher =
-    document.getElementById('canva-voucher')?.value.trim().toUpperCase() || '';
-
-  if(!emails.length){
-    showToast('Masukkan minimal satu email Canva.','error');
-    return;
-  }
-
-  if(emails.length > 10){
-    showToast('Maksimal 10 email untuk satu pembelian.','error');
-    return;
-  }
-
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if(!emails.every(email => emailPattern.test(email))){
-    showToast('Pastikan semua email valid.','error');
-    return;
-  }
-
-  if(new Set(emails).size !== emails.length){
-    showToast('Email tidak boleh sama.','error');
-    return;
-  }
-
-  if(!selectedPackage){
-    showToast('Pilih paket Canva terlebih dahulu.','error');
-    return;
-  }
-
-  const isGroup =
-    selectedPackage === 'Paket Grup (10 akun)/Bulan';
-
-  const stockKnown =
-    Object.prototype.hasOwnProperty.call(productStock,'Canva Premium') &&
-    Object.prototype.hasOwnProperty.call(
-      productStock['Canva Premium'] || {},
-      selectedPackage
-    );
-
-  const requiredStock = isGroup ? 1 : emails.length;
-
-  if(
-    !stockKnown ||
-    getStockValue('Canva Premium', selectedPackage) < requiredStock
-  ){
-    showToast(
-      isGroup
-        ? 'Stok Paket Grup sedang habis.'
-        : 'Stok paket ini tidak mencukupi.',
-      'error'
-    );
-    closeModal();
-    return;
-  }
-
-  const packageMap = {
-    '1 Bulan':'1',
-    '2 Bulan':'2',
-    '3 Bulan':'3',
-    'Paket Grup (10 akun)/Bulan':'GROUP10'
-  };
-
-  const pkg = packageMap[selectedPackage];
-
-  if(!pkg){
-    showToast('Paket Canva tidak valid.','error');
-    return;
-  }
-
-  const btn = document.getElementById('checkout-btn');
-
-  if(!btn) return;
-
-  btn.disabled = true;
-  btn.textContent = isGroup
-    ? 'Menyiapkan Paket Grup...'
-    : 'Menyiapkan pembayaran...';
-
-  try{
-
-    lastCanvaEmail = emails[0];
-
-    localStorage.setItem(
-      'myclips_canva_email',
-      emails[0]
-    );
-
-    localStorage.removeItem('myclips_canva_name');
-
-    /*
-     * Satu request = satu payment batch.
-     * Paket biasa: backend membuat satu order per email.
-     * Paket Grup: backend membuat satu order untuk seluruh email.
-     */
-    const data = await createPaymentBatch(
-      emails,
-      pkg,
-      name,
-      voucher
-    );
-
-    const paidData = await openPaymentBatch(data);
-
-    closeModal();
-
-    const orderMessage = isGroup
-      ? `Pembayaran berhasil untuk Paket Grup dengan ${emails.length} email. 1 kode order digunakan untuk seluruh email.`
-      : `Pembayaran berhasil untuk ${emails.length} email. Akses sedang diproses.`;
-
-    showDbResult(
-      paidData,
-      orderMessage
-    );
-
-    /*
-     * Segarkan stok setelah pembayaran sukses.
-     * Jika webhook sudah mengurangi stok, kartu produk
-     * langsung berubah menjadi STOK HABIS / TERSEDIA.
-     */
-    await loadProductStock();
-
-    /*
-     * Tunggu akses masing-masing email.
-     * Paket Grup tetap memakai satu order_code.
-     */
-    const accessTasks = [];
-
-    for(const item of (paidData.orders || [])){
-
-      const targetEmails = isGroup
-        ? emails
-        : [item.customer_email];
-
-      for(const email of targetEmails){
-        accessTasks.push(
-          waitForAccess(
-            item.order_code,
-            email,
-            paidData
-          ).catch(accessError => {
-            console.warn(
-              'Akses belum siap:',
-              accessError
-            );
-            return false;
-          })
-        );
-      }
-    }
-
-    const accessResults = await Promise.all(accessTasks);
-    const allAccessReady = accessResults.length === 0 || accessResults.every(Boolean);
-    const accessStatusEl = document.getElementById('db-result-access-status');
-
-    if(accessStatusEl){
-      if(allAccessReady){
-        accessStatusEl.classList.add('hidden');
-      }else{
-        accessStatusEl.textContent = 'Pembayaran berhasil. Sebagian akses Canva masih disiapkan. Silakan cek Riwayat Pembelian.';
-        accessStatusEl.classList.remove('hidden');
-      }
-    }
-
-    // Persistir tampilan struk terbaru, termasuk tombol Akses Canva.
-    saveReceiptSnapshot();
-
-    /*
-     * Refresh stok sekali lagi setelah webhook/access processing
-     * agar perubahan stok terbaru langsung terbaca.
-     */
-    await loadProductStock();
-
-    loadCanvaHistory(lastCanvaEmail);
-
-  }catch(error){
-
-    showToast(
-      error?.message ||
-      'Pembayaran dihentikan.',
-      'error'
-    );
-
-  }finally{
-
-    btn.disabled = false;
-    btn.textContent = 'Bayar Sekarang';
-
-  }
-
-}
-
-/* =====================================================
-   END CANVA MULTI-EMAIL CHECKOUT
-   ===================================================== */
-
-/* =====================================================
-   END CANVA MULTI-EMAIL CHECKOUT
-   ===================================================== */
-
-
-// Hook checkout button while preserving design for other products.
-document.getElementById('checkout-btn').onclick=async()=>{
- if(selectedProduct==='Canva Premium')return checkoutCanva();
-
- const config=window.elementSdk?.config||{whatsapp_number:'85707486749'};
- const waRaw=String(config.whatsapp_number||'85707486749').replace(/\D/g,'');
- const waNumber=waRaw.startsWith('62') ? waRaw : `62${waRaw.replace(/^0/,'')}`;
-
- if(selectedProduct==='CapCut Premium'){
-   const stock=getCapCutStock();
-   const qty=Math.max(1,Number(capcutQuantity||1));
-
-   if(stock<=0){
-     showToast('Stok paket CapCut ini sedang habis.','error');
-     return;
-   }
-
-   if(qty>stock){
-     showToast(`Jumlah melebihi stok. Maksimal ${stock}.`,'error');
-     return;
-   }
-
-   const unitPrice=Number(selectedPrice||0);
-   const totalPrice=unitPrice*qty;
-   const message=`*Halo MYCLIPS!*\nSaya ingin memesan:\n━━━━━━━━━━━━━━━━━━\n*Produk:* ${selectedProduct}\n*Paket:* ${selectedPackage}\n*Jumlah:* ${qty}\n*Harga Satuan:* Rp ${unitPrice.toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━\n*Total Harga:* Rp ${totalPrice.toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━\nMohon diproses ya, terima kasih!`;
-
-   window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`,'_blank');
-   closeModal();
-   showToast('Mengarahkan ke WhatsApp... 📱','success');
-   return;
- }
-
- // ChatGPT tetap menggunakan alur WhatsApp yang sudah ada.
- const email=Array.from(document.querySelectorAll('.single-email-input')).map(i=>i.value.trim()).filter(Boolean).join(', ');
- const message=`*Halo MYCLIPS!*\nSaya ingin memesan:\n━━━━━━━━━━━━━━━━━━\n*Produk:* ${selectedProduct}\n*Paket:* ${selectedPackage}\n*Jumlah:* 1\n*Harga Satuan:* Rp ${parseInt(selectedPrice||0).toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━\n*Total Harga:* Rp ${parseInt(selectedPrice||0).toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━\nMohon diproses ya, terima kasih!`;
- window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`,'_blank');
- closeModal();showToast('Mengarahkan ke WhatsApp... 📱','success');
-};
-
-
-function makeResetWhatsAppUrl(order){
- const waNumber='6285707486749';
- const message=[
-  'Halo Admin MYCLIPS, saya ingin mengajukan reset akses Canva.',
-  '',
-  'Kode     : '+(order.order_code||'-'),
-  'Email    : '+(order.customer_email||'-'),
-  'Tim Cnv : '+(order.canva_team_name||'-'),
-  'Akses    : '+(Number(order.access_cycle||0))+' / '+(Number(order.duration_months||1)),
-  '',
-  'Saya salah akun Canva/mengalami kendala saat menggunakan akses. Mohon di-reset aksesnya, agar saya dapat mencoba kembali.',
-  '',
-  'Terima kasih.'
- ].join('\n');
- return 'https://wa.me/'+waNumber+'?text='+encodeURIComponent(message);
-}
-
-function normalizeCanvaPackageLabel(packageName){
-  const pkg = String(packageName || '').trim();
-  if(!pkg) return 'Canva Premium';
-  if(pkg.toLowerCase().includes('grup')) return 'Paket Grup';
-  return pkg;
-}
-
-function getCanvaDisplayTitle(packageName){
-  return 'Canva Premium';
-}
-
-function showDbResult(data,msg){
-  const modal=document.getElementById('db-checkout-result');
-  const body=document.getElementById('db-result-body');
-
-  const orders=Array.isArray(data.orders)?data.orders:[];
-  const isGroup=String(data.package_name||'').toLowerCase().includes('grup');
-  const emailList=Array.isArray(data.customer_emails)
-    ? data.customer_emails
-    : [];
-
-  const uniqueOrders = orders.filter((order,index,self)=>
-    index === self.findIndex(x =>
-      String(x?.order_code||'').trim() === String(order?.order_code||'').trim() &&
-      String(x?.customer_email||'').trim().toLowerCase() === String(order?.customer_email||'').trim().toLowerCase()
-    )
-  );
-
-  const codes=[...new Set(
-    orders.map(o=>o?.order_code).filter(Boolean)
-  )];
-
-  const groupDisplayCode =
-    data.group_order_code ||
-    data.order_code ||
-    codes[0] ||
-    '';
-
-  const codeHtml = (isGroup ? groupDisplayCode : codes.length)
-    ? (
-        isGroup
-          ? `<span class="break-all font-bold">${esc(groupDisplayCode)}</span>`
-          : `<div class="space-y-1">${codes.map((c,i)=>
-              `<div><b>${i+1}.</b> <span class="break-all">${esc(c)}</span></div>`
-            ).join('')}</div>`
-      )
-    : '<span>-</span>';
-
-  const packageLabel =
-    normalizeCanvaPackageLabel(data.package_name);
-
-  const initialStatus =
-    'Akses Canva sedang disiapkan...';
-
-  /*
-   * Untuk paket biasa:
-   * setiap email/order mendapat kartu sendiri:
-   * Email
-   * Tombol Akses Canva
-   * Kode Order
-   *
-   * Untuk Paket Grup:
-   * tombol tetap dibuat per email,
-   * sedangkan satu Kode Order Grup ditampilkan
-   * di bagian bawah seperti desain sebelumnya.
-   */
-  let accessCardsHtml = '';
-
-  if(!isGroup){
-    accessCardsHtml = uniqueOrders.length
-      ? uniqueOrders.map((order,index)=>{
-          const email =
-            String(order?.customer_email||'').trim();
-
-          const safeEmail =
-            email || `Email ${index+1}`;
-
-          const accessKey =
-            safeEmail
-              .replace(/[^a-z0-9]+/gi,'-')
-              .replace(/^-|-$/g,'') ||
-            `email-${index+1}`;
-
-          const orderCode =
-            String(order?.order_code||'').trim() ||
-            '-';
-
-          return `
-            <div
-              id="access-card-${esc(accessKey)}"
-              class="mt-3 bg-white rounded-xl border border-pink-100 p-3"
-            >
-              <div class="text-xs font-semibold text-gray-500 mb-2 break-all">
-                ${esc(safeEmail)}
-              </div>
-
-              <div
-                id="access-slot-${esc(accessKey)}"
-                class="space-y-2"
-              >
-                <div class="payment-access-status">
-                  ${initialStatus}
-                </div>
-              </div>
-
-              <div class="mt-3 text-sm text-gray-700">
-                <b>Kode Order:</b><br>
-                <span class="break-all">${esc(orderCode)}</span>
-              </div>
-            </div>
-          `;
-        }).join('')
-      : '';
-  }
-
-  const emailsHtml = isGroup && emailList.length
-    ? `
-      <div class="mt-3 bg-white rounded-xl border border-pink-100 p-3 text-sm">
-        <b>Email dalam Paket Grup (${emailList.length}):</b>
-        <div class="mt-2 space-y-1">
-          ${emailList.map((e,i)=>
-            `<div>${i+1}. ${esc(e)}</div>`
-          ).join('')}
-        </div>
-      </div>
-    `
-    : '';
-
-  const groupAccessSlots = isGroup && emailList.length
-    ? emailList.map((email,index)=>{
-        const safeEmail =
-          String(email||'').trim() ||
-          `Email ${index+1}`;
-
-        const emailKey =
-          safeEmail
-            .replace(/[^a-z0-9]+/gi,'-')
-            .replace(/^-|-$/g,'') ||
-          `email-${index+1}`;
-
-        return `
-          <div
-            id="group-access-card-${esc(emailKey)}"
-            class="mt-3 bg-white rounded-xl border border-pink-100 p-3"
-          >
-            <div class="text-xs font-semibold text-gray-500 mb-2 break-all">
-              ${esc(safeEmail)}
-            </div>
-
-            <div
-              id="group-access-${esc(emailKey)}"
-              class="space-y-2"
-            >
-              <div class="payment-access-status">
-                ${initialStatus}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('')
-    : '';
-
-  body.innerHTML=`
-    <div class="text-center mb-5">
-      <span class="text-4xl">✅</span>
-      <h3 class="font-bold text-xl text-gray-700 mt-2">
-        Pembayaran Berhasil
-      </h3>
-      <p class="text-pink-500 font-semibold text-sm mt-1">
-        Canva Premium
-      </p>
-      <p class="text-pink-500 font-semibold text-sm">
-        ${esc(packageLabel)}
-      </p>
-    </div>
-
-    <div class="bg-pink-50 rounded-xl p-4 text-sm text-gray-700 space-y-2">
-      <div class="flex justify-between">
-        <span>Harga Paket</span>
-        <b>Rp ${fmt(data.amount)}</b>
-      </div>
-
-      <div class="flex justify-between">
-        <span>Biaya QRIS</span>
-        <b>Rp ${fmt(data.qris_fee)}</b>
-      </div>
-
-      <div class="flex justify-between border-t border-pink-200 pt-2">
-        <span>Total Pembayaran</span>
-        <b>Rp ${fmt(data.customer_payment||data.final_amount)}</b>
-      </div>
-    </div>
-
-    <div class="mt-4 text-sm text-gray-600 leading-6">
-      ${esc(msg||'Pembayaran berhasil. Akses sedang diproses.')}
-    </div>
-
-    <div
-      id="db-result-access-status"
-      class="payment-access-status"
-    >
-      ${initialStatus}
-    </div>
-
-    ${
-      !isGroup
-        ? `<div id="db-result-access" class="space-y-2 mt-2">
-             ${accessCardsHtml}
-           </div>`
-        : `<div id="db-result-access" class="space-y-2 mt-2">
-             ${groupAccessSlots}
-           </div>`
-    }
-
-    ${
-      isGroup
-        ? `
-          <div class="mt-4 bg-white rounded-xl border border-pink-100 p-3 text-sm">
-            <b>Kode Order Paket Grup:</b><br>
-            ${codeHtml}
-          </div>
-          ${emailsHtml}
-        `
-        : ''
-    }
-  `;
-
-  modal.classList.remove('hidden');
-  saveReceiptSnapshot();
-}
-
-function saveReceiptSnapshot(){
-  try{
-    const body=document.getElementById('db-result-body');
-    const modal=document.getElementById('db-checkout-result');
-    if(!body || !modal || modal.classList.contains('hidden')) return;
-    sessionStorage.setItem('myclips_receipt_snapshot', body.innerHTML);
-    sessionStorage.setItem('myclips_receipt_available','1');
-  }catch(_){ }
-}
-
-function clearReceiptSnapshot(){
-  try{
-    sessionStorage.removeItem('myclips_receipt_snapshot');
-    sessionStorage.removeItem('myclips_receipt_available');
-    sessionStorage.removeItem('myclips_restore_receipt_once');
-  }catch(_){ }
-}
-
-function restoreReceiptSnapshot(){
-  try{
-    const html=sessionStorage.getItem('myclips_receipt_snapshot');
-    if(!html) return false;
-    const modal=document.getElementById('db-checkout-result');
-    const body=document.getElementById('db-result-body');
-    if(!modal || !body) return false;
-    body.innerHTML=html;
-    modal.classList.remove('hidden');
-    return true;
-  }catch(_){
-    return false;
-  }
-}
-
-function closeDbResult(){
-  document.getElementById('db-checkout-result').classList.add('hidden');
-  clearReceiptSnapshot();
-}
-function clearCanvaReturnFlags(){
-  try{
-    sessionStorage.removeItem('myclips_refresh_after_canva');
-    sessionStorage.removeItem('myclips_left_access_page');
-  }catch(_){}
-}
-
-function markLeavingAccessForCanva(){
-  try{
-    sessionStorage.setItem('myclips_refresh_after_canva','1');
-    sessionStorage.setItem('myclips_left_access_page','1');
-  }catch(_){}
-}
-
-
-async function waitForAccess(orderCode,email,paymentData){
-
-  const rootContainer =
-    document.getElementById('db-result-access');
-
-  if(!rootContainer) return false;
-
-  const safeEmail =
-    String(email || '')
-      .trim()
-      .toLowerCase();
-
-  if(!safeEmail) return false;
-
-  const isGroup =
-    String(paymentData?.package_name || '')
-      .toLowerCase()
-      .includes('grup');
-
-  const emailKey =
-    safeEmail
-      .replace(/[^a-z0-9]+/g,'-')
-      .replace(/^-|-$/g,'') ||
-    'default';
-
-  /*
-   * Setiap email mempunyai slot sendiri.
-   * Paket biasa: slot sudah dibuat oleh showDbResult().
-   * Paket grup: slot juga dibuat per email.
-   */
-  let targetContainer = null;
-
-  if(isGroup){
-    const groupSlotId =
-      'group-access-' + emailKey;
-
-    targetContainer =
-      document.getElementById(groupSlotId);
-
-  }else{
-    const accessSlotId =
-      'access-slot-' + emailKey;
-
-    targetContainer =
-      document.getElementById(accessSlotId);
-  }
-
-  /*
-   * Fallback untuk kompatibilitas jika slot belum ada.
-   */
-  if(!targetContainer){
-    targetContainer =
-      document.createElement('div');
-
-    targetContainer.className =
-      'space-y-2 mt-3';
-
-    const card =
-      document.createElement('div');
-
-    card.className =
-      'bg-white rounded-xl border border-pink-100 p-3';
-
-    const emailLabel =
-      document.createElement('div');
-
-    emailLabel.className =
-      'text-xs font-semibold text-gray-500 mb-2 break-all';
-
-    emailLabel.textContent =
-      safeEmail;
-
-    card.appendChild(emailLabel);
-    card.appendChild(targetContainer);
-    rootContainer.appendChild(card);
-  }
-
-  const buttonId =
-    'access-button-' +
-    emailKey;
-
-  const codeId =
-    'access-order-' +
-    emailKey;
-
-  for(
-    let attempt = 1;
-    attempt <= 30;
-    attempt++
-  ){
-
-    try{
-
-      const response =
-        await fetch(
-          PURCHASE_HISTORY_URL,
-          {
-            method:'POST',
-
-            headers:{
-              'Content-Type':'application/json',
-              'apikey':SUPABASE_KEY,
-              'Authorization':
-                'Bearer ' + SUPABASE_KEY
-            },
-
-            body:JSON.stringify({
-              email:safeEmail
-            })
-          }
-        );
-
-      const data =
-        await response
-          .json()
-          .catch(() => ({}));
-
-      if(!response.ok){
-        throw new Error(
-          data.error ||
-          'Gagal mengecek akses.'
-        );
-      }
-
-      const orders =
-        Array.isArray(data.orders)
-          ? data.orders
-          : [];
-
-      const order =
-        orders.find(
-          item =>
-            String(
-              item?.order_code || ''
-            ).trim() ===
-            String(
-              orderCode || ''
-            ).trim()
-        );
-
-      if(
-        order &&
-        order.access_url &&
-        order.access_token
-      ){
-
-        let button =
-          document.getElementById(
-            buttonId
-          );
-
-        if(!button){
-
-          button =
-            document.createElement('a');
-
-          button.id =
-            buttonId;
-
-          button.href =
-            buildCurrentAccessUrl(order.access_token || accessToken);
-
-          button.target =
-            '_self';
-
-          button.rel =
-            'noopener';
-
-          button.addEventListener(
-            'click',
-            ()=>{
-              try{
-                sessionStorage.setItem('myclips_restore_receipt_once','1');
-              }catch(_){}
-              clearCanvaReturnFlags();
-            }
-          );
-
-          button.className =
-            'block w-full text-center ' +
-            'bg-gradient-to-r from-green-500 to-emerald-500 ' +
-            'hover:from-green-600 hover:to-emerald-600 ' +
-            'text-white font-bold py-3 rounded-xl mb-2 ' +
-            'transition-all shadow-md';
-
-          button.textContent =
-            '🔗 Akses Canva';
-
-          targetContainer.innerHTML = '';
-          targetContainer.appendChild(
-            button
-          );
-
-          // Simpan ulang struk setelah tombol Akses Canva muncul.
-          saveReceiptSnapshot();
-
-        }else{
-
-          button.href =
-            buildCurrentAccessUrl(order.access_token || accessToken);
-
-          button.onclick =
-            ()=>{
-              try{
-                sessionStorage.setItem('myclips_restore_receipt_once','1');
-              }catch(_){}
-              clearCanvaReturnFlags();
-            };
-
-          saveReceiptSnapshot();
-
-        }
-
-        return true;
-      }
-
-    }catch(error){
-
-      console.warn(
-        'CHECK ACCESS:',
-        error
-      );
-
-    }
-
-    await new Promise(
-      resolve =>
-        setTimeout(
-          resolve,
-          2000
-        )
-    );
-  }
-
-  /*
-   * Kalau akses belum siap, biarkan pesan
-   * tetap berada di kartu email masing-masing.
-   */
-  return false;
-}
-
-// ===== Canva history via Supabase; visual cards remain the supplied design =====
-async function loadCanvaHistory(email){
- const container=document.getElementById('history-container');
- if(!container)return;
-
- if(!email){
-  container.innerHTML='<div class="text-center py-12"><p class="text-gray-400 text-lg">📭 Belum ada riwayat Canva</p><p class="text-gray-300 text-sm mt-2">Selesaikan pembelian Canva terlebih dahulu.</p></div>';
-  return;
- }
-
- container.innerHTML='<div class="text-center py-8 text-gray-400">Memuat riwayat...</div>';
-
- try{
-  const response=await fetch(PURCHASE_HISTORY_URL,{
-   method:'POST',
-   headers:{
-    'Content-Type':'application/json',
-    'apikey':SUPABASE_KEY,
-    'Authorization':'Bearer '+SUPABASE_KEY
-   },
-   body:JSON.stringify({email})
+  // FAQ TOGGLE
+  document.querySelectorAll('.faq-q').forEach(q=>{
+    q.addEventListener('click',()=> q.closest('.faq-item').classList.toggle('closed'));
   });
 
-  const data=await response.json().catch(()=>({}));
+  // PRODUCT FILTER & SEARCH
+  const tabs = document.querySelectorAll('.filter-tab');
+  const cards = document.querySelectorAll('.product-card');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.dataset.cat;
+      cards.forEach(card=> card.style.display = (cat==='semua' || card.dataset.cat===cat) ? 'flex' : 'none');
+    });
+  });
+  document.getElementById('searchInput').addEventListener('input', function(){
+    const val = this.value.toLowerCase();
+    cards.forEach(card=> card.style.display = card.dataset.name.includes(val) ? 'flex' : 'none');
+  });
 
-  if(!response.ok){
-   throw new Error(data.error||'Gagal mengambil riwayat.');
+  // MOBILE NAV
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileNav = document.getElementById('mobileNav');
+  menuToggle.addEventListener('click', (e)=>{ e.stopPropagation(); mobileNav.classList.toggle('show'); });
+  mobileNav.querySelectorAll('a').forEach(link=> link.addEventListener('click', ()=> mobileNav.classList.remove('show')));
+  document.addEventListener('click', (e)=>{ if(!mobileNav.contains(e.target) && !menuToggle.contains(e.target)) mobileNav.classList.remove('show'); });
+
+  // MODAL CONTROLLERS
+  const productModal = document.getElementById('productModal');
+  const orderModal = document.getElementById('orderModal');
+  const historyModal = document.getElementById('historyModal');
+  const receiptModal = document.getElementById('receiptModal');
+
+  function openModal(modal){
+    modal.classList.add('show');
+    document.body.classList.add('modal-open');
+    mobileNav.classList.remove('show');
+  }
+  function closeModal(modal){
+    modal.classList.remove('show');
+    if(!document.querySelector('.modal-overlay.show')) document.body.classList.remove('modal-open');
   }
 
-  const orders=data.orders||[];
-
-  if(!orders.length){
-   container.innerHTML='<div class="text-center py-12"><p class="text-gray-400 text-lg">📭 Belum ada riwayat Canva</p><p class="text-gray-300 text-sm mt-2">Belum ada pembelian untuk email ini.</p></div>';
-   return;
-  }
-
-  orders.sort((a,b)=>
-    historySortOrder==='oldest'
-      ? new Date(a.created_at)-new Date(b.created_at)
-      : new Date(b.created_at)-new Date(a.created_at)
-  );
-
-  container.innerHTML=orders.map(order=>{
-
-   const pay=String(order.payment_status||'').toUpperCase();
-   const access=String(order.access_status_display||order.access_status||'').toUpperCase();
-
-   const payCls=pay==='PAID'?'status-completed':'status-pending';
-   const payTxt=pay==='PAID'?'✓ PAID':pay||'PENDING';
-
-   const accessCls=
-    access==='UNUSED'||access==='READY_AGAIN'
-      ? 'status-completed'
-      : access==='USED'
-        ? 'status-pending'
-        : 'status-expired';
-
-   const accessTxt=
-    access==='UNUSED'?'SIAP'
-    : access==='READY_AGAIN'?'SIAP DIGUNAKAN LAGI'
-    : access==='USED'?'DIGUNAKAN'
-    : access==='EXPIRED'?'BERAKHIR'
-    : access||'-';
-
-   const cycle=Number(order.access_cycle||0);
-   const duration=Number(order.duration_months||1);
-
-   const teamName=order.canva_team_name||'Tim Canva belum ditentukan';
-
-   const billingText=
-    (order.billing_start_at&&order.billing_end_at)
-      ? `${dateOnly(order.billing_start_at)} – ${dateOnly(order.billing_end_at)}`
-      : '-';
-
-   const canJoin=
-    Boolean(order.can_join) &&
-    Boolean(order.access_url);
-
-   /*
-    * GREEN = ready
-    * GREY = unavailable
-    *
-    * No reset button here.
-    */
-   const joinButton=
-    canJoin
-      ? `<a href="${esc(order.access_url)}" target="_self" rel="noopener" class="history-join-button">
-           <span class="history-join-icon">🔗</span>
-           <span>${order.can_join_again?'Gabung Canva Lagi':'Gabung Canva'}</span>
-         </a>`
-      : `<span class="history-join-button history-join-disabled">
-           <span class="history-join-icon">🔒</span>
-           <span>${access==='EXPIRED'?'Gabung Canva':'Gabung Canva'}</span>
-         </span>`;
-
-   const nextAccess=
-    order.next_access_display
-      ? `<div class="history-note">Akses berikutnya: <strong>${dateTime(order.next_access_display)}</strong></div>`
-      : '';
-
-   return `
-    <div class="order-item card-texture rounded-2xl p-5 border border-pink-100 shadow-md">
-      <div class="flex justify-between items-start gap-4 flex-wrap">
-
-        <div class="flex-1 min-w-[280px]">
-
-          <div class="flex items-center gap-3 mb-3 flex-wrap">
-            <h3 class="font-bold text-lg text-gray-800">
-              Canva Premium
-            </h3>
-
-            <span class="status-badge ${payCls}">
-              ${payTxt}
-            </span>
-
-            <span class="status-badge ${accessCls}">
-              ${accessTxt}
-            </span>
-          </div>
-
-          <div class="space-y-2 text-sm text-gray-600">
-
-            <p>
-              <span class="font-semibold">Paket:</span>
-              ${esc(order.package_name||'-')}
-            </p>
-
-            <p>
-              <span class="font-semibold">Kode:</span>
-              ${esc(order.display_order_code||order.order_code||'-')}
-            </p>
-
-            <div class="history-team-box">
-
-              <div class="history-team-label">
-                TIM CANVA
-              </div>
-
-              <div class="history-team-name">
-                👥 ${esc(teamName)}
-              </div>
-
-            </div>
-
-            <p>
-              <span class="font-semibold">Siklus:</span>
-              ${cycle} / ${duration}
-            </p>
-
-            <p>
-              <span class="font-semibold">Billing:</span>
-              ${esc(billingText)}
-            </p>
-
-            ${nextAccess}
-
-            <p class="text-xs text-gray-400">
-              📅 ${dateTime(order.created_at)}
-            </p>
-
-          </div>
-
-        </div>
-
-
-        <div class="text-right min-w-[210px]">
-
-          <p class="text-2xl font-bold text-pink-500">
-            Rp ${fmt(order.final_amount||order.amount||0)}
-          </p>
-
-          ${joinButton}
-
-        </div>
-
-      </div>
-    </div>
-   `;
-
-  }).join('');
-
- }catch(e){
-
-  container.innerHTML=
-    `<div class="text-center py-8 text-red-500">${esc(e.message)}</div>`;
-
- }
-}
-
-// Sort buttons retained from original design.
-const newestBtn=document.getElementById('sort-newest-btn');const oldestBtn=document.getElementById('sort-oldest-btn');
-if(newestBtn)newestBtn.addEventListener('click',()=>{historySortOrder='newest';newestBtn.classList.add('active');oldestBtn?.classList.remove('active');loadCanvaHistory(lastCanvaEmail);});
-if(oldestBtn)oldestBtn.addEventListener('click',()=>{historySortOrder='oldest';oldestBtn.classList.add('active');newestBtn?.classList.remove('active');loadCanvaHistory(lastCanvaEmail);});
-
-// ===== ACCESS PAGE =====
-async function loadAccessPage(){
- if(!accessToken)return;
- // Saat memasuki halaman akses dari tombol struk/history, jangan
- // membawa flag navigasi Canva yang mungkin tersisa dari sesi lama.
- try{
-   if(sessionStorage.getItem('myclips_left_access_page') !== '1'){
-     sessionStorage.removeItem('myclips_refresh_after_canva');
-   }
- }catch(_){}
- document.getElementById('db-access-page').classList.remove('hidden');
- try{
-  const {data,error}=await supabaseClient.rpc('open_access',{p_access_token:accessToken});
-  if(error)throw error;
-
-  const row=Array.isArray(data)?data[0]:data;
-  if(!row)throw new Error('Akses tidak ditemukan.');
-
-  const rowDuration=Math.max(1,Number(row.duration_months||1));
-  let packageName='';
-  let isGroup=false;
-
-  /*
-   * SUMBER KEBENARAN PAKET:
-   * purchase-history mencari order berdasarkan access_token.
-   * purchase-history terbaru mengambil package_name dari payment_batches,
-   * sehingga Paket Grup tidak lagi terbaca sebagai 1 Bulan.
-   */
-  try{
-   const historyResponse=await fetch(PURCHASE_HISTORY_URL,{
-    method:'POST',
-    headers:{
-     'Content-Type':'application/json',
-     'apikey':SUPABASE_KEY,
-     'Authorization':'Bearer '+SUPABASE_KEY
-    },
-    body:JSON.stringify({email:row.customer_email||''})
-   });
-
-   const historyData=await historyResponse.json().catch(()=>({}));
-
-   if(historyResponse.ok){
-    const orders=Array.isArray(historyData.orders)?historyData.orders:[];
-
-    const exactTokenMatch=orders.find(o=>
-     String(o.access_token||'').trim()===String(row.access_token||accessToken||'').trim()
-    );
-
-    if(exactTokenMatch){
-     packageName=String(exactTokenMatch.package_name||'').trim();
-     isGroup=Boolean(exactTokenMatch.is_group) || packageName.toLowerCase().includes('grup');
+  document.querySelectorAll('.open-product-modal').forEach(b => b.addEventListener('click', ()=> openModal(productModal)));
+  document.getElementById('closeModal').addEventListener('click', ()=> closeModal(productModal));
+  document.querySelectorAll('.open-history-modal').forEach(b => b.addEventListener('click', ()=>{
+    openModal(historyModal);
+    if(userHistoryEmail){
+      document.getElementById('historyEmailInput').value = userHistoryEmail;
+      fetchHistory(userHistoryEmail);
     }
+  }));
+  document.getElementById('closeHistoryModal').addEventListener('click', ()=> closeModal(historyModal));
+  document.getElementById('closeOrderModal').addEventListener('click', ()=> closeModal(orderModal));
+  document.getElementById('closeReceiptModal').addEventListener('click', ()=> closeModal(receiptModal));
+  document.getElementById('doneReceiptBtn').addEventListener('click', ()=> closeModal(receiptModal));
 
-    if(!packageName){
-     const exactOrderMatch=orders.find(o=>
-      String(o.order_code||'').trim()===String(row.order_code||'').trim() &&
-      String(o.customer_email||'').trim().toLowerCase()===String(row.customer_email||'').trim().toLowerCase()
-     );
+  // BACKEND SYNC (PRICES, STOCK, ORDER POSITION)
+  const formatPrice = (n) => 'Rp ' + Number(n||0).toLocaleString('id-ID');
 
-     if(exactOrderMatch){
-      packageName=String(exactOrderMatch.package_name||'').trim();
-      isGroup=Boolean(exactOrderMatch.is_group) || packageName.toLowerCase().includes('grup');
-     }
-    }
-   }
-  }catch(_){
-   /* fallback di bawah */
-  }
-
-  /*
-   * Jangan pernah menebak Paket Grup dari duration_months saja.
-   * Paket Grup juga berdurasi 1 bulan.
-   */
-  if(!packageName){
-   if(rowDuration>=3) packageName='3 Bulan';
-   else if(rowDuration===2) packageName='2 Bulan';
-   else packageName='1 Bulan';
-  }
-
-  if(packageName.toLowerCase().includes('grup')){
-   isGroup=true;
-   packageName='Paket Grup (10 akun)/Bulan';
-  }
-
-  document.getElementById('db-access-order').textContent=row.order_code||'-';
-  document.getElementById('db-access-info').innerHTML=`<strong>Email pembelian:</strong> ${esc(row.customer_email||'-')}<br><strong>Paket:</strong> ${esc(packageName)}<br><strong>Billing:</strong> ${row.billing_start_at&&row.billing_end_at?dateOnly(row.billing_start_at)+' – '+dateOnly(row.billing_end_at):'-'}`;
-  document.getElementById('db-access-title').textContent='Canva Premium';
-
-  const status=String(row.access_status||'').toUpperCase();
-  const badge=document.getElementById('db-access-badge');
-  const title=document.getElementById('db-access-title');
-  const warning=document.getElementById('db-access-warning');
-  const btn=document.getElementById('db-continue-canva');
-  const reset=document.getElementById('db-reset-request');
-  const msg=document.getElementById('db-access-message');
-
-  // Tombol reset selalu disiapkan dengan tujuan WhatsApp yang valid.
-  // Saat status USED/WAITING tombol akan ditampilkan dan dapat diklik.
-  if(reset){
-    reset.type='button';
-    reset.onclick=()=>{
-      const url=makeResetWhatsAppUrl(row);
-      window.open(url,'_blank','noopener,noreferrer');
-    };
-  }
-
-  const cycle=Number(row.access_cycle||0);
-  const duration=Number(row.duration_months||1);
-  const nextAccess=row.next_access_at?new Date(row.next_access_at):null;
-  const now=new Date();
-
-  if(status==='EXPIRED'){
-   badge.textContent='MASA AKSES BERAKHIR';
-   title.textContent='Masa akses sudah berakhir';
-   warning.textContent=`Billing ${packageName} ini sudah berakhir.`;
-   btn.style.display='none';
-   reset.classList.add('hidden');
-   return;
-  }
-
-  if(status==='USED'){
-   badge.textContent='AKSES DIGUNAKAN';
-   title.textContent='Akses sudah digunakan';
-   warning.innerHTML=`Akses ini sudah digunakan.<div class="mt-2 bg-orange-50 border border-orange-200 text-orange-700 rounded-xl p-3 text-sm"><strong>PENTING!</strong> Jika ada <strong>salah akun Canva</strong>, segera reset akses Canva melalui tombol merah di bawah! (Via WhatsApp)</div>`;
-
-   if(nextAccess && now<nextAccess){
-    warning.innerHTML+=`<div class="mt-2">Akses berikutnya tersedia: <strong>${dateTime(nextAccess)}</strong></div>`;
-    btn.style.display='none';
-    reset.classList.remove('hidden');
-   }else if(cycle<duration){
-    warning.innerHTML+=`<div class="mt-2">Akses berikutnya sudah tersedia.</div>`;
-    btn.style.display='block';
-    reset.classList.remove('hidden');
-   }else{
-    btn.style.display='none';
-    reset.classList.remove('hidden');
-   }
-   return;
-  }
-
-  if(status==='WAITING'){
-   badge.textContent='MENUNGGU AKSES';
-   title.textContent='Akses sedang menunggu';
-   warning.textContent=nextAccess?`Akses berikutnya tersedia: ${dateTime(nextAccess)}`:'Akses berikutnya belum tersedia.';
-   btn.style.display='none';
-   reset.classList.remove('hidden');
-   return;
-  }
-
-  badge.textContent='AKSES SIAP';
-  title.textContent='Canva Premium';
-  warning.textContent=isGroup
-   ? 'Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian. Paket Grup memakai 1 kode order untuk seluruh email dalam grup.'
-   : 'Pastikan Anda login Canva menggunakan akun yang sesuai dengan email pembelian.';
-  btn.style.display='block';
-  reset.classList.add('hidden');
-  msg.style.display='none';
-
- }catch(error){
-  document.getElementById('db-access-badge').textContent='ERROR';
-  document.getElementById('db-access-title').textContent='Akses Canva';
-  document.getElementById('db-access-warning').textContent=error?.message||'Gagal memuat akses.';
-  document.getElementById('db-continue-canva').style.display='none';
- }
-}
-
-if(accessToken){
-  // Saat URL membawa token akses, sembunyikan Products dan kunci
-  // scroll halaman utama. Halaman akses menjadi satu viewport penuh.
-  try{
-    document.querySelector('header')?.classList.add('hidden');
-    document.querySelector('main')?.classList.add('hidden');
-    document.querySelector('footer')?.classList.add('hidden');
-
-    const pageRoot=document.body.firstElementChild;
-    document.body.classList.add('access-mode-lock');
-    document.body.style.overflow='hidden';
-
-    if(pageRoot){
-      pageRoot.style.overflow='hidden';
-      pageRoot.style.height='100vh';
-      pageRoot.style.height='100dvh';
-    }
-  }catch(_){}
-}
-
-loadAccessPage();
-
-// ============================================================
-// KEMBALI DARI HALAMAN AKSES
-// ============================================================
-// Tidak memakai pushState/popstate lagi.
-// Browser back akan kembali ke URL struk (tanpa ?access=...).
-// Penanda restore_receipt_once membuat struk hanya dipulihkan
-// saat kembali dari halaman akses, bukan setiap refresh.
-if(!accessToken){
-  try{
-    const shouldRestore =
-      sessionStorage.getItem('myclips_restore_receipt_once') === '1';
-
-    if(shouldRestore){
-      const restored=restoreReceiptSnapshot();
-
-      // Konsumsi penanda setelah SATU kali pemulihan.
-      sessionStorage.removeItem('myclips_restore_receipt_once');
-
-      if(!restored){
-        sessionStorage.removeItem('myclips_receipt_snapshot');
-        sessionStorage.removeItem('myclips_receipt_available');
+  async function syncDatabase(){
+    try {
+      // 1. Fetch Prices
+      const resPrices = await fetch(SUPABASE_URL + "/rest/v1/product_prices?select=product_name,package_name,price,active", {
+        headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}
+      });
+      if(resPrices.ok){
+        const rows = await resPrices.json();
+        rows.forEach(r=>{
+          if(!productPrices[r.product_name]) productPrices[r.product_name] = {};
+          productPrices[r.product_name][r.package_name] = Number(r.price||0);
+        });
       }
-    }
-  }catch(_){}
-}
 
-// ===== CONSUME ACCESS / LANJUT KE CANVA =====
-// Handler ini sengaja dipasang setelah loadAccessPage() supaya
-// tombol tetap bekerja baik untuk paket biasa maupun Paket Grup.
-const continueCanvaButton = document.getElementById('db-continue-canva');
-if(continueCanvaButton){
-  continueCanvaButton.addEventListener('click', async ()=>{
-    const btn = document.getElementById('db-continue-canva');
-    const msg = document.getElementById('db-access-message');
-
-    if(!accessToken){
-      if(msg){
-        msg.className='message err';
-        msg.style.display='block';
-        msg.textContent='Token akses tidak ditemukan.';
+      // 2. Fetch Stock
+      const resStock = await fetch(SUPABASE_URL + "/rest/v1/product_stock?select=product_name,package_name,stock,active", {
+        headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}
+      });
+      if(resStock.ok){
+        const rows = await resStock.json();
+        rows.forEach(r=>{
+          if(!productStock[r.product_name]) productStock[r.product_name] = {};
+          productStock[r.product_name][r.package_name] = r.active === false ? 0 : Number(r.stock||0);
+        });
       }
-      return;
+
+      // 3. Fetch Display Order
+      const resOrder = await fetch(SUPABASE_URL + "/rest/v1/product_display_order?select=product_name,order_position,active&active=eq.true&order=order_position.asc", {
+        headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}
+      });
+      if(resOrder.ok){
+        const rows = await resOrder.json();
+        const grid = document.getElementById('productGrid');
+        const cardsArr = Array.from(grid.querySelectorAll('[data-product-name]'));
+        const orderMap = new Map(rows.map(r => [r.product_name, Number(r.order_position||999)]));
+        cardsArr.sort((a,b)=> (orderMap.get(a.dataset.productName)||999) - (orderMap.get(b.dataset.productName)||999));
+        cardsArr.forEach(c => grid.appendChild(c));
+      }
+
+      applyDatabaseToUI();
+    } catch(e) {
+      console.warn("Sync failed:", e);
     }
+  }
 
-    btn.disabled=true;
-    btn.textContent='Memproses akses...';
+  function applyDatabaseToUI(){
+    document.querySelectorAll('.product-card').forEach(card => {
+      const pName = card.dataset.productName;
+      const items = card.querySelectorAll('.price-item');
+      let isAvailable = false;
 
-    try{
-      const response = await fetch(CONSUME_ACCESS_URL,{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPABASE_KEY,
-          'Authorization':'Bearer '+SUPABASE_KEY
-        },
-        body:JSON.stringify({access_token:accessToken})
+      items.forEach(item => {
+        const pkgName = item.querySelector('.price-left b').textContent.trim();
+        const price = productPrices[pName]?.[pkgName];
+        if(price){
+          const pEl = item.querySelector('.price-val');
+          if(pEl) pEl.textContent = formatPrice(price);
+        }
+        const stock = productStock[pName]?.[pkgName] ?? 1;
+        if(stock > 0) isAvailable = true;
       });
 
-      const data = await response.json().catch(()=>({}));
-
-      if(!response.ok || !data.access_url){
-        throw new Error(
-          data.error ||
-          data.message ||
-          'Akses Canva tidak dapat diproses.'
-        );
+      const stockStatus = card.querySelector('.stock-status');
+      if(stockStatus){
+        stockStatus.innerHTML = isAvailable
+          ? `<i class="fa-solid fa-circle"></i> Stok Tersedia`
+          : `<i class="fa-solid fa-circle" style="color:#ef4444;"></i> <span style="color:#ef4444;">Stok Habis</span>`;
       }
+    });
+  }
 
-      // Kembali dari Canva nanti akan memicu refresh halaman akses
-      // melalui pageshow / visibilitychange tanpa mengganggu tab ini.
-      markLeavingAccessForCanva();
-
-      window.location.href = data.access_url;
-
-    }catch(error){
-      btn.disabled=false;
-      btn.textContent='Lanjut ke Canva';
-
-      if(msg){
-        msg.className='message err';
-        msg.style.display='block';
-        msg.textContent=error?.message || 'Akses Canva tidak dapat diproses.';
-      }
-    }
+  // ORDER MODAL & CHECKOUT LOGIC
+  document.querySelectorAll('.buy-btn').forEach(btn => {
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const card = btn.closest('.product-card');
+      openOrderForm(card);
+    });
   });
-}
 
-const histEmail=document.getElementById('canva-history-email');
-const histBtn=document.getElementById('canva-history-search');
+  function openOrderForm(card){
+    currentSelectedProduct = card.dataset.productName;
+    const logoEl = card.querySelector('.product-logo');
+    const desc = card.querySelector('.product-top p').textContent;
 
-if(histEmail){
-  histEmail.value='';
-}
+    const orderLogo = document.getElementById('orderProductLogo');
+    orderLogo.innerHTML = logoEl.innerHTML;
+    orderLogo.className = 'order-product-logo ' + [...logoEl.classList].find(c=>c.startsWith('logo-'));
+    document.getElementById('orderProductName').textContent = currentSelectedProduct;
+    document.getElementById('orderProductDesc').textContent = desc;
 
-if(histBtn){
-  histBtn.addEventListener('click',()=>{
-    lastCanvaEmail=histEmail.value.trim().toLowerCase();
+    // Render Package Options
+    const packagesWrap = document.getElementById('orderPackages');
+    packagesWrap.innerHTML = '';
+    const items = card.querySelectorAll('.price-item');
+    let firstSelectable = null;
 
-    if(!lastCanvaEmail){
-      loadCanvaHistory('');
+    items.forEach((item, idx)=>{
+      const pkgName = item.querySelector('.price-left b').textContent.trim();
+      const sub = item.querySelector('.price-left span').textContent.trim();
+      const priceText = item.querySelector('.price-val').textContent.trim();
+      const priceNum = parseInt(priceText.replace(/[^0-9]/g, '')) || 0;
+      const stock = productStock[currentSelectedProduct]?.[pkgName] ?? 10;
+      const outOfStock = stock <= 0;
+
+      const label = document.createElement('label');
+      label.className = `package-option ${outOfStock ? 'out-of-stock' : ''}`;
+      label.innerHTML = `
+        <input type="radio" name="orderPackageRadio" value="${priceNum}" data-title="${pkgName}" data-stock="${stock}" ${outOfStock ? 'disabled' : ''}>
+        <div class="package-info">
+          <div class="package-left"><b>${pkgName}</b><span>${sub}</span></div>
+          <div class="package-right"><b>${outOfStock ? 'HABIS' : priceText}</b></div>
+        </div>`;
+      packagesWrap.appendChild(label);
+
+      if(!outOfStock && !firstSelectable) firstSelectable = label;
+    });
+
+    // Toggle specific inputs based on product type
+    const isCanva = currentSelectedProduct === 'Canva Premium';
+    const isCapcut = currentSelectedProduct === 'CapCut Premium';
+    const isYoutube = currentSelectedProduct === 'YouTube Premium';
+
+    document.getElementById('voucherSection').style.display = isCanva ? 'block' : 'none';
+    document.getElementById('quantitySection').style.display = isCapcut ? 'block' : 'none';
+    document.getElementById('emailInputSection').style.display = isCapcut ? 'none' : 'block';
+
+    const submitBtn = document.getElementById('orderSubmitBtn');
+    submitBtn.innerHTML = isCanva 
+      ? `<i class="fa-solid fa-qrcode"></i> Bayar Sekarang (QRIS)`
+      : `<i class="fa-brands fa-whatsapp"></i> Checkout via WhatsApp`;
+
+    // Multi-email container reset
+    const emailContainer = document.getElementById('multiEmailContainer');
+    emailContainer.innerHTML = `
+      <div class="email-input-wrap">
+        <input type="email" class="order-email-item" placeholder="contoh@gmail.com">
+      </div>`;
+
+    document.getElementById('addEmailBtn').style.display = isCanva || isYoutube ? 'inline-flex' : 'none';
+    document.getElementById('capcutQtyInput').value = 1;
+
+    // Select first package
+    if(firstSelectable){
+      firstSelectable.classList.add('selected');
+      firstSelectable.querySelector('input').checked = true;
+      currentSelectedPackage = firstSelectable.querySelector('input').dataset.title;
+      currentSelectedPrice = Number(firstSelectable.querySelector('input').value);
+    }
+
+    updateSummaryCalculation();
+
+    packagesWrap.querySelectorAll('input[name="orderPackageRadio"]').forEach(radio=>{
+      radio.addEventListener('change', ()=>{
+        packagesWrap.querySelectorAll('.package-option').forEach(p=> p.classList.remove('selected'));
+        radio.closest('.package-option').classList.add('selected');
+        currentSelectedPackage = radio.dataset.title;
+        currentSelectedPrice = Number(radio.value);
+        updateSummaryCalculation();
+      });
+    });
+
+    closeModal(productModal);
+    openModal(orderModal);
+  }
+
+  // ADD MULTI EMAIL INPUT
+  document.getElementById('addEmailBtn').addEventListener('click', ()=>{
+    const container = document.getElementById('multiEmailContainer');
+    if(container.querySelectorAll('.order-email-item').length >= 10){
+      showToast('Maksimal 10 Email', 'Maksimal 10 email dalam satu transaksi.');
+      return;
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'email-input-wrap';
+    wrap.innerHTML = `
+      <input type="email" class="order-email-item" placeholder="email.berikutnya@gmail.com">
+      <button type="button" class="remove-email-btn">✕</button>`;
+    wrap.querySelector('.remove-email-btn').addEventListener('click', ()=>{
+      wrap.remove();
+      updateSummaryCalculation();
+    });
+    container.appendChild(wrap);
+    updateSummaryCalculation();
+  });
+
+  document.getElementById('capcutQtyInput').addEventListener('input', updateSummaryCalculation);
+
+  function updateSummaryCalculation(){
+    const isCanva = currentSelectedProduct === 'Canva Premium';
+    const isCapcut = currentSelectedProduct === 'CapCut Premium';
+    const isGroup = isCanva && String(currentSelectedPackage).includes('Grup');
+
+    let count = 1;
+    if(isCapcut){
+      count = Math.max(1, parseInt(document.getElementById('capcutQtyInput').value)||1);
+    } else {
+      count = Math.max(1, document.querySelectorAll('.order-email-item').length);
+    }
+
+    const total = isGroup ? currentSelectedPrice : (currentSelectedPrice * count);
+    document.getElementById('summaryProduct').textContent = currentSelectedProduct || '-';
+    document.getElementById('summaryPackage').textContent = currentSelectedPackage || '-';
+    document.getElementById('summaryQty').textContent = count + (isCapcut ? ' unit' : ' akun');
+    document.getElementById('summaryTotal').textContent = formatPrice(total);
+  }
+
+  // SUBMIT ORDER PROCESS
+  document.getElementById('orderSubmitBtn').addEventListener('click', async ()=>{
+    const submitBtn = document.getElementById('orderSubmitBtn');
+    const isCanva = currentSelectedProduct === 'Canva Premium';
+    const isCapcut = currentSelectedProduct === 'CapCut Premium';
+    const isYoutube = currentSelectedProduct === 'YouTube Premium';
+
+    // 1. VALIDASI EMAIL (untuk Canva / YouTube / ChatGPT)
+    let emails = [];
+    if(!isCapcut){
+      const inputs = Array.from(document.querySelectorAll('.order-email-item'));
+      emails = inputs.map(i => i.value.trim().toLowerCase()).filter(Boolean);
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if(!emails.length || !emails.every(e => emailRegex.test(e))){
+        document.getElementById('orderEmailErr').textContent = 'Masukkan format email yang valid.';
+        document.getElementById('orderEmailErr').classList.add('show');
+        return;
+      }
+      if(new Set(emails).size !== emails.length){
+        document.getElementById('orderEmailErr').textContent = 'Email tidak boleh ada yang kembar.';
+        document.getElementById('orderEmailErr').classList.add('show');
+        return;
+      }
+      document.getElementById('orderEmailErr').classList.remove('show');
+    }
+
+    // 2. CHECKOUT CANVA (DOKU / QRIS AUTOMATIC)
+    if(isCanva){
+      const isGroup = String(currentSelectedPackage).includes('Grup');
+      const packageCodeMap = {'1 Bulan':'1','2 Bulan':'2','3 Bulan':'3','Paket Grup (10 akun)/Bulan':'GROUP10'};
+      const pkgCode = packageCodeMap[currentSelectedPackage] || '1';
+      const voucher = document.getElementById('orderVoucher').value.trim().toUpperCase();
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan QRIS...';
+
+      // Open blank tab to prevent browser popup blocker
+      const paymentWindow = window.open('about:blank', '_blank');
+
+      try {
+        userHistoryEmail = emails[0];
+        localStorage.setItem('myclips_canva_email', emails[0]);
+
+        const response = await fetch(CREATE_ORDER_URL, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+          body: JSON.stringify({
+            package_code: pkgCode,
+            customer_name: 'Customer',
+            customer_emails: emails,
+            voucher_code: voucher || undefined
+          })
+        });
+
+        const data = await response.json();
+        if(!response.ok || !data.ok) throw new Error(data.error || 'Gagal memproses pesanan.');
+
+        if(data.payment_url){
+          paymentWindow.location.href = data.payment_url;
+        } else {
+          throw new Error('URL Pembayaran tidak valid.');
+        }
+
+        closeModal(orderModal);
+        showToast('Jendela Pembayaran Dibuka', 'Selesaikan pembayaran QRIS pada tab baru!');
+
+        // Polling pembayaran otomatis
+        pollPaymentStatus(data, paymentWindow, isGroup, emails);
+
+      } catch(err){
+        if(paymentWindow) paymentWindow.close();
+        showToast('Checkout Gagal', err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-qrcode"></i> Bayar Sekarang (QRIS)';
+      }
       return;
     }
 
-    localStorage.setItem('myclips_canva_email',lastCanvaEmail);
-    loadCanvaHistory(lastCanvaEmail);
+    // 3. CHECKOUT MANUAL VIA WHATSAPP (CapCut / YouTube / ChatGPT)
+    const waNumber = '6285707486749';
+    if(isCapcut){
+      const qty = parseInt(document.getElementById('capcutQtyInput').value) || 1;
+      const total = currentSelectedPrice * qty;
+      try {
+        await supabaseClient.rpc('consume_manual_stock', {
+          p_product_name: 'CapCut Premium', p_package_name: currentSelectedPackage, p_quantity: qty
+        });
+      } catch(_) {}
+      const msg = `*Halo MYCLIPS!*%0ASaya ingin memesan:%0A━━━━━━━━━━━━━━━━━━%0A*Produk:* CapCut Premium%0A*Paket:* ${currentSelectedPackage}%0A*Jumlah:* ${qty}%0A*Total:* ${formatPrice(total)}%0A━━━━━━━━━━━━━━━━━━%0AMohon segera diproses ya!`;
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+      closeModal(orderModal);
+      showToast('Menuju WhatsApp', 'Silakan kirim pesan ke admin.');
+      syncDatabase();
+      return;
+    }
+
+    if(isYoutube){
+      const total = currentSelectedPrice * emails.length;
+      try {
+        await supabaseClient.rpc('consume_manual_stock', {
+          p_product_name: 'YouTube Premium', p_package_name: currentSelectedPackage, p_quantity: emails.length
+        });
+      } catch(_) {}
+      const msg = `*Halo MYCLIPS!*%0ASaya ingin memesan:%0A━━━━━━━━━━━━━━━━━━%0A*Produk:* YouTube Premium%0A*Paket:* ${currentSelectedPackage}%0A*Email:* ${emails.join(', ')}%0A*Total:* ${formatPrice(total)}%0A━━━━━━━━━━━━━━━━━━%0AMohon segera diproses ya!`;
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+      closeModal(orderModal);
+      showToast('Menuju WhatsApp', 'Silakan kirim pesan ke admin.');
+      syncDatabase();
+      return;
+    }
+
+    // ChatGPT
+    const msg = `*Halo MYCLIPS!*%0ASaya ingin memesan:%0A━━━━━━━━━━━━━━━━━━%0A*Produk:* ChatGPT Pro%0A*Paket:* ${currentSelectedPackage}%0A*Email:* ${emails.join(', ')}%0A*Total:* ${formatPrice(currentSelectedPrice)}%0A━━━━━━━━━━━━━━━━━━%0AMohon segera diproses ya!`;
+    window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+    closeModal(orderModal);
+    showToast('Menuju WhatsApp', 'Silakan kirim pesan ke admin.');
   });
-}
 
-// History input sengaja TIDAK dipulihkan dari localStorage
-// dan tidak otomatis mencari riwayat saat refresh.
+  // POLLING STATUS DOKU
+  function pollPaymentStatus(orderData, paymentWindow, isGroup, emails){
+    let attempts = 0;
+    const interval = setInterval(async ()=>{
+      attempts++;
+      try {
+        const res = await fetch(PURCHASE_HISTORY_URL, {
+          method:'POST',
+          headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+          body: JSON.stringify({email: emails[0]})
+        });
 
+        if(res.ok){
+          const hist = await res.json();
+          const orders = hist.orders || [];
+          const matched = orders.find(o => o.batch_code === orderData.batch_code || o.order_code === orderData.order_code);
 
-Promise.all([
-  loadProductPrices(),
-  loadProductStock()
-]);
-
-if(!accessToken){
-  clearReceiptSnapshot();
-}
-
-function resetStoreAfterCanvaReturn(){
-  if(!accessToken) return false;
-
-  if(
-    sessionStorage.getItem('myclips_refresh_after_canva') !== '1' ||
-    sessionStorage.getItem('myclips_left_access_page') !== '1'
-  ) return false;
-
-  if(window.__myclipsReturningFromCanva) return true;
-  window.__myclipsReturningFromCanva = true;
-
-  // Hapus flag SEBELUM reload supaya tidak terjadi loop.
-  sessionStorage.removeItem('myclips_refresh_after_canva');
-  sessionStorage.removeItem('myclips_left_access_page');
-
-  // Tetap di halaman akses dengan token yang sama.
-  // Setelah consume-access berhasil, database sudah berubah menjadi USED,
-  // sehingga loadAccessPage() akan menampilkan "Akses sudah digunakan"
-  // dan tombol reset WhatsApp.
-  window.location.reload();
-  return true;
-}
-
-window.addEventListener(
-  "pageshow",
-  () => {
-
-    if(resetStoreAfterCanvaReturn()) return;
-
-    const selectors = [
-      "#historyEmail",
-      "#historyOrderCode",
-      "#canva-history-email",
-      "#canva-history-order-code"
-    ];
-
-    selectors.forEach(
-      selector => {
-
-        const el =
-          document.querySelector(
-            selector
-          );
-
-        if(el){
-          el.value = "";
+          if(matched && matched.payment_status === 'PAID'){
+            clearInterval(interval);
+            if(paymentWindow && !paymentWindow.closed) paymentWindow.close();
+            renderReceipt(orderData, matched, emails, isGroup);
+            syncDatabase();
+          }
         }
+      } catch(e) {}
 
+      if(attempts >= 150){
+        clearInterval(interval);
       }
-    );
-
-    lastCanvaEmail = "";
-
+    }, 2000);
   }
-);
 
-// Sebagian browser tidak menjalankan pageshow lagi ketika tab
-// hanya kembali aktif. Karena itu visibilitychange ikut memeriksa
-// flag yang sama.
-document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){
-    resetStoreAfterCanvaReturn();
+  function renderReceipt(orderData, matchedOrder, emails, isGroup){
+    document.getElementById('receiptSummaryBody').innerHTML = `
+      <div class="summary-row"><span>Produk</span><b>Canva Premium</b></div>
+      <div class="summary-row"><span>Paket</span><b>${orderData.package_name || currentSelectedPackage}</b></div>
+      <div class="summary-row"><span>Biaya Total</span><b>${formatPrice(orderData.customer_payment || orderData.final_amount)}</b></div>
+      <div class="summary-row"><span>Kode Order</span><b style="color:var(--pink-1);">${matchedOrder.order_code || orderData.order_code}</b></div>
+    `;
+
+    const statusEl = document.getElementById('receiptAccessStatus');
+    const linksWrap = document.getElementById('receiptAccessLinks');
+    statusEl.innerHTML = '<i class="fa-solid fa-check"></i> Pembayaran Terkonfirmasi! Akses telah aktif.';
+    statusEl.style.background = '#e8f9ee';
+    statusEl.style.color = '#2fbe6e';
+    statusEl.style.borderColor = '#bbf7d0';
+
+    linksWrap.innerHTML = `
+      <a href="${window.location.origin + window.location.pathname}?access=${matchedOrder.access_token}" class="access-link-btn" target="_blank">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Akses Canva Sekarang
+      </a>
+    `;
+
+    openModal(receiptModal);
   }
-});
 
+  // HISTORY SYSTEM
+  document.getElementById('historySearchBtn').addEventListener('click', ()=>{
+    const email = document.getElementById('historyEmailInput').value.trim().toLowerCase();
+    if(!email){ showToast('Email Kosong', 'Ketikkan email Anda terlebih dahulu.'); return; }
+    userHistoryEmail = email;
+    localStorage.setItem('myclips_canva_email', email);
+    fetchHistory(email);
+  });
+
+  const sortNewestBtn = document.getElementById('sortNewestBtn');
+  const sortOldestBtn = document.getElementById('sortOldestBtn');
+  sortNewestBtn.addEventListener('click', ()=>{
+    historySortOrder = 'newest';
+    sortNewestBtn.classList.add('active');
+    sortOldestBtn.classList.remove('active');
+    if(userHistoryEmail) fetchHistory(userHistoryEmail);
+  });
+  sortOldestBtn.addEventListener('click', ()=>{
+    historySortOrder = 'oldest';
+    sortOldestBtn.classList.add('active');
+    sortNewestBtn.classList.remove('active');
+    if(userHistoryEmail) fetchHistory(userHistoryEmail);
+  });
+
+  async function fetchHistory(email){
+    const container = document.getElementById('historyContainer');
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray);"><i class="fa-solid fa-spinner fa-spin"></i> Memuat riwayat...</div>';
+
+    try {
+      const res = await fetch(PURCHASE_HISTORY_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+        body: JSON.stringify({email})
+      });
+      const data = await res.json();
+      const orders = data.orders || [];
+
+      if(!orders.length){
+        container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray);">Belum ada riwayat pesanan untuk email ini.</div>';
+        return;
+      }
+
+      orders.sort((a,b)=> historySortOrder === 'newest' ? new Date(b.created_at) - new Date(a.created_at) : new Date(a.created_at) - new Date(b.created_at));
+
+      container.innerHTML = orders.map(o => {
+        const isPaid = (o.payment_status||'').toUpperCase() === 'PAID';
+        const access = (o.access_status_display || o.access_status || '').toUpperCase();
+        const canJoin = Boolean(o.can_join) && Boolean(o.access_url);
+
+        return `
+          <div class="order-item-card">
+            <div class="order-item-header">
+              <b>Canva Premium (${o.package_name || '-'})</b>
+              <div class="order-badges">
+                <span class="status-badge ${isPaid ? 'status-paid' : 'status-pending'}">${isPaid ? '✓ PAID' : 'PENDING'}</span>
+                <span class="status-badge ${access === 'UNUSED' ? 'status-ready' : 'status-used'}">${access || 'SIAP'}</span>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--gray);line-height:1.6;">
+              <div>Kode: <b>${o.display_order_code || o.order_code}</b></div>
+              <div>Billing: <b>${o.billing_start_at ? new Date(o.billing_start_at).toLocaleDateString('id-ID') : '-'} – ${o.billing_end_at ? new Date(o.billing_end_at).toLocaleDateString('id-ID') : '-'}</b></div>
+            </div>
+            <div class="team-box">
+              <span>TIM CANVA</span>
+              <b>👥 ${o.canva_team_name || 'Tim Aktif'}</b>
+            </div>
+            ${canJoin ? `
+              <a href="${o.access_url}" target="_self" class="history-join-btn">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> ${o.can_join_again ? 'Gabung Canva Lagi' : 'Gabung Canva'}
+              </a>
+            ` : `
+              <div class="history-join-btn disabled"><i class="fa-solid fa-lock"></i> Akses Telah Digunakan</div>
+            `}
+          </div>
+        `;
+      }).join('');
+
+    } catch(e){
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:#ef4444;">Gagal memuat riwayat. Coba lagi nanti.</div>';
+    }
+  }
+
+  // ACCESS PORTAL LOGIC (?access=TOKEN)
+  async function loadAccessPortal(token){
+    const portal = document.getElementById('accessPortalPage');
+    portal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    try {
+      const { data, error } = await supabaseClient.rpc('open_access', { p_access_token: token });
+      if(error || !data) throw new Error('Akses token tidak ditemukan.');
+
+      const row = Array.isArray(data) ? data[0] : data;
+      document.getElementById('portalOrderCode').textContent = row.order_code || '-';
+      document.getElementById('portalInfoText').innerHTML = `
+        <b>Email:</b> ${row.customer_email}<br>
+        <b>Masa Aktif:</b> ${row.billing_start_at ? new Date(row.billing_start_at).toLocaleDateString('id-ID') : '-'} s/d ${row.billing_end_at ? new Date(row.billing_end_at).toLocaleDateString('id-ID') : '-'}
+      `;
+
+      const continueBtn = document.getElementById('portalContinueBtn');
+      continueBtn.onclick = async ()=>{
+        continueBtn.disabled = true;
+        continueBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyiapkan...';
+        try {
+          const res = await fetch(CONSUME_ACCESS_URL, {
+            method:'POST',
+            headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+            body: JSON.stringify({access_token: token})
+          });
+          const d = await res.json();
+          if(d.access_url) window.location.href = d.access_url;
+          else throw new Error('Gagal membuka Canva.');
+        } catch(err){
+          alert(err.message);
+          continueBtn.disabled = false;
+        }
+      };
+
+    } catch(err){
+      document.getElementById('portalTitle').textContent = 'Akses Tidak Valid';
+      document.getElementById('portalWarning').textContent = err.message;
+      document.getElementById('portalContinueBtn').style.display = 'none';
+    }
+  }
+
+  // INITIALIZE
+  syncDatabase();
 </script>
 </body>
 </html>
