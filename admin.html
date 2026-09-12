@@ -194,14 +194,25 @@
   /* VOUCHER GRID */
   .voucher-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 150px auto; gap: 15px; align-items: end; }
 
-  /* TABLES */
-  .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 14px; }
+  /* TABLES — soft, not loud pink */
+  .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 14px; border: 1px solid #f3e8ee; }
   .table { width: 100%; border-collapse: collapse; min-width: 950px; }
   .table th { 
-    background: var(--pink-light); color: var(--pink-dark); 
-    font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 14px 18px; text-align: left; 
+    background: #faf7f9; 
+    color: #c45a7a; 
+    font-size: 11px; font-weight: 700; text-transform: uppercase; 
+    padding: 14px 18px; text-align: left; 
+    border-bottom: 1px solid #f0e4ea;
   }
-  .table td { padding: 16px 18px; border-bottom: 1px solid #f9eef3; font-size: 13px; vertical-align: top; }
+  .table td { 
+    padding: 16px 18px; 
+    border-bottom: 1px solid #f7f0f3; 
+    font-size: 13px; vertical-align: top; 
+    background: #fff;
+  }
+  .table tbody tr:hover td {
+    background: #fffbfd;
+  }
   .orders-table { min-width: 1500px; }
   
   /* STATUS BADGES */
@@ -238,12 +249,26 @@
   .info-box { background: #eff6ff; color: #1e40af; padding: 16px; border-radius: 12px; font-size: 13.5px; margin-top: 15px; border-left: 4px solid #3b82f6; }
   .note { background: #fff7ed; color: #9a3412; padding: 14px 18px; border-radius: 12px; font-size: 13px; margin-bottom: 22px; border-left: 4px solid #f97316; }
 
-  /* FILTER BUTTONS */
+  /* FILTER BUTTONS — Softer */
   .toolbar { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; flex-wrap: wrap; gap: 12px; }
   .toolbar-left, .toolbar-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .filterBtn { background: #fff; border: 1px solid #f0dde4; color: var(--text-muted); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-  .filterBtn:hover { background: var(--pink-light); color: var(--pink-1); border-color: var(--pink-light); }
-  .filterBtn.active { background: linear-gradient(135deg, var(--pink-1), var(--pink-2)) !important; color: #fff !important; box-shadow: var(--btn-shadow) !important; border-color: transparent !important; }
+  .filterBtn { 
+    background: #fff; 
+    border: 1px solid #eee4e8; 
+    color: #8a7a82; 
+    box-shadow: none; 
+  }
+  .filterBtn:hover { 
+    background: #fff8fb; 
+    color: #d46b8c; 
+    border-color: #f5d6e2; 
+  }
+  .filterBtn.active { 
+    background: linear-gradient(135deg, #ff7aa8, #ff9bbd) !important; 
+    color: #fff !important; 
+    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.22) !important; 
+    border-color: transparent !important; 
+  }
 
   /* LOGIN PAGE (FULL SCREEN) */
   #loginScreen {
@@ -304,7 +329,6 @@
       <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; font-weight:700; letter-spacing: 0.5px;">ADMIN DASHBOARD</div>
     </div>
     <nav class="sidebar-nav">
-      <!-- Masing-masing menu punya data-target yang mengarah ke ID halaman/section -->
       <a class="nav-item active" data-target="page-dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
       <a class="nav-item" data-target="page-orders"><i class="fa-solid fa-cart-shopping"></i> Pesanan</a>
       <a class="nav-item" data-target="page-stock-price"><i class="fa-solid fa-boxes-stacked"></i> Stok & Harga</a>
@@ -331,7 +355,7 @@
 
     <div class="content-pad">
       
-      <!-- GLOBAL AUTO REFRESH BAR (MUNCUL DI SEMUA TAB) -->
+      <!-- GLOBAL AUTO REFRESH BAR -->
       <div class="auto-bar" style="margin-top: 28px;">
         <div><span class="live-dot"></span><b>LIVE</b> · Diperbarui otomatis tiap 5 detik</div>
         <div style="display: flex; gap: 20px; align-items: center;">
@@ -347,7 +371,7 @@
       <div class="note"><b>Perhatian:</b> Admin Key digunakan untuk koneksi aman ke server database Supabase.</div>
 
       <!-- ==============================================
-           HALAMAN 1: DASHBOARD (KPI ONLY)
+           HALAMAN 1: DASHBOARD
            ============================================== -->
       <div id="page-dashboard" class="page-section active">
         <div class="dashboard-grid">
@@ -437,7 +461,6 @@
            HALAMAN 3: STOK & HARGA
            ============================================== -->
       <div id="page-stock-price" class="page-section">
-        <!-- KONTROL STOK -->
         <div class="card">
           <div class="card-header">
             <div class="section-title">Kontrol Stok Produk</div>
@@ -448,7 +471,6 @@
           <button id="saveStockBtn" type="button" class="green" style="margin-top: 18px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Stok</button>
         </div>
 
-        <!-- KONTROL HARGA -->
         <div class="card">
           <div class="card-header">
             <div class="section-title">Pengaturan Harga Produk</div>
@@ -548,7 +570,6 @@ const navItems = document.querySelectorAll('.nav-item');
 const pageSections = document.querySelectorAll('.page-section');
 const topNavTitle = document.getElementById('topNavTitle');
 
-// Fungsi untuk pindah halaman
 function switchPage(targetId, title) {
   navItems.forEach(item => item.classList.remove('active'));
   document.querySelector(`.nav-item[data-target="${targetId}"]`).classList.add('active');
@@ -559,16 +580,14 @@ function switchPage(targetId, title) {
   topNavTitle.textContent = title;
 }
 
-// Event saat menu sidebar di klik
 navItems.forEach(item => {
   item.addEventListener('click', function() {
     switchPage(this.dataset.target, this.textContent.trim());
   });
 });
 
-
 /* =====================================================
-   CONFIG & VARIABLES (OTAK DATABASE LAMA)
+   CONFIG & VARIABLES
    ===================================================== */
 const SUPABASE_URL = "https://refyjnsdseyxoqlifvry.supabase.co";
 const ADMIN_API_URL = SUPABASE_URL + "/functions/v1/admin-api";
@@ -712,7 +731,7 @@ async function saveTeam(){
 }
 
 /* =====================================================
-   PRICES & STOCK (PRODUCT ACCORDION)
+   PRICES & STOCK 
    ===================================================== */
 async function loadPrices(){
   const data = await api("list_prices");
@@ -1070,7 +1089,7 @@ $("adminKey").addEventListener("keydown", event => { if(event.key === "Enter") $
 $("logoutBtn").addEventListener("click", () => {
   stopAutoRefresh(); adminKey = ""; orders = []; vouchers = []; productStock = []; productPrices = [];
   $("app").classList.add("hidden"); $("loginScreen").classList.remove("hidden");
-  switchPage('page-dashboard', 'Dashboard'); // reset ke tab pertama
+  switchPage('page-dashboard', 'Dashboard');
 });
 
 $("saveInviteBtn").addEventListener("click", saveTeam);
@@ -1083,7 +1102,6 @@ $("autoRefreshToggle").addEventListener("change", () => {
 });
 
 $("search").addEventListener("input", () => {
-  // Pindah ke tab Pesanan jika user ngetik di kolom search
   switchPage('page-orders', 'Pesanan');
   renderOrders();
 });
