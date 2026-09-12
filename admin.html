@@ -33,7 +33,7 @@
   body { 
     background-color: var(--bg-color); 
     color: var(--text-main); 
-    font-size: 13px; /* Dikecilkan untuk efek 80% */
+    font-size: 12px; /* Dikecilkan sedikit agar pas di 100% zoom */
   }
   
   html { scroll-behavior: smooth; }
@@ -53,7 +53,7 @@
   .wrapper { display: flex; min-height: 100vh; }
   
   .sidebar {
-    width: 220px; /* Dikecilkan dari 260px */
+    width: 200px; /* Dikecilkan sedikit dari 220px agar ruang tabel lebih luas */
     background: var(--sidebar-bg); 
     border-right: 1px solid #ffe0ec;
     box-shadow: 4px 0 25px rgba(255, 61, 143, 0.04);
@@ -61,22 +61,22 @@
     display: flex; flex-direction: column;
   }
   .sidebar-header {
-    padding: 24px 20px; text-align: center; border-bottom: 1px dashed #ffe0ec;
+    padding: 20px 16px; text-align: center; border-bottom: 1px dashed #ffe0ec;
   }
   .sidebar-header .brand {
-    font-size: 22px; font-weight: 800; 
+    font-size: 20px; font-weight: 800; 
     background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     letter-spacing: 0.5px;
   }
-  .sidebar-nav { padding: 20px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .sidebar-nav { padding: 16px 10px; display: flex; flex-direction: column; gap: 4px; }
   
   .sidebar-nav a {
-    display: flex; align-items: center; gap: 12px; padding: 10px 16px; 
+    display: flex; align-items: center; gap: 10px; padding: 9px 14px; 
     border-radius: 50px; 
-    color: var(--text-main); font-weight: 600; font-size: 12.5px; transition: var(--transition); cursor: pointer;
+    color: var(--text-main); font-weight: 600; font-size: 11.5px; transition: var(--transition); cursor: pointer;
   }
-  .sidebar-nav a i { width: 18px; text-align: center; font-size: 14px; color: var(--text-muted); transition: var(--transition); }
+  .sidebar-nav a i { width: 16px; text-align: center; font-size: 13px; color: var(--text-muted); transition: var(--transition); }
   
   .sidebar-nav a:hover:not(.active) {
     background: var(--pink-light); color: var(--pink-1);
@@ -92,61 +92,61 @@
 
   /* MAIN CONTENT AREA */
   .main-content {
-    flex: 1; margin-left: 220px; /* Menyesuaikan lebar sidebar baru */
+    flex: 1; margin-left: 200px; /* Menyesuaikan lebar sidebar */
     display: flex; flex-direction: column;
-    max-width: calc(100% - 220px); /* Cegah jebol ke samping */
+    max-width: calc(100% - 200px); /* Cegah jebol ke samping */
   }
   
   /* TOP NAVBAR */
   .top-nav {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 28px; background: rgba(255, 255, 255, 0.85);
+    padding: 12px 20px; background: rgba(255, 255, 255, 0.85);
     position: sticky; top: 0; z-index: 90; backdrop-filter: blur(16px); 
     border-bottom: 1px solid #ffe0ec;
   }
-  .nav-title { font-size: 18px; font-weight: 800; color: var(--text-main); }
-  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-title { font-size: 16px; font-weight: 800; color: var(--text-main); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
   
   /* SEARCH BAR */
   .search-box {
-    display: flex; align-items: center; background: #fff; padding: 8px 16px;
+    display: flex; align-items: center; background: #fff; padding: 6px 14px;
     border-radius: 50px; border: 1.5px solid #f5d9e5;
     transition: var(--transition);
   }
   .search-box:focus-within { border-color: var(--pink-1); box-shadow: 0 0 0 4px rgba(255, 61, 143, 0.1); }
-  .search-box input { border: none; outline: none; background: transparent; width: 220px; font-size: 12px; font-family: 'Poppins'; color: var(--text-main); }
-  .search-box i { color: var(--text-muted); margin-right: 8px; font-size: 12px;}
+  .search-box input { border: none; outline: none; background: transparent; width: 200px; font-size: 11.5px; font-family: 'Poppins'; color: var(--text-main); }
+  .search-box i { color: var(--text-muted); margin-right: 6px; font-size: 11px;}
 
-  .content-pad { padding: 0 28px 40px; }
+  .content-pad { padding: 0 18px 30px; } /* Padding samping dikecilkan agar tabel muat */
 
   /* CARDS */
   .card {
     background: #ffffff; border-radius: 16px; 
     box-shadow: var(--card-shadow); border: 1px solid #fff;
-    padding: 24px; margin-bottom: 20px; position: relative;
+    padding: 18px; margin-bottom: 16px; position: relative;
   }
-  .card-header { margin-bottom: 20px; }
-  .section-title { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-  .section-subtitle { color: var(--text-muted); font-size: 12px; }
+  .card-header { margin-bottom: 16px; }
+  .section-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+  .section-subtitle { color: var(--text-muted); font-size: 11px; }
 
   /* GRID UNTUK HALAMAN STOK & HARGA (BERSEBELAHAN) */
   .split-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 16px;
   }
 
   /* KPI DASHBOARD */
   .dashboard-grid {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;
   }
   .kpi-card {
-    background: #ffffff; border-radius: 16px; box-shadow: var(--card-shadow); border: 1px solid #fff;
-    padding: 18px; position: relative; overflow: hidden; display: flex; flex-direction: column;
+    background: #ffffff; border-radius: 14px; box-shadow: var(--card-shadow); border: 1px solid #fff;
+    padding: 14px; position: relative; overflow: hidden; display: flex; flex-direction: column;
   }
   .kpi-icon-wrap {
-    width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: #fff; position: absolute; top: -8px; right: 16px;
+    width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: #fff; position: absolute; top: 12px; right: 12px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.12);
   }
   .kpi-card:nth-child(1) .kpi-icon-wrap { background: linear-gradient(135deg, #4facfe, #00f2fe); }
@@ -155,36 +155,36 @@
   .kpi-card:nth-child(4) .kpi-icon-wrap { background: linear-gradient(135deg, var(--pink-1), var(--pink-2)); }
   .kpi-card:nth-child(5) .kpi-icon-wrap { background: linear-gradient(135deg, #ff0844, #ffb199); }
   
-  .kpi-label { color: var(--text-muted); font-size: 11px; font-weight: 700; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .kpi-value { font-size: 26px; font-weight: 800; color: var(--text-main); margin-top: 4px; }
+  .kpi-label { color: var(--text-muted); font-size: 10px; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-value { font-size: 22px; font-weight: 800; color: var(--text-main); margin-top: 2px; }
 
   /* AUTO REFRESH BAR */
   .auto-bar {
     display: flex; justify-content: space-between; align-items: center;
-    background: #ffffff; padding: 12px 18px; border-radius: 12px; 
+    background: #ffffff; padding: 10px 16px; border-radius: 12px; 
     box-shadow: var(--card-shadow);
-    margin-bottom: 20px; font-size: 12px; border: 1px solid #fff;
+    margin-bottom: 16px; font-size: 11.5px; border: 1px solid #fff;
   }
   .live-dot {
-    display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2fbe6e;
-    box-shadow: 0 0 0 0 rgba(47, 190, 110, 0.4); animation: pulseLive 1.5s infinite; margin-right: 8px;
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #2fbe6e;
+    box-shadow: 0 0 0 0 rgba(47, 190, 110, 0.4); animation: pulseLive 1.5s infinite; margin-right: 6px;
   }
   @keyframes pulseLive { 70% { box-shadow: 0 0 0 6px rgba(47, 190, 110, 0); } 100% { box-shadow: 0 0 0 0 rgba(47, 190, 110, 0); } }
 
   /* FORMS & BUTTONS */
-  label { display: block; font-weight: 600; font-size: 12px; margin: 10px 0 4px; color: var(--text-main); }
+  label { display: block; font-weight: 600; font-size: 11px; margin: 8px 0 3px; color: var(--text-main); }
   input, select {
-    width: 100%; padding: 10px 14px; border: 1.5px solid #f5d9e5; border-radius: 10px; font-size: 12.5px;
+    width: 100%; padding: 8px 12px; border: 1.5px solid #f5d9e5; border-radius: 8px; font-size: 11.5px;
     transition: var(--transition); background: #fff; font-family: 'Poppins', sans-serif; color: var(--text-main);
   }
   input:focus, select:focus { border-color: var(--pink-1); box-shadow: 0 0 0 4px rgba(255, 61, 143, 0.1); outline: none; }
   
   button {
     border: none; border-radius: 50px; background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
-    color: #fff; padding: 10px 20px; font-weight: 700; font-size: 12px; cursor: pointer;
-    box-shadow: var(--btn-shadow); transition: var(--transition); display: inline-flex; align-items: center; gap: 6px;
+    color: #fff; padding: 8px 16px; font-weight: 700; font-size: 11px; cursor: pointer;
+    box-shadow: var(--btn-shadow); transition: var(--transition); display: inline-flex; align-items: center; gap: 5px;
   }
-  button:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255, 61, 143, 0.5); }
+  button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 61, 143, 0.4); }
   button:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
   
   button.dark { background: #fff; border: 1.5px solid #f5d9e5; color: var(--text-main); box-shadow: none; }
@@ -192,28 +192,33 @@
   button.green { background: linear-gradient(135deg, #2fbe6e, #4ade80); box-shadow: 0 6px 15px rgba(47, 190, 110, 0.3); }
   button.green:hover { box-shadow: 0 10px 20px rgba(47, 190, 110, 0.45); }
   button.red { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3); }
-  button.small { padding: 6px 12px; font-size: 11px; }
+  button.small { padding: 5px 10px; font-size: 10.5px; }
 
   /* VOUCHER GRID */
-  .voucher-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 150px auto; gap: 12px; align-items: end; }
+  .voucher-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 130px auto; gap: 10px; align-items: end; }
 
-  /* TABLES - SOFT & CLEAN */
-  .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid #f3e8ee; }
-  .table { width: 100%; border-collapse: collapse; min-width: 950px; }
+  /* TABLES - OPTIMIZED FOR 100% ZOOM NO CUTOFF */
+  .table-wrap { overflow-x: auto; margin-top: 12px; border-radius: 10px; border: 1px solid #f3e8ee; }
+  .table { width: 100%; border-collapse: collapse; }
   .table th { 
     background: #faf7f9; color: #c45a7a; 
-    font-size: 10px; font-weight: 700; text-transform: uppercase; 
-    padding: 12px 14px; text-align: left; border-bottom: 1px solid #f0e4ea;
+    font-size: 9px; font-weight: 700; text-transform: uppercase; 
+    padding: 10px 8px; text-align: left; border-bottom: 1px solid #f0e4ea;
+    white-space: nowrap;
   }
   .table td { 
-    padding: 12px 14px; border-bottom: 1px solid #f7f0f3; 
-    font-size: 12px; vertical-align: top; background: #fff; transition: var(--transition);
+    padding: 9px 8px; border-bottom: 1px solid #f7f0f3; 
+    font-size: 11px; vertical-align: middle; background: #fff; transition: var(--transition);
+    word-break: break-word;
   }
   .table tbody tr:hover td { background: #fffbfd; }
-  .orders-table { min-width: 1200px; } /* Dikecilkan agar pas di layar PC standar */
+  
+  /* Diubah dari 1200px ke 100% agar responsif & tidak terpotong di 100% zoom */
+  .orders-table { min-width: 980px; width: 100%; } 
+  .order-code-cell { word-break: break-all; max-width: 150px; }
   
   /* STATUS BADGES */
-  .status { display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px; }
+  .status { display: inline-block; padding: 3px 8px; border-radius: 50px; font-size: 8.5px; font-weight: 800; letter-spacing: 0.3px; white-space: nowrap; }
   .paid, .ready { background: #dcfce7; color: #166534; }
   .pending { background: #fef3c7; color: #92400e; }
   .used { background: #f3e8ff; color: #6d28d9; }
@@ -221,39 +226,38 @@
   .expired { background: #f1f5f9; color: #475467; }
 
   /* ACCORDIONS (STOCK & PRICE) */
-  .product-accordion { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-  .product-panel { border: 1px solid #f5d9e5; border-radius: 12px; background: #fff; overflow: hidden; box-shadow: var(--card-shadow); transition: var(--transition); }
+  .product-accordion { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .product-panel { border: 1px solid #f5d9e5; border-radius: 10px; background: #fff; overflow: hidden; box-shadow: var(--card-shadow); transition: var(--transition); }
   .product-panel:hover { border-color: var(--pink-2); }
   .product-panel summary {
-    padding: 14px 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-    background: #fff; list-style: none; user-select: none; color: var(--text-main); font-size: 13.5px;
+    padding: 12px 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    background: #fff; list-style: none; user-select: none; color: var(--text-main); font-size: 12.5px;
   }
   .product-panel summary::-webkit-details-marker { display: none; }
   .product-panel summary:after { content: "\f078"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--pink-1); transition: 0.3s; }
   .product-panel[open] summary:after { transform: rotate(180deg); }
-  .product-panel-body { padding: 16px; border-top: 1px dashed #f0dde6; background: #fff; }
+  .product-panel-body { padding: 14px; border-top: 1px dashed #f0dde6; background: #fff; }
   
-  /* Grid di dalam box split diubah dari 4 kolom ke 2 kolom agar tidak sempit */
-  .product-panel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .product-panel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   
-  .stock-item, .price-item { border: 1.5px solid #f5d9e5; border-radius: 12px; padding: 14px; background: #fff; transition: var(--transition); }
+  .stock-item, .price-item { border: 1.5px solid #f5d9e5; border-radius: 10px; padding: 10px; background: #fff; transition: var(--transition); }
   .stock-item:hover, .price-item:hover { border-color: var(--pink-1); box-shadow: 0 4px 10px rgba(255,61,143,0.08); transform: translateY(-2px); }
-  .stock-item-title, .price-item-title { font-weight: 700; margin-bottom: 10px; font-size: 12px; color: var(--text-main); }
-  .stock-badge { display: inline-block; margin-top: 10px; padding: 4px 8px; border-radius: 6px; font-size: 9.5px; font-weight: 800; }
+  .stock-item-title, .price-item-title { font-weight: 700; margin-bottom: 6px; font-size: 11px; color: var(--text-main); }
+  .stock-badge { display: inline-block; margin-top: 8px; padding: 3px 6px; border-radius: 4px; font-size: 8.5px; font-weight: 800; }
   .stock-badge.ready { background: #dcfce7; color: #166534; }
   .stock-badge.empty { background: #fee2e2; color: #991b1b; }
 
   /* NOTIFICATIONS & MESSAGES */
-  .message { display: none; padding: 12px 16px; border-radius: 10px; margin-top: 12px; font-size: 12.5px; font-weight: 600; }
+  .message { display: none; padding: 10px 14px; border-radius: 8px; margin-top: 10px; font-size: 11.5px; font-weight: 600; }
   .message.ok { background: #dcfce7; color: #166534; border-left: 4px solid #166534; display: block; }
   .message.err { background: #fee2e2; color: #991b1b; border-left: 4px solid #991b1b; display: block; }
-  .info-box { background: #eff6ff; color: #1e40af; padding: 14px; border-radius: 10px; font-size: 12.5px; margin-top: 12px; border-left: 4px solid #3b82f6; }
-  .note { background: #fffceb; color: #7a6a3a; padding: 12px 16px; border-radius: 10px; font-size: 12px; margin-bottom: 20px; border-left: 4px solid #f59e0b; }
+  .info-box { background: #eff6ff; color: #1e40af; padding: 12px; border-radius: 8px; font-size: 11.5px; margin-top: 10px; border-left: 4px solid #3b82f6; }
+  .note { background: #fffceb; color: #7a6a3a; padding: 10px 14px; border-radius: 8px; font-size: 11px; margin-bottom: 16px; border-left: 4px solid #f59e0b; }
 
-  /* FILTER BUTTONS (Softer) */
-  .toolbar { display: flex; justify-content: space-between; margin-bottom: 16px; align-items: center; flex-wrap: wrap; gap: 10px; }
-  .toolbar-left, .toolbar-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .filterBtn { background: #fff; border: 1px solid #eee4e8; color: #8a7a82; box-shadow: none; border-radius: 50px; padding: 8px 16px; font-size: 12px; }
+  /* FILTER BUTTONS */
+  .toolbar { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .toolbar-left, .toolbar-right { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .filterBtn { background: #fff; border: 1px solid #eee4e8; color: #8a7a82; box-shadow: none; border-radius: 50px; padding: 6px 14px; font-size: 11px; }
   .filterBtn:hover { background: #fff8fb; color: #d46b8c; border-color: #f5d6e2; }
   .filterBtn.active { background: linear-gradient(135deg, #ff7aa8, #ff9bbd) !important; color: #fff !important; box-shadow: 0 4px 12px rgba(255, 107, 157, 0.22) !important; border-color: transparent !important; }
 
@@ -263,10 +267,10 @@
     display: flex; align-items: center; justify-content: center; z-index: 2000;
   }
   .login-card {
-    background: #ffffff; width: 100%; max-width: 380px; padding: 40px 35px; border-radius: 24px;
+    background: #ffffff; width: 100%; max-width: 360px; padding: 35px 30px; border-radius: 20px;
     box-shadow: var(--card-shadow); text-align: center; border: 1px solid #fff;
   }
-  .login-card i { font-size: 45px; color: var(--pink-1); margin-bottom: 16px; display: block; }
+  .login-card i { font-size: 40px; color: var(--pink-1); margin-bottom: 14px; display: block; }
 
   @media(max-width: 1024px) {
     .split-grid { grid-template-columns: 1fr; }
@@ -279,42 +283,38 @@
     .product-panel-grid { grid-template-columns: repeat(2, 1fr); }
     .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
     .voucher-grid { grid-template-columns: 1fr; }
-    .search-box input { width: 150px; }
-    .content-pad { padding: 0 15px 25px; }
+    .search-box input { width: 130px; }
+    .content-pad { padding: 0 12px 20px; }
   }
 </style>
 </head>
 <body>
 
-<!-- =====================================================
-     LOGIN SCREEN
-     ===================================================== -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-card" id="loginCard">
     <i class="fa-solid fa-heart" style="background: linear-gradient(135deg, var(--pink-1), var(--pink-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-    <div class="section-title" style="font-size: 22px; font-weight:800;">Admin Panel</div>
-    <div class="section-subtitle" style="margin-bottom: 20px;">Masukkan Admin Key MYCLIPS</div>
+    <div class="section-title" style="font-size: 20px; font-weight:800;">Admin Panel</div>
+    <div class="section-subtitle" style="margin-bottom: 16px;">Masukkan Admin Key MYCLIPS</div>
     <div style="text-align: left;">
       <label>Admin Key</label>
-      <input id="adminKey" type="password" placeholder="•••••••••" style="padding: 12px 14px;">
+      <input id="adminKey" type="password" placeholder="•••••••••" style="padding: 10px 12px;">
     </div>
-    <button id="loginBtn" style="width:100%; margin-top:20px; justify-content: center; padding: 12px;">
+    <button id="loginBtn" style="width:100%; margin-top:16px; justify-content: center; padding: 10px;">
       Masuk Panel <i class="fa-solid fa-arrow-right"></i>
     </button>
     <div id="loginMessage" class="message"></div>
   </div>
 </div>
 
-<!-- =====================================================
-     MAIN APP WRAPPER 
-     ===================================================== -->
+<!-- MAIN APP WRAPPER -->
 <div id="app" class="wrapper hidden">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="brand">MYCLIPS</div>
-      <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight:700; letter-spacing: 0.5px;">ADMIN DASHBOARD</div>
+      <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight:700; letter-spacing: 0.5px;">ADMIN DASHBOARD</div>
     </div>
     <nav class="sidebar-nav">
       <a class="nav-item active" data-target="page-dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
@@ -332,23 +332,22 @@
     <header class="top-nav">
       <div class="nav-title" id="topNavTitle">Dashboard</div>
       <div class="nav-right">
-        <!-- Input Search -->
         <div class="search-box">
           <i class="fa-solid fa-magnifying-glass"></i>
           <input id="search" placeholder="Cari order, nama, email...">
         </div>
-        <button id="logoutBtn" class="dark small" style="border-radius: 50px; padding: 8px 16px;"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        <button id="logoutBtn" class="dark small" style="border-radius: 50px; padding: 6px 14px;"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
       </div>
     </header>
 
     <div class="content-pad">
       
       <!-- GLOBAL AUTO REFRESH BAR -->
-      <div class="auto-bar" style="margin-top: 24px;">
+      <div class="auto-bar" style="margin-top: 18px;">
         <div><span class="live-dot"></span><b>LIVE</b> · Diperbarui otomatis tiap 5 detik</div>
-        <div style="display: flex; gap: 16px; align-items: center;">
+        <div style="display: flex; gap: 14px; align-items: center;">
           <span id="lastUpdatedText" style="color: var(--text-muted);">Belum diperbarui</span>
-          <label style="margin:0; display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:700; color:var(--text-main);">
+          <label style="margin:0; display:flex; align-items:center; gap:5px; cursor:pointer; font-weight:700; color:var(--text-main);">
             <input type="checkbox" id="autoRefreshToggle" checked style="width:auto;"> Auto-refresh
           </label>
         </div>
@@ -358,42 +357,38 @@
       <div id="appMessage" class="message"></div>
       <div class="note"><b>✨ Perhatian:</b> Admin Key digunakan untuk koneksi aman ke server database Supabase.</div>
 
-      <!-- ==============================================
-           HALAMAN 1: DASHBOARD
-           ============================================== -->
+      <!-- HALAMAN 1: DASHBOARD -->
       <div id="page-dashboard" class="page-section active">
         <div class="dashboard-grid">
           <div class="kpi-card">
-            <div class="kpi-icon-wrap" style="top: 16px;"><i class="fa-solid fa-receipt"></i></div>
+            <div class="kpi-icon-wrap"><i class="fa-solid fa-receipt"></i></div>
             <div class="kpi-label">Total Order</div>
             <div class="kpi-value" id="kpiOrders">0</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-icon-wrap" style="top: 16px;"><i class="fa-solid fa-check"></i></div>
+            <div class="kpi-icon-wrap"><i class="fa-solid fa-check"></i></div>
             <div class="kpi-label">Status PAID</div>
             <div class="kpi-value" id="kpiPaid">0</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-icon-wrap" style="top: 16px;"><i class="fa-solid fa-clock"></i></div>
+            <div class="kpi-icon-wrap"><i class="fa-solid fa-clock"></i></div>
             <div class="kpi-label">PENDING</div>
             <div class="kpi-value" id="kpiPending">0</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-icon-wrap" style="top: 16px;"><i class="fa-solid fa-box-open"></i></div>
+            <div class="kpi-icon-wrap"><i class="fa-solid fa-box-open"></i></div>
             <div class="kpi-label">Total Stok</div>
             <div class="kpi-value" id="kpiStock">0</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-icon-wrap" style="top: 16px;"><i class="fa-solid fa-ticket"></i></div>
+            <div class="kpi-icon-wrap"><i class="fa-solid fa-ticket"></i></div>
             <div class="kpi-label">Voucher Aktif</div>
             <div class="kpi-value" id="kpiVoucher">0</div>
           </div>
         </div>
       </div>
 
-      <!-- ==============================================
-           HALAMAN 2: PESANAN
-           ============================================== -->
+      <!-- HALAMAN 2: PESANAN -->
       <div id="page-orders" class="page-section">
         <div class="card">
           <div class="card-header">
@@ -410,7 +405,7 @@
               <button class="filterBtn" data-filter="EXPIRED">EXPIRED</button>
             </div>
             <div class="toolbar-right">
-              <select id="sortOrder" style="border-radius:50px; padding: 8px 14px; width:auto;">
+              <select id="sortOrder" style="border-radius:50px; padding: 6px 12px; width:auto;">
                 <option value="newest">Terbaru Dulu</option>
                 <option value="oldest">Terlama Dulu</option>
               </select>
@@ -421,7 +416,7 @@
             <table class="table orders-table">
               <thead>
                 <tr>
-                  <th><input type="checkbox" id="selectAll" class="order-check" style="width:auto;"></th>
+                  <th style="width:30px;"><input type="checkbox" id="selectAll" class="order-check" style="width:auto;"></th>
                   <th>Order ID & Tgl</th>
                   <th>Pembeli</th>
                   <th>Paket</th>
@@ -438,16 +433,14 @@
                 </tr>
               </thead>
               <tbody id="ordersBody">
-                <tr><td colspan="14" style="color:var(--text-muted); text-align:center; padding:25px;">Belum ada data.</td></tr>
+                <tr><td colspan="14" style="color:var(--text-muted); text-align:center; padding:20px;">Belum ada data.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ==============================================
-           HALAMAN 3: STOK & HARGA (BERSEBELAHAN DENGAN GRID)
-           ============================================== -->
+      <!-- HALAMAN 3: STOK & HARGA -->
       <div id="page-stock-price" class="page-section">
         <div class="split-grid">
           
@@ -459,7 +452,7 @@
             </div>
             <div id="stockMessage" class="message"></div>
             <div id="stockGrid" class="stock-grid"><div style="color:var(--text-muted)">Memuat stok...</div></div>
-            <button id="saveStockBtn" type="button" class="green" style="margin-top: 14px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Stok</button>
+            <button id="saveStockBtn" type="button" class="green" style="margin-top: 12px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Stok</button>
           </div>
 
           <!-- KONTROL HARGA -->
@@ -470,15 +463,13 @@
             </div>
             <div id="priceMessage" class="message"></div>
             <div id="priceGrid"><div style="color:var(--text-muted)">Memuat harga...</div></div>
-            <button id="savePriceBtn" type="button" class="green" style="margin-top: 14px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Harga</button>
+            <button id="savePriceBtn" type="button" class="green" style="margin-top: 12px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Harga</button>
           </div>
           
         </div>
       </div>
 
-      <!-- ==============================================
-           HALAMAN 4: VOUCHER
-           ============================================== -->
+      <!-- HALAMAN 4: VOUCHER -->
       <div id="page-voucher" class="page-section">
         <div class="card">
           <div class="card-header">
@@ -500,7 +491,7 @@
             <button id="addVoucherBtn"><i class="fa-solid fa-plus"></i> Tambah</button>
           </div>
 
-          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+          <div style="margin-top:8px; display:flex; align-items:center; gap:6px;">
             <input id="voucherNoLimit" type="checkbox" style="width:auto;">
             <label for="voucherNoLimit" style="margin:0; font-weight:500;">Tanpa batas penggunaan (Unlimited)</label>
           </div>
@@ -521,16 +512,14 @@
                 </tr>
               </thead>
               <tbody id="voucherBody">
-                <tr><td colspan="7" style="color:var(--text-muted); text-align:center; padding:25px;">Memuat voucher...</td></tr>
+                <tr><td colspan="7" style="color:var(--text-muted); text-align:center; padding:20px;">Memuat voucher...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ==============================================
-           HALAMAN 5: TIM CANVA
-           ============================================== -->
+      <!-- HALAMAN 5: TIM CANVA -->
       <div id="page-team" class="page-section">
         <div class="card">
           <div class="card-header">
@@ -538,12 +527,12 @@
             <div class="section-subtitle">Ganti nama dan link gabung tim aktif untuk pesanan baru.</div>
           </div>
           
-          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 16px;">
             <div><label>Nama Tim Canva</label><input id="canvaTeamName" placeholder="Contoh: MYCLIPS 826 | 01.30"></div>
             <div><label>Link Invite Tim Canva</label><input id="canvaInviteUrl" placeholder="https://www.canva.com/brand/join?token=..."></div>
           </div>
           
-          <button id="saveInviteBtn" style="margin-top: 16px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Tim</button>
+          <button id="saveInviteBtn" style="margin-top: 14px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Tim</button>
           <div id="inviteUpdated" class="info-box">Belum ada data tim.</div>
           <div id="inviteMessage" class="message"></div>
         </div>
@@ -553,13 +542,8 @@
   </main>
 </div>
 
-<!-- =====================================================
-     JAVASCRIPT LOGIC
-     ===================================================== -->
+<!-- JAVASCRIPT LOGIC -->
 <script>
-/* =====================================================
-   SISTEM NAVIGASI (TAB MENU)
-   ===================================================== */
 const navItems = document.querySelectorAll('.nav-item');
 const pageSections = document.querySelectorAll('.page-section');
 const topNavTitle = document.getElementById('topNavTitle');
@@ -580,9 +564,6 @@ navItems.forEach(item => {
   });
 });
 
-/* =====================================================
-   CONFIG & VARIABLES 
-   ===================================================== */
 const SUPABASE_URL = "https://refyjnsdseyxoqlifvry.supabase.co";
 const ADMIN_API_URL = SUPABASE_URL + "/functions/v1/admin-api";
 
@@ -603,9 +584,6 @@ let currentFilter = "ALL";
 let currentSort = "newest";
 const $ = id => document.getElementById(id);
 
-/* =====================================================
-   HELPERS
-   ===================================================== */
 function esc(value){
   return String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[char]));
 }
@@ -628,9 +606,6 @@ function message(el, text, ok=false){
   el.style.display = "block";
 }
 
-/* =====================================================
-   API CALL
-   ===================================================== */
 async function api(action, extra={}){
   const response = await fetch(ADMIN_API_URL, {
     method: "POST",
@@ -642,9 +617,6 @@ async function api(action, extra={}){
   return data;
 }
 
-/* =====================================================
-   AUTO REFRESH + DASHBOARD
-   ===================================================== */
 let autoRefreshTimer = null;
 let refreshInProgress = false;
 
@@ -665,7 +637,7 @@ function updateDashboard(){
 }
 
 function updateLastUpdated(){
-  $('lastUpdatedText').textContent = 'Terakhir diperbarui: ' + new Date().toLocaleTimeString('id-ID');
+  $('lastUpdatedText').textContent = 'Terakhir: ' + new Date().toLocaleTimeString('id-ID');
 }
 
 function hasOpenProductEditor(){
@@ -702,9 +674,6 @@ function stopAutoRefresh(){
   if(autoRefreshTimer){ clearInterval(autoRefreshTimer); autoRefreshTimer = null; }
 }
 
-/* =====================================================
-   TEAM CANVA
-   ===================================================== */
 async function loadTeam(){
   const data = await api("get_invite");
   $("canvaTeamName").value = ""; $("canvaInviteUrl").value = "";
@@ -725,9 +694,6 @@ async function saveTeam(){
   }
 }
 
-/* =====================================================
-   PRICES & STOCK 
-   ===================================================== */
 async function loadPrices(){
   const data = await api("list_prices");
   productPrices = data.prices || [];
@@ -839,9 +805,6 @@ async function saveStock(){
   }
 }
 
-/* =====================================================
-   VOUCHERS
-   ===================================================== */
 async function loadVouchers(silent=false){
   const data = await api("list_vouchers");
   vouchers = data.vouchers || [];
@@ -925,9 +888,6 @@ async function deleteVoucher(id){
   catch(error){ message($("voucherMessage"), error.message, false); }
 }
 
-/* =====================================================
-   ORDERS & TABLE
-   ===================================================== */
 async function loadOrders(silent=false){
   const data = await api("list");
   orders = data.orders || [];
@@ -986,7 +946,7 @@ function renderOrders(){
   });
 
   if(!list.length){
-    $("ordersBody").innerHTML = `<tr><td colspan="14" style="color:var(--text-muted); text-align:center; padding:25px;">Tidak ada pesanan cocok.</td></tr>`;
+    $("ordersBody").innerHTML = `<tr><td colspan="14" style="color:var(--text-muted); text-align:center; padding:20px;">Tidak ada pesanan cocok.</td></tr>`;
     updateDeleteButton(); return;
   }
   
@@ -998,17 +958,17 @@ function renderOrders(){
     return `
       <tr>
         <td><input type="checkbox" class="order-check orderCheck" value="${esc(order.order_code)}"></td>
-        <td><strong>${esc(order.order_code)}</strong><br><span style="color:var(--text-muted)">${dateTime(order.created_at)}</span></td>
-        <td><strong>${esc(order.customer_name || "-")}</strong><br>${esc(order.customer_email || "-")}</td>
+        <td class="order-code-cell"><strong>${esc(order.order_code)}</strong><br><span style="color:var(--text-muted); font-size:10px;">${dateTime(order.created_at)}</span></td>
+        <td><strong>${esc(order.customer_name || "-")}</strong><br><span style="color:var(--text-muted); font-size:10.5px;">${esc(order.customer_email || "-")}</span></td>
         <td>${esc(order.product_name || "-")}</td>
-        <td>Rp${rupiah(order.amount)}${order.discount_amount ? `<br><span style="color:var(--text-muted)">Final: Rp${rupiah(order.final_amount)}</span>` : ""}</td>
+        <td>Rp${rupiah(order.amount)}${order.discount_amount ? `<br><span style="color:var(--text-muted); font-size:10px;">Final: Rp${rupiah(order.final_amount)}</span>` : ""}</td>
         <td>${order.voucher_code ? `<strong>${esc(order.voucher_code)}</strong><br>-Rp${rupiah(order.discount_amount)}` : "-"}</td>
-        <td>${orderStatus(order.payment_status)}<br><span style="color:var(--text-muted)">${esc(order.payment_method || "")}</span></td>
-        <td>${accessStatus(order)}${usedCycle > 0 ? `<br><span style="color:var(--text-muted)">Siklus ${usedCycle}/${accessStatStr === "UNUSED" ? 0 : usedCycle}</span>` : ""}</td>
+        <td>${orderStatus(order.payment_status)}<br><span style="color:var(--text-muted); font-size:10px;">${esc(order.payment_method || "")}</span></td>
+        <td>${accessStatus(order)}${usedCycle > 0 ? `<br><span style="color:var(--text-muted); font-size:10px;">Siklus ${usedCycle}/${accessStatStr === "UNUSED" ? 0 : usedCycle}</span>` : ""}</td>
         <td>${esc(order.canva_team_name || "-")}</td>
         <td>${dateTime(order.paid_at)}</td>
         <td>${billingText(order)}</td>
-        <td>${usedCycle}/${accessStatStr === "UNUSED" ? 0 : usedCycle}</td>
+        <td style="text-align:center;">${usedCycle}/${accessStatStr === "UNUSED" ? 0 : usedCycle}</td>
         <td>${nextAccess(order)}</td>
         <td>${paid ? `<button class="small red" onclick="resetAccess('${esc(order.order_code)}')"><i class="fa-solid fa-rotate-left"></i> Reset</button>` : "-"}</td>
       </tr>
@@ -1026,9 +986,6 @@ function updateDeleteButton(){
   $("deleteSelectedBtn").disabled = count === 0;
 }
 
-/* =====================================================
-   RESET & DELETE ORDER
-   ===================================================== */
 async function resetAccess(orderCode){
   if(!confirm("Reset akses order " + orderCode + "?")) return;
   try{ const data = await api("reset", { order_code: orderCode }); message($("appMessage"), data.message, true); await loadOrders(); }
@@ -1054,9 +1011,6 @@ $("selectAll").addEventListener("change", () => {
   updateDeleteButton();
 });
 
-/* =====================================================
-   INIT & EVENT LISTENERS
-   ===================================================== */
 bindProductEditorGuards();
 
 $("loginBtn").addEventListener("click", async () => {
